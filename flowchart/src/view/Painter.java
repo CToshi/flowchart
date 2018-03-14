@@ -1,11 +1,11 @@
 package view;
 
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Shape;
+import ui.DrawPane;
 
 public class Painter {
 	private static Painter painter;
-	private Pane pane;
+	private DrawPane drawPane;
 	static {
 		painter = new Painter();
 	}
@@ -13,16 +13,17 @@ public class Painter {
 	private Painter() {
 	}
 
-	public static void setPane(Pane pane) {
-		painter.pane = pane;
+	public static void setPane(DrawPane drawPane) {
+		painter.drawPane = drawPane;
 	}
 
 	public void add(Shape shape) {
-		pane.getChildren().add(shape);
+		drawPane.getChildren().add(shape);
 	}
 
-	public void add(Drawable drawable) {
-		for (Shape s : drawable.getShapes()) {
+	public void add(DrawElement element) {
+		drawPane.add(element);
+		for (Shape s : element.getShapes()) {
 			this.add(s);
 		}
 	}

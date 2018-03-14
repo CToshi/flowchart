@@ -6,20 +6,39 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import manager.DrawManager;
+import view.DrawElement;
 import view.Painter;
 
-public class DrawPane extends Pane{
+public class DrawPane extends Pane {
 	private DrawManager manager;
+
 	public DrawPane(DoubleExpression width, DoubleExpression height) {
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
-		this.setBackground(new Background(new BackgroundFill(Color.RED,null,null)));
+		this.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 		this.setMinSize(100, 100);
+
+//		{
+//			Rectangle rectangle = new Rectangle(-10,-10,50,50);
+//			rectangle.setFill(Color.GREEN);
+//			this.getChildren().add(rectangle);
+//		}
 		Painter.setPane(this);
 		manager = new DrawManager();
-		this.setOnMouseMoved(mouse->{
+		this.setOnMouseDragged(mouse -> {
 //			System.out.println(233);
-//			manager.setStopDragged();
+			if(isOutBound(mouse.getX(), mouse.getY())){
+//				System.out.println(244);
+				manager.setStopDragged();
+			}
 		});
+	}
+
+	private boolean isOutBound(double x, double y) {
+		return !(0 <= x && x <= this.getWidth() && 0 <= y && y <= this.getHeight());
+	}
+
+	public void add(DrawElement element){
+		manager.add(element);
 	}
 }
