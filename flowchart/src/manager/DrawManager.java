@@ -3,38 +3,32 @@ package manager;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import entities.PointEntity;
-import javafx.event.EventHandler;
-import javafx.scene.input.MouseEvent;
-import view.Selectable;
+import view.DrawElement;
 
 public class DrawManager {
-	private static DrawManager manager;
-	private HashMap<String, Selectable> selectables;
-	private EventHandler<MouseEvent> handler;
-	static {
-		manager = new DrawManager();
+//	private static DrawManager manager;
+	private HashMap<Integer, DrawElement> elements;
+//	static {
+//		manager = new DrawManager();
+//	}
+
+//	private DrawManager() {
+//		drawables = new HashMap<>();
+//	}
+	public DrawManager(){
+		elements = new HashMap<>();
 	}
 
-	private DrawManager() {
-		selectables = new HashMap<>();
+//	public static DrawManager getInstance() {
+//		return manager;
+//	}
 
-		handler = (e) -> {
-			PointEntity point = new PointEntity(e.getX(), e.getY());
-			for (Entry<String, Selectable> entry : selectables.entrySet()) {
-				Selectable select = entry.getValue();
-				if (select.getJudgeRectangle().contains(point)) {
-					select.selected();
-				}
-			}
-		};
+	public void add(DrawElement element) {
+		elements.put(element.hashCode(), element);
 	}
-
-	public EventHandler<MouseEvent> getHandler() {
-		return handler;
-	}
-
-	public static DrawManager getInstance() {
-		return manager;
+	public void setStopDragged(){
+		for(Entry<Integer, DrawElement> entry:elements.entrySet()){
+			entry.getValue().setStopDragged();
+		}
 	}
 }

@@ -13,13 +13,13 @@ public class RootPane extends BorderPane {
 
 	public RootPane(ReadOnlyDoubleProperty width, ReadOnlyDoubleProperty height) {
 		this.prefHeightProperty().bind(width);
-		
-		this.setBackground(new Background(new BackgroundFill(Color.BLACK,null,null)));
-		
+
+		this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+
 		toolPane = new ToolPane(width.multiply(0.2), height);
 		menuBar = new MenuBar();
 		drawPane = new DrawPane(width.multiply(0.8), height);
-		
+
 		this.setTop(menuBar);
 		this.setLeft(toolPane);
 		this.setRight(drawPane);
