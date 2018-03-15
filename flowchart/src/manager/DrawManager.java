@@ -26,9 +26,9 @@ public class DrawManager {
 	public void add(DrawElement element) {
 		elements.put(element.hashCode(), element);
 	}
-	public void setStopDragged(){
+	public void setOutBound(boolean isOutBound){
 		for(Entry<Integer, DrawElement> entry:elements.entrySet()){
-			entry.getValue().setStopDragged();
+			entry.getValue().setOutBound(isOutBound);
 		}
 	}
 }

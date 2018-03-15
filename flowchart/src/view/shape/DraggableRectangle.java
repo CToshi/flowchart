@@ -1,6 +1,5 @@
 package view.shape;
 
-import application.Main;
 import entities.PointEntity;
 import javafx.scene.shape.Rectangle;
 import view.Changable;
@@ -8,11 +7,11 @@ import view.Draggable;
 
 public class DraggableRectangle extends Rectangle implements Draggable, Changable {
 	private PointEntity lastPosition;
-	private boolean isDragged;
+	private PointEntity startPosition;
+	private boolean isOutBound;
 	private double width;
 	private double height;
-	private double x;
-	private double y;
+
 
 	public DraggableRectangle() {
 		this(100, 100, 100, 100);
@@ -23,17 +22,16 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 		super(x, y, width, height);
 		this.width = width;
 		this.height = height;
-		this.x = x;
-		this.y = y;
 	}
 
 	private void initListener() {
 		this.setOnMousePressed(e -> {
 			lastPosition = new PointEntity(e.getX(), e.getY());
-			isDragged = true;
+			startPosition = new PointEntity(this.getX(), this.getY());
+			isOutBound = false;
 		});
 		this.setOnMouseDragged(e -> {
-			if (!isDragged) {
+			if(isOutBound){
 				return;
 			}
 			double xDelta = e.getX() - lastPosition.getX();
@@ -42,23 +40,27 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 			this.yAdd(yDelta);
 			lastPosition.setXY(e.getX(), e.getY());
 		});
+		this.setOnMouseReleased(e -> {
+			if (isOutBound) {
+				this.setX(startPosition.getX());
+				this.setY(startPosition.getY());
+			}
+		});
 	}
 
 	@Override
 	public void xAdd(double delta) {
-		this.x += delta;
-		this.setX(Math.abs(x));
+		this.setX(this.getX() + delta);
 	}
 
 	@Override
 	public void yAdd(double delta) {
-		this.y += delta;
-		this.setY(Math.abs(y));
+		this.setY(this.getY() + delta);
 	}
 
 	@Override
-	public void setStopDragged() {
-		isDragged = false;
+	public void setOutBound(boolean isOutBound) {
+		this.isOutBound = isOutBound;
 	}
 
 	@Override

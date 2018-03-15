@@ -56,8 +56,8 @@ public class DrawRectangle extends DrawElement implements Changable{
 	}
 
 	@Override
-	public void setStopDragged() {
-		rectangle.setStopDragged();
+	public void setOutBound(boolean isOutBound) {
+		rectangle.setOutBound(isOutBound);
 	}
 
 
