@@ -11,8 +11,6 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 	private boolean isDragged;
 	private double width;
 	private double height;
-	private double x;
-	private double y;
 
 	public DraggableRectangle() {
 		this(100, 100, 100, 100);
@@ -23,8 +21,6 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 		super(x, y, width, height);
 		this.width = width;
 		this.height = height;
-		this.x = x;
-		this.y = y;
 	}
 
 	private void initListener() {
@@ -46,14 +42,12 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 
 	@Override
 	public void xAdd(double delta) {
-		this.x += delta;
-		this.setX(Math.abs(x));
+		this.setX(this.getX() + delta);
 	}
 
 	@Override
 	public void yAdd(double delta) {
-		this.y += delta;
-		this.setY(Math.abs(y));
+		this.setY(this.getY() + delta);
 	}
 
 	@Override
