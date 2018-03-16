@@ -8,7 +8,7 @@ import javafx.scene.layout.BorderPane;
 
 public class Main extends Application {
 	@Override
-	public void start(Stytage primaryStage) {
+	public void start(Stage primaryStage) {
 		BorderPane root = new BorderPane();
 		Scene scene = new Scene(root, 400, 400);
 		primaryStage.setScene(scene);
