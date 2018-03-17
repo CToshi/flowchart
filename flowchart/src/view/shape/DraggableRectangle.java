@@ -1,16 +1,13 @@
 package view.shape;
 
-import application.Main;
 import entities.PointEntity;
 import javafx.scene.shape.Rectangle;
-import view.Changable;
 import view.Draggable;
 
-public class DraggableRectangle extends Rectangle implements Draggable, Changable {
+public class DraggableRectangle extends Rectangle implements Draggable {
 	private PointEntity lastPosition;
-	private boolean isDragged;
-	private double width;
-	private double height;
+	private PointEntity startPosition;
+	private boolean isOutBound;
 
 	public DraggableRectangle() {
 		this(100, 100, 100, 100);
@@ -19,51 +16,49 @@ public class DraggableRectangle extends Rectangle implements Draggable, Changabl
 
 	public DraggableRectangle(double x, double y, double width, double height) {
 		super(x, y, width, height);
-		this.width = width;
-		this.height = height;
 	}
 
 	private void initListener() {
 		this.setOnMousePressed(e -> {
 			lastPosition = new PointEntity(e.getX(), e.getY());
-			isDragged = true;
+			startPosition = new PointEntity(this.getX(), this.getY());
+			isOutBound = false;
+			whenClicked();
 		});
 		this.setOnMouseDragged(e -> {
-			if (!isDragged) {
+			if (isOutBound) {
 				return;
 			}
 			double xDelta = e.getX() - lastPosition.getX();
 			double yDelta = e.getY() - lastPosition.getY();
-			this.xAdd(xDelta);
-			this.yAdd(yDelta);
+			this.deal(xDelta, yDelta);
 			lastPosition.setXY(e.getX(), e.getY());
+		});
+		this.setOnMouseReleased(e -> {
+			if (isOutBound) {
+				this.setX(startPosition.getX());
+				this.setY(startPosition.getY());
+			}
+			whenReleased();
 		});
 	}
 
-	@Override
-	public void xAdd(double delta) {
-		this.setX(this.getX() + delta);
+	protected void whenClicked() {
+
+	}
+
+	protected void whenReleased() {
+
 	}
 
 	@Override
-	public void yAdd(double delta) {
-		this.setY(this.getY() + delta);
+	public void setOutBound(boolean isOutBound) {
+		this.isOutBound = isOutBound;
 	}
 
-	@Override
-	public void setStopDragged() {
-		isDragged = false;
+	protected void deal(double xDelta, double yDelta) {
+		this.setX(this.getX() + xDelta);
+		this.setY(this.getY() + yDelta);
 	}
 
-	@Override
-	public void widthAdd(double delta) {
-		this.width += delta;
-		this.setWidth(Math.abs(this.width));
-	}
-
-	@Override
-	public void heightAdd(double delta) {
-		this.height += delta;
-		this.setHeight(Math.abs(this.height));
-	}
 }

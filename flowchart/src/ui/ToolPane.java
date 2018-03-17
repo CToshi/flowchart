@@ -7,6 +7,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import view.Painter;
+import view.move.MoveFrame;
 import view.shape.DrawRectangle;
 
 public class ToolPane extends VBox {
@@ -22,7 +23,7 @@ public class ToolPane extends VBox {
 		Button button = new Button("rectangle");
 		this.getChildren().add(button);
 		button.setOnAction(event -> {
-			painter.add(new DrawRectangle());
+			painter.add(new MoveFrame());
 		});
 	}
 }

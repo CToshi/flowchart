@@ -1,5 +1,6 @@
 package ui;
 
+import application.Main;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -17,7 +18,6 @@ public class DrawPane extends Pane {
 		this.prefHeightProperty().bind(height);
 		this.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 		this.setMinSize(100, 100);
-
 //		{
 //			Rectangle rectangle = new Rectangle(-10,-10,50,50);
 //			rectangle.setFill(Color.GREEN);
@@ -26,10 +26,10 @@ public class DrawPane extends Pane {
 		Painter.setPane(this);
 		manager = new DrawManager();
 		this.setOnMouseDragged(mouse -> {
-//			System.out.println(233);
 			if(isOutBound(mouse.getX(), mouse.getY())){
-//				System.out.println(244);
-				manager.setStopDragged();
+				manager.setOutBound(true);
+			} else {
+				manager.setOutBound(false);
 			}
 		});
 	}

@@ -1,5 +1,5 @@
 package view;
 
 public interface Draggable {
-	void setStopDragged();
+	void setOutBound(boolean isOutBound);
 }
