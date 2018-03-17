@@ -2,8 +2,11 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
+import javafx.scene.Cursor;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
+import javafx.scene.transform.Rotate;
 import view.DrawElement;
 import view.shape.DraggableRectangle;
 
@@ -12,30 +15,42 @@ public class MoveFrame extends DrawElement {
 	private MovePoint[] points;
 	private static final double offset[][] = { { 0, 0 }, { 1, 1 }, { 0, 0.5 }, { 1, 0.5 }, { 0.5, 0 }, { 0.5, 1 },
 			{ 1, 0 }, { 0, 1 } };
+	private static final Cursor[] CURSORS = { Cursor.SE_RESIZE, Cursor.E_RESIZE, Cursor.S_RESIZE, Cursor.SW_RESIZE };
+	private Rotate rotate;
+	private RotatePoint rotatePoint;
 
 	public MoveFrame() {
-		rectangle = new DraggableRectangle();
-		rectangle.setFill(Color.GREEN);
+		rotate = new Rotate(30);
+		rectangle = new DraggableRectangle() {
+
+			@Override
+			protected void deal(double xDelta, double yDelta) {
+				this.move(xDelta, yDelta);
+				MoveFrame.this.fixPosition();
+			}
+
+			@Override
+			protected void whenReleased() {
+				fixPosition();
+			}
+		};
+		rectangle.getTransforms().add(rotate);
+		rectangle.setStroke(Color.GREEN);
+		rectangle.setStrokeWidth(5);
+		rectangle.setFill(Color.TRANSPARENT);
 		points = new MovePoint[8];
-		double offset[][] = { { 0, 0 }, { 1, 1 }, { 0, 0.5 }, { 1, 0.5 }, { 0.5, 0 }, { 0.5, 1 }, { 1, 0 }, { 0, 1 } };
 		for (int i = 0; i < points.length; i++) {
 			points[i] = new MovePoint(this, Math.abs(offset[i][0] - 0.5) > 0.0001,
-					Math.abs(offset[i][1] - 0.5) > 0.0001);
-			// points[i] = new MovePoint(this,
-			// rectangle.xProperty().add(rectangle.widthProperty().multiply(offset[i][0])),
-			// rectangle.yProperty().add(rectangle.heightProperty().multiply(offset[i][1])),
-			// Math.abs(offset[i][0] - 0.5) > 0.0001, Math.abs(offset[i][1] -
-			// 0.5) > 0.0001, offset[i][0],
-			// offset[i][1]);
-			// points[i] = new MovePoint(this, Math.abs(offset[i][0] - 0.5) >
-			// 0.0001, Math.abs(offset[i][1] - 0.5) > 0.0001);
+					Math.abs(offset[i][1] - 0.5) > 0.0001, CURSORS[i / 2]);
+			points[i].getTransforms().add(rotate);
 		}
 		for (int i = 0; i < points.length; i++) {
 			points[i].setOtherPoint(points[i ^ 1]);
 		}
-		// this.fixPosition(points[0].getX(), points[0].getY());
-		points[0].setFill(Color.YELLOW);
+		rotatePoint = new RotatePoint(this);
+		rotatePoint.getTransforms().add(rotate);
 		this.fixPosition();
+		this.fixPivot();
 	}
 
 	@Override
@@ -45,7 +60,7 @@ public class MoveFrame extends DrawElement {
 		for (int i = 0; i < points.length; i++) {
 			shapes.add(points[i]);
 		}
-
+		shapes.add(rotatePoint);
 		return shapes.toArray(new Shape[0]);
 	}
 
@@ -59,6 +74,12 @@ public class MoveFrame extends DrawElement {
 			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
 					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
 		}
+		rotatePoint.setCenterXY(rectangle.getCenterX(), rectangle.getY() - 30);
+	}
+
+	public void fixPivot() {
+		rotate.setPivotX(rectangle.getX() + rectangle.getWidth() * 0.5);
+		rotate.setPivotY(rectangle.getY() + rectangle.getHeight() * 0.5);
 	}
 
 	public void setHidden() {
@@ -71,7 +92,6 @@ public class MoveFrame extends DrawElement {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setShow();
 		}
-		points[0].setFill(Color.YELLOW);
 	}
 
 	public void setX(double value) {
@@ -90,4 +110,7 @@ public class MoveFrame extends DrawElement {
 		rectangle.setHeight(value);
 	}
 
+	public void setRotate(double value) {
+		rotate.setAngle(value);
+	}
 }

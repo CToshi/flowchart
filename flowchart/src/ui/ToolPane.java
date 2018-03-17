@@ -8,7 +8,6 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import view.Painter;
 import view.move.MoveFrame;
-import view.shape.DrawRectangle;
 
 public class ToolPane extends VBox {
 	private Painter painter = Painter.getInstance();
