@@ -32,6 +32,12 @@ public class DrawPane extends Pane {
 				manager.setOutBound(false);
 			}
 		});
+
+//		{
+//			this.setOnMouseMoved(e->{
+//				Main.test(e.getX(), e.getY());
+//			});
+//		}
 	}
 
 	private boolean isOutBound(double x, double y) {
