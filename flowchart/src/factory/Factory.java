@@ -1,4 +1,4 @@
-package models.factory;
+package factory;
 
 public class Factory {
 
