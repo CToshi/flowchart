@@ -34,8 +34,8 @@ public class DrawPane extends Pane {
 		});
 
 //		{
-//			this.setOnMouseMoved(e->{
-//				Main.test(e.getX(), e.getY());
+//			this.setOnMouseClicked(e->{
+//				//Main.test(e.getX(), e.getY());
 //			});
 //		}
 	}

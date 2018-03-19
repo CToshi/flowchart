@@ -1,6 +1,7 @@
 package view.move;
 
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import view.shape.DraggableRectangle;
@@ -50,7 +51,7 @@ public class MovePoint extends DraggableRectangle {
 	}
 
 	@Override
-	protected void whenReleased() {
+	protected void whenReleased(MouseEvent mouse) {
 		target.fixPosition();
 		target.setShow();
 	}

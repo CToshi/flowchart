@@ -4,6 +4,7 @@ import java.util.LinkedList;
 
 import application.Main;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Shape;
 import javafx.scene.transform.Rotate;
@@ -20,7 +21,7 @@ public class MoveFrame extends DrawElement {
 	private RotatePoint rotatePoint;
 
 	public MoveFrame() {
-		rotate = new Rotate(30);
+		rotate = new Rotate(0);
 		rectangle = new DraggableRectangle() {
 
 			@Override
@@ -30,8 +31,10 @@ public class MoveFrame extends DrawElement {
 			}
 
 			@Override
-			protected void whenReleased() {
+			protected void whenReleased(MouseEvent mouse) {
+				Main.test("rel", mouse.getX(),mouse.getY());
 				fixPosition();
+				fixPivot();
 			}
 		};
 		rectangle.getTransforms().add(rotate);
@@ -78,6 +81,8 @@ public class MoveFrame extends DrawElement {
 	}
 
 	public void fixPivot() {
+		Main.test("fixpivot");
+		Main.test(rectangle.getX(),rectangle.getY());
 		rotate.setPivotX(rectangle.getX() + rectangle.getWidth() * 0.5);
 		rotate.setPivotY(rectangle.getY() + rectangle.getHeight() * 0.5);
 	}

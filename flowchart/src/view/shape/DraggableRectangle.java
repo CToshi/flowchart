@@ -1,15 +1,15 @@
 package view.shape;
 
-import application.Main;
 import entities.PointEntity;
 import javafx.scene.Cursor;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.shape.Rectangle;
 import view.Draggable;
-import view.move.RotatePoint;
 
 public abstract class DraggableRectangle extends Rectangle implements Draggable {
 	private PointEntity lastPosition;
 	private PointEntity startPosition;
+	private PointEntity mousePosition;
 	private boolean isOutBound;
 	private Cursor cursor;
 
@@ -21,12 +21,15 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 		super(x, y, width, height);
 		this.cursor = cursor;
 		initListener();
+		lastPosition = new PointEntity(0,0);
+		startPosition = new PointEntity(this.getX(), this.getY());
+		mousePosition = new PointEntity(0, 0);
 	}
 
 	private void initListener() {
 		this.setOnMousePressed(e -> {
-			lastPosition = new PointEntity(e.getX(), e.getY());
-			startPosition = new PointEntity(this.getX(), this.getY());
+			lastPosition.setXY(e.getX(), e.getY());
+			startPosition.setXY(this.getX(), this.getY());
 			isOutBound = false;
 			whenClicked();
 		});
@@ -34,17 +37,18 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 			if (isOutBound) {
 				return;
 			}
+			mousePosition.setXY(e.getX(), e.getY());
 			double xDelta = e.getX() - lastPosition.getX();
 			double yDelta = e.getY() - lastPosition.getY();
-			lastPosition.setXY(e.getX(), e.getY());
 			this.deal(xDelta, yDelta);
+			lastPosition.setXY(e.getX(), e.getY());
 		});
 		this.setOnMouseReleased(e -> {
 			if (isOutBound) {
 				this.setX(startPosition.getX());
 				this.setY(startPosition.getY());
 			}
-			whenReleased();
+			whenReleased(e);
 		});
 		if (this.cursor != Cursor.DEFAULT) {
 			this.setOnMouseMoved(e -> {
@@ -57,7 +61,7 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 
 	}
 
-	protected abstract void whenReleased();
+	protected abstract void whenReleased(MouseEvent mouse);
 
 	@Override
 	public void setOutBound(boolean isOutBound) {
@@ -91,7 +95,12 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 	public double getCenterY() {
 		return this.getY() + this.getHeight() / 2f;
 	}
-	public PointEntity getMouse(){
+
+	public PointEntity getMouse() {
+		return mousePosition;
+	}
+
+	public PointEntity getLastMouses() {
 		return lastPosition;
 	}
 }
