@@ -1,39 +1,34 @@
-package view.shape;
+package view.inter;
 
 import entities.PointEntity;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.shape.Rectangle;
-import view.Draggable;
 
-public abstract class DraggableRectangle extends Rectangle implements Draggable {
+public abstract class Draggable implements Changable {
 	private PointEntity lastPosition;
 	private PointEntity startPosition;
 	private PointEntity mousePosition;
 	private boolean isOutBound;
 	private Cursor cursor;
 
-	public DraggableRectangle() {
-		this(100, 100, 100, 100, Cursor.DEFAULT);
-	}
-
-	public DraggableRectangle(double x, double y, double width, double height, Cursor cursor) {
-		super(x, y, width, height);
-		this.cursor = cursor;
-		initListener();
-		lastPosition = new PointEntity(0,0);
+	public Draggable(double x, double y, double width, double height, Cursor cursor) {
+		lastPosition = new PointEntity(0, 0);
 		startPosition = new PointEntity(this.getX(), this.getY());
 		mousePosition = new PointEntity(0, 0);
+		initListener();
 	}
 
+	protected abstract Node getNode();
+
 	private void initListener() {
-		this.setOnMousePressed(e -> {
+		getNode().setOnMousePressed(e -> {
 			lastPosition.setXY(e.getX(), e.getY());
 			startPosition.setXY(this.getX(), this.getY());
 			isOutBound = false;
-			whenClicked();
+			whenClicked(e);
 		});
-		this.setOnMouseDragged(e -> {
+		getNode().setOnMouseDragged(e -> {
 			if (isOutBound) {
 				return;
 			}
@@ -43,7 +38,7 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 			this.deal(xDelta, yDelta);
 			lastPosition.setXY(e.getX(), e.getY());
 		});
-		this.setOnMouseReleased(e -> {
+		getNode().setOnMouseReleased(e -> {
 			if (isOutBound) {
 				this.setX(startPosition.getX());
 				this.setY(startPosition.getY());
@@ -51,19 +46,16 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 			whenReleased(e);
 		});
 		if (this.cursor != Cursor.DEFAULT) {
-			this.setOnMouseMoved(e -> {
-				this.setCursor(this.cursor);
+			getNode().setOnMouseMoved(e -> {
+				getNode().setCursor(this.cursor);
 			});
 		}
 	}
 
-	protected void whenClicked() {
-
-	}
+	protected abstract void whenClicked(MouseEvent mouse);
 
 	protected abstract void whenReleased(MouseEvent mouse);
 
-	@Override
 	public void setOutBound(boolean isOutBound) {
 		this.isOutBound = isOutBound;
 	}
@@ -100,7 +92,7 @@ public abstract class DraggableRectangle extends Rectangle implements Draggable 
 		return mousePosition;
 	}
 
-	public PointEntity getLastMouses() {
+	public PointEntity getLastMouse() {
 		return lastPosition;
 	}
 }

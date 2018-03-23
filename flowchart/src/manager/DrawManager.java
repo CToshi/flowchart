@@ -1,34 +1,20 @@
-package manager;
-
-import java.util.HashMap;
-import java.util.Map.Entry;
-
-import view.DrawElement;
-
-public class DrawManager {
-//	private static DrawManager manager;
-	private HashMap<Integer, DrawElement> elements;
-//	static {
-//		manager = new DrawManager();
+//package manager;
+//
+//import java.util.HashMap;
+//import java.util.Map.Entry;
+//
+//import view.move.MoveFrame;
+//
+//public class DrawManager {
+//	private HashMap<Integer, MoveFrame> elements;
+//
+//	public DrawManager() {
+//		elements = new HashMap<>();
 //	}
-
-//	private DrawManager() {
-//		drawables = new HashMap<>();
+//
+//	public void add(MoveFrame frame) {
+//		elements.put(frame.hashCode(), frame);
 //	}
-	public DrawManager(){
-		elements = new HashMap<>();
-	}
-
-//	public static DrawManager getInstance() {
-//		return manager;
-//	}
-
-	public void add(DrawElement element) {
-		elements.put(element.hashCode(), element);
-	}
-	public void setOutBound(boolean isOutBound){
-		for(Entry<Integer, DrawElement> entry:elements.entrySet()){
-			entry.getValue().setOutBound(isOutBound);
-		}
-	}
-}
+//
+//
+//}

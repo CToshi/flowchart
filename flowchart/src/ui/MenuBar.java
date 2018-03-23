@@ -2,7 +2,11 @@ package ui;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-
+/**
+ * ²Ëµ¥À¸
+ * @author Toshi
+ *
+ */
 public class MenuBar extends javafx.scene.control.MenuBar {
 	private Menu fileMenu;
 

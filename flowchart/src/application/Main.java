@@ -6,7 +6,10 @@ import javafx.stage.Stage;
 import ui.RootPane;
 
 public class Main extends Application {
-
+	/**
+	 * 4个test函数仅为调试程序时方便输出使用
+	 * @param a
+	 */
 	public static <T> void test(T a){
 		System.out.println(a);
 	}
