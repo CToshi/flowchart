@@ -37,7 +37,7 @@ public abstract class DraggableRectangle extends Rectangle {
 		lastPosition = new PointEntity(0, 0);
 		startPosition = new PointEntity(this.getX(), this.getY());
 		mousePosition = new PointEntity(0, 0);
-		stroke = fill = Color.BLACK;
+		setAppearence(Color.BLACK, Color.BLACK, 0);
 	}
 
 	/**

@@ -92,7 +92,7 @@ public class MoveFrame implements Drawable {
 		points = new MovePoint[8];
 		/**
 		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替
-		 * x!= 0.5
+		 * x != 0.5
 		 */
 		for (int i = 0; i < points.length; i++) {
 			points[i] = new MovePoint(this, Math.abs(offset[i][0] - 0.5) > 0.0001,
@@ -104,6 +104,7 @@ public class MoveFrame implements Drawable {
 		this.fixPosition();
 		nodeList = new LinkedList<>();
 		this.initNodeList();
+		setHidden();
 	}
 
 	/**
@@ -180,6 +181,7 @@ public class MoveFrame implements Drawable {
 	public void setSelected(boolean isSelected) {
 		if (isSelected) {
 			setShow();
+			parent.closeOthers(this);
 		} else {
 			setHidden();
 		}

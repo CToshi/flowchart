@@ -7,6 +7,7 @@ import application.Main;
 import entities.PointEntity;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -22,26 +23,25 @@ import view.move.MoveFrame;
  */
 public class DrawPane extends Pane {
 	// private DrawManager manager;
+	private RootPane parent;
 	private boolean hasSelected;
 	/**
 	 * 存放moveframe, 用以取消选中、撤销和反撤销操作
 	 */
 	private HashMap<Integer, MoveFrame> map;
 
-	public DrawPane(DoubleExpression width, DoubleExpression height) {
+	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
+		this.parent = parent;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
 		this.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 		this.setOnMousePressed(mouse -> {
-			if (hasSelected) {
-				Main.test("有选中");
-			} else {
-				for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
-					entry.getValue().setSelected(false);
-				}
+			if (!hasSelected) {
+				closeOthers(null);
 			}
 		});
 		map = new HashMap<>();
+
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -89,6 +89,21 @@ public class DrawPane extends Pane {
 
 	public PointEntity getCenter() {
 		return new PointEntity(this.getWidth() / 2f, this.getHeight() / 2f);
+	}
+
+	/**
+	 * 当只选定一个moveframe时，frame可以调用该函数去取消其它frame的选中
+	 * @param frame
+	 */
+	public void closeOthers(MoveFrame frame){
+		if(parent.hasKey(KeyCode.CONTROL)){
+			return;
+		}
+		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
+			if(!entry.getValue().equals(frame)){
+				entry.getValue().setSelected(false);
+			}
+		}
 	}
 
 }

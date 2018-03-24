@@ -1,5 +1,6 @@
 package view.move;
 
+import application.Main;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
