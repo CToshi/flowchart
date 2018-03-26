@@ -25,6 +25,10 @@ public class DrawPane extends Pane {
 //		}
 		Painter.setPane(this);
 		manager = new DrawManager();
+		this.setOnMouseClicked(e->{
+			System.out.println("DrawPane:"+this.getWidth()+" "+this.getHeight());
+			System.out.println(e.getX()+" "+e.getY());
+		});
 		this.setOnMouseDragged(mouse -> {
 			if(isOutBound(mouse.getX(), mouse.getY())){
 				manager.setOutBound(true);

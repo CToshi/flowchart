@@ -20,6 +20,10 @@ public class ToolPane extends VBox {
 		// this.setMinSize(300, 300);
 		this.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
 		Button button = new Button("rectangle");
+//		this.setOnMouseClicked(e->{
+//			System.out.println("ToolPane:"+this.getWidth()+" "+this.getHeight());
+//			System.out.println(e.getX()+" "+e.getY());
+//		});
 		this.getChildren().add(button);
 		button.setOnAction(event -> {
 			painter.add(new MoveFrame());

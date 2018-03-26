@@ -21,14 +21,18 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 		openMenuItem.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
 			File file = fileChooser.showOpenDialog(new Stage());
-			System.out.println(file.getPath());
+			if(file!=null){
+				System.out.println(file.getPath());
+			}
 		});
 
 		saveAsMenuItem.setOnAction(e->{
 			DirectoryChooser directoryChooser = new DirectoryChooser();
 			directoryChooser.setInitialDirectory(new File("C:/Users/ASUS/Desktop"));
 			File file = directoryChooser.showDialog(new Stage());
-			System.out.println(file.getPath());
+			if(file!=null){
+				System.out.println(file.getPath());
+			}
 		});
 
 		fileMenu.getItems().addAll(newMenuItem, openMenuItem,saveMenuItem,saveAsMenuItem);
