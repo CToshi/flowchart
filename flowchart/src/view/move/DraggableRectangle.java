@@ -1,6 +1,5 @@
 package view.move;
 
-import application.Main;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
@@ -155,12 +154,6 @@ public abstract class DraggableRectangle extends Rectangle {
 	}
 
 	public void setHide() {
-		// if (this.getFill() != Color.TRANSPARENT) {
-		// fill = this.getFill();
-		// }
-		// if (this.getStroke() != Color.TRANSPARENT) {
-		// stroke = this.getStroke();
-		// }
 		this.setStroke(Color.TRANSPARENT);
 		this.setFill(Color.TRANSPARENT);
 	}

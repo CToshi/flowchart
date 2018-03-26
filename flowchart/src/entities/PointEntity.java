@@ -4,6 +4,9 @@ public class PointEntity {
 	private double x;
 	private double y;
 
+	public PointEntity() {
+		this(0, 0);
+	}
 	public PointEntity(double x, double y) {
 		this.x = x;
 		this.y = y;

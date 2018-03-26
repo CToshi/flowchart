@@ -3,8 +3,10 @@ package view.move;
 import java.util.LinkedList;
 
 import application.Main;
+import entities.RectangleEntity;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.DrawPane;
@@ -80,7 +82,7 @@ public class MoveFrame implements Drawable {
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
 				setHasSelected(true);
-				setSelected(true);
+				setSelected(true, true);
 			}
 
 			@Override
@@ -91,8 +93,8 @@ public class MoveFrame implements Drawable {
 		rectangle.setAppearence(Color.TRANSPARENT, Color.WHITE, 1);
 		points = new MovePoint[8];
 		/**
-		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替
-		 * x != 0.5
+		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替 x
+		 * != 0.5
 		 */
 		for (int i = 0; i < points.length; i++) {
 			points[i] = new MovePoint(this, Math.abs(offset[i][0] - 0.5) > 0.0001,
@@ -174,14 +176,17 @@ public class MoveFrame implements Drawable {
 	}
 
 	/**
-	 * 取消选中会隐藏移动框，传入true无效果
+	 * 是否显示移动框
 	 *
-	 * @param isSelected
+	 * @param isSelected true时显示，否则隐藏
+	 * @param onlyOne
+	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
 	 */
-	public void setSelected(boolean isSelected) {
+	public void setSelected(boolean isSelected, boolean onlyOne) {
 		if (isSelected) {
 			setShow();
-			parent.closeOthers(this);
+			if (onlyOne && !parent.hasKey(KeyCode.CONTROL))
+				parent.closeOthers(this);
 		} else {
 			setHidden();
 		}
@@ -212,6 +217,10 @@ public class MoveFrame implements Drawable {
 	public int getID() {
 		return ID;
 	}
+
+	public RectangleEntity getRectangle() {
+		return rectangle.getRectangle();
+	}
 	// @Override
 	// public void setRectangle(RectangleEntity rectangle) {
 	// setX(rectangle.getX());
@@ -219,4 +228,5 @@ public class MoveFrame implements Drawable {
 	// setWidth(rectangle.getWidth());
 	// setHeight(rectangle.getHeight());
 	// }
+
 }
