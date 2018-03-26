@@ -8,6 +8,11 @@ import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
+/**
+ * ²Ëµ¥À¸
+ * @author Toshi
+ *
+ */
 public class MenuBar extends javafx.scene.control.MenuBar {
 	private Menu fileMenu;
 

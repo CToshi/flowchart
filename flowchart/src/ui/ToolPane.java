@@ -1,33 +1,39 @@
 package ui;
 
+import factory.RectangleShapeFactory;
+import factory.RectangleShapeFactory.TYPE;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.control.Button;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import view.Painter;
 import view.move.MoveFrame;
 
+/**
+ * 存放图形选择区的Pane
+ *
+ * @author Toshi
+ *
+ */
 public class ToolPane extends VBox {
-	private Painter painter = Painter.getInstance();
 
-	public ToolPane(DoubleExpression width, DoubleExpression height) {
+	public ToolPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.prefHeightProperty().bind(height);
 		this.prefWidthProperty().bind(width);
-		// this.minHeightProperty().bind(width.divide(5));
-		// this.setMinHeight(300);
-		// this.setMinSize(300, 300);
 		this.setBackground(new Background(new BackgroundFill(Color.BLUE, null, null)));
-		Button button = new Button("rectangle");
-//		this.setOnMouseClicked(e->{
-//			System.out.println("ToolPane:"+this.getWidth()+" "+this.getHeight());
-//			System.out.println(e.getX()+" "+e.getY());
-//		});
-		this.getChildren().add(button);
-		button.setOnAction(event -> {
-			painter.add(new MoveFrame());
+		Button rectangleButton = new Button("Rectangle");
+		this.getChildren().add(rectangleButton);
+		rectangleButton.setOnAction(event -> {
+			parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+					RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
 		});
+		Button RRButton = new Button("RoundedRectangle");
+		this.getChildren().add(RRButton);
+		RRButton.setOnAction(event -> {
+			parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+					RectangleShapeFactory.create(parent.getDrawPane().getCenter(), TYPE.ROUDED)));
+		});
+
 	}
 }
-
