@@ -43,6 +43,9 @@ public class RootPane extends Pane {
 		keyList = new LinkedList<>();
 		this.setOnKeyPressed(key -> {
 			keyList.add(key.getCode());
+			if(key.getCode() == KeyCode.DELETE){
+				drawPane.deleteAllSelected();
+			}
 		});
 		this.setOnKeyReleased(key -> {
 			keyList.remove(key.getCode());

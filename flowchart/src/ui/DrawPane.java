@@ -129,13 +129,24 @@ public class DrawPane extends Pane {
 		}
 	}
 
-	// public void remove(Node... nodes) {
-	// for (Node e : nodes) {
-	// // if (this.getChildren().contains(e)) {
-	// this.getChildren().remove(e);
-	// // }
-	// }
-	// }
+	public void deleteAllSelected() {
+		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
+			MoveFrame frame = entry.getValue();
+			if (frame.isSelected()) {
+				delete(frame);
+			}
+		}
+	}
+
+	public void delete(MoveFrame frame) {
+		delete(frame.getNodes());
+	}
+
+	private void delete(Node... nodes) {
+		for (Node e : nodes) {
+			this.getChildren().remove(e);
+		}
+	}
 
 	public PointEntity getCenter() {
 		return new PointEntity(this.getWidth() / 2f, this.getHeight() / 2f);
@@ -144,7 +155,8 @@ public class DrawPane extends Pane {
 	/**
 	 * 关闭除frame外所有MoveFrame的选中状态
 	 *
-	 * @param frame 不关闭的那个frame，为null时关闭所有MoveFrame的选中
+	 * @param frame
+	 *            不关闭的那个frame，为null时关闭所有MoveFrame的选中
 	 */
 	public void closeOthers(MoveFrame frame) {
 		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {

@@ -55,6 +55,8 @@ public class MoveFrame implements Drawable {
 	private int ID;
 	private static int MOVE_FRAME_ID;
 
+	private boolean isSelected;
+
 	/**
 	 *
 	 * @param parent
@@ -178,11 +180,13 @@ public class MoveFrame implements Drawable {
 	/**
 	 * 是否显示移动框
 	 *
-	 * @param isSelected true时显示，否则隐藏
+	 * @param isSelected
+	 *            true时显示，否则隐藏
 	 * @param onlyOne
 	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
 	 */
 	public void setSelected(boolean isSelected, boolean onlyOne) {
+		this.isSelected = isSelected;
 		if (isSelected) {
 			setShow();
 			if (onlyOne && !parent.hasKey(KeyCode.CONTROL))
@@ -190,6 +194,10 @@ public class MoveFrame implements Drawable {
 		} else {
 			setHidden();
 		}
+	}
+
+	public boolean isSelected() {
+		return isSelected;
 	}
 
 	/**
