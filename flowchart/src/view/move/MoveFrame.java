@@ -20,9 +20,9 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Drawable {
+public class MoveFrame implements Drawable, Cloneable {
 
-	private DraggableRectangle rectangle;
+	public DraggableRectangle rectangle;
 	/**
 	 * 移动框的8个点
 	 */
@@ -79,6 +79,8 @@ public class MoveFrame implements Drawable {
 			protected void whenReleased(MouseEvent mouse) {
 				fixPosition();
 				setHasSelected(false);
+				informChange();
+
 			}
 
 			@Override
@@ -121,8 +123,8 @@ public class MoveFrame implements Drawable {
 	}
 
 	@Override
-	public Node[] getNodes() {
-		return getNodeListToArray();
+	public LinkedList<Node> getNodes() {
+		return nodeList;
 	}
 
 	/**
@@ -204,21 +206,13 @@ public class MoveFrame implements Drawable {
 	 *
 	 * @return 数组形式的nodeList里的Node
 	 */
-	private Node[] getNodeListToArray() {
-		return nodeList.toArray(new Node[0]);
-	}
 
 	private void initNodeList() {
 		nodeList.clear();
-		for (Node e : shapeItem.getNodes()) {
-			nodeList.add(e);
-		}
-		// for (Node e : textManager.getNodes()) {
-		// nodeList.add(e);
-		// }
-		nodeList.add(rectangle);
+		nodeList.addAll(shapeItem.getNodes());
+		nodeList.addAll(rectangle.getNodes());
 		for (int i = 0; i < points.length; i++) {
-			nodeList.add(points[i]);
+			nodeList.addAll(points[i].getNodes());
 		}
 	}
 
@@ -229,6 +223,7 @@ public class MoveFrame implements Drawable {
 	public RectangleEntity getRectangle() {
 		return rectangle.getRectangle();
 	}
+
 	// @Override
 	// public void setRectangle(RectangleEntity rectangle) {
 	// setX(rectangle.getX());
@@ -236,5 +231,29 @@ public class MoveFrame implements Drawable {
 	// setWidth(rectangle.getWidth());
 	// setHeight(rectangle.getHeight());
 	// }
+	@Override
+	public MoveFrame clone() {
+//		try {
+			MoveFrame frame = new MoveFrame(parent, shapeItem.clone());
+//			MoveFrame frame = (MoveFrame) super.clone();
+//			frame.shapeItem = frame.shapeItem.clone();
+//			frame.rectangle = frame.rectangle.clone();
+//			frame.points = new MovePoint[8];
+			return frame;
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof MoveFrame) {
+			return ((MoveFrame) obj).getID() == this.getID();
+		}
+		return false;
+	}
+	public void informChange(){
+		parent.change(getID(), this);
+	}
 }

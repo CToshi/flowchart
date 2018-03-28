@@ -1,6 +1,5 @@
 package factory;
 
-import application.Main;
 import entities.PointEntity;
 import javafx.scene.paint.Color;
 import view.shape.RectangleShape;
@@ -14,19 +13,36 @@ public class RectangleShapeFactory {
 	public static RectangleShape create(PointEntity center) {
 		return create(center.getX(), center.getY());
 	}
+
 	public static RectangleShape create(PointEntity center, TYPE type) {
-		return create(center.getX(), center.getY(), type);
+		return create(center.getX(), center.getY(), true, type);
 	}
 
 	public static RectangleShape create(double x, double y) {
-		double width = 200;
-		double height = 100;
-
-		return new RectangleShape(x - width / 2f, y - height / 2f, width, height, Color.WHITE);
+		return create(x, y, true);
 	}
 
-	public static RectangleShape create(double x, double y, TYPE type) {
-		RectangleShape res = create(x, y);
+	public static RectangleShape create(double x, double y, boolean isCenter) {
+		double width = 200;
+		double height = 100;
+		if (isCenter) {
+			x -= width / 2f;
+			y -= height / 2f;
+		}
+		return new RectangleShape(x, y, width, height, Color.WHITE);
+	}
+
+	/**
+	 *
+	 * @param x
+	 *            中心点的x坐标
+	 * @param y
+	 *            中心点的y坐标
+	 * @param type
+	 * @return
+	 */
+	public static RectangleShape create(double x, double y, boolean isCenter, TYPE type) {
+		RectangleShape res = create(x, y, isCenter);
 		if (type == TYPE.ROUDED) {
 			res = new RoundedRectangleShape(res);
 		}

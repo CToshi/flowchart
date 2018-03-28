@@ -2,6 +2,7 @@ package ui;
 
 import java.util.LinkedList;
 
+import application.Main;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -43,8 +44,12 @@ public class RootPane extends Pane {
 		keyList = new LinkedList<>();
 		this.setOnKeyPressed(key -> {
 			keyList.add(key.getCode());
-			if(key.getCode() == KeyCode.DELETE){
+			if(hasKey(KeyCode.DELETE)){
 				drawPane.deleteAllSelected();
+			} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
+				drawPane.unDo();
+			} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
+				drawPane.reDo();
 			}
 		});
 		this.setOnKeyReleased(key -> {

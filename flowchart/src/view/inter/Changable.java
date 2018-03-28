@@ -1,6 +1,5 @@
 package view.inter;
 
-import application.Main;
 import entities.RectangleEntity;
 
 public interface Changable {
@@ -10,7 +9,6 @@ public interface Changable {
 	 * @param rectangle
 	 *            当前所在的矩形
 	 */
-	void setRectangle(RectangleEntity rectangle);
 
 	RectangleEntity getRectangle();
 
@@ -29,10 +27,21 @@ public interface Changable {
 	default double getHeight() {
 		return getRectangle().getHeight();
 	}
-	 void setX(double value);
-	 void setY(double value);
-	 void setWidth(double value);
-	 void setHeight(double value);
+
+	default void setRectangle(RectangleEntity rectangle) {
+		setX(rectangle.getX());
+		setY(rectangle.getY());
+		setWidth(rectangle.getWidth());
+		setHeight(rectangle.getHeight());
+	}
+
+	void setX(double value);
+
+	void setY(double value);
+
+	void setWidth(double value);
+
+	void setHeight(double value);
 
 	// default void setX(double value) {
 	// getRectangle().setX(value);

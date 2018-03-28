@@ -6,7 +6,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 
-public class MovePoint extends DraggableRectangle {
+public class MovePoint extends DraggableRectangle{
 	private static final double size = 10;
 	private MoveFrame parent;
 	private MovePoint other;
