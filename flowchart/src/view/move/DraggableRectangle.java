@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
-public abstract class DraggableRectangle extends Rectangle {
+public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 	private PointEntity lastPosition;
 	private PointEntity startPosition;
 	private PointEntity mousePosition;

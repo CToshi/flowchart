@@ -1,7 +1,7 @@
 package factory;
 
-import application.Main;
 import entities.PointEntity;
+import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
@@ -30,6 +30,13 @@ public class RectangleShapeFactory {
 		if (type == TYPE.ROUDED) {
 			res = new RoundedRectangleShape(res);
 		}
+		return res;
+	}
+
+	public static RectangleShape create(DoubleProperty width,DoubleProperty height,TYPE type){
+		RectangleShape res = create(0, 0, type);
+		res.getSelf().widthProperty().bind(width);
+		res.getSelf().heightProperty().bind(height);
 		return res;
 	}
 }

@@ -11,6 +11,11 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.Border;
+import javafx.scene.layout.BorderStroke;
+import javafx.scene.layout.BorderStrokeStyle;
+import javafx.scene.layout.BorderWidths;
+import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -38,8 +43,12 @@ public class DrawPane extends Pane {
 		this.parent = parent;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
-		this.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-
+		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		
+		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1));
+		Border border = new Border(borderStroke);
+		this.setBorder(border);
+		
 		this.setOnMousePressed(mouse -> {
 		});
 		map = new HashMap<>();

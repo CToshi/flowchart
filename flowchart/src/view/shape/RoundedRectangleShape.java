@@ -1,11 +1,11 @@
 package view.shape;
 
-import application.Main;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class RoundedRectangleShape extends RectangleShape {
 	private Rectangle self;
+
 
 	public RoundedRectangleShape(RectangleShape rectangle) {
 		this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(),
@@ -18,6 +18,11 @@ public class RoundedRectangleShape extends RectangleShape {
 		setWidth(self.getWidth());
 		setHeight(self.getHeight());
 	}
+
+	public Rectangle getSelf() {
+		return self;
+	}
+
 	@Override
 	public void setWidth(double value) {
 		super.setWidth(value);

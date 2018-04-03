@@ -3,12 +3,12 @@ package view.shape;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class RectangleShape extends ShapeItem {
 	private Rectangle self;
+
 	public RectangleShape(double x, double y, double width, double height, Paint color) {
 		self = new Rectangle(x, y, width, height);
 		self.setFill(color);
@@ -53,7 +53,7 @@ public class RectangleShape extends ShapeItem {
 		self.setHeight(value);
 	}
 
-	protected Rectangle getSelf() {
+	public Rectangle getSelf() {
 		return self;
 	}
 

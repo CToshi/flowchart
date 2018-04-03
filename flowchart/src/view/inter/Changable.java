@@ -1,6 +1,5 @@
 package view.inter;
 
-import application.Main;
 import entities.RectangleEntity;
 
 public interface Changable {
