@@ -40,6 +40,7 @@ public class DrawPane extends Pane {
 	private LimitedStack<Integer[], MoveFrame[]> reDoStack;
 
 	private Rectangle selectRect;
+	private static final int MAX_UNDO_TIMES = 100;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
@@ -98,8 +99,8 @@ public class DrawPane extends Pane {
 				return DrawPane.this;
 			}
 		};
-		unDoStack = new LimitedStack<>();
-		reDoStack = new LimitedStack<>();
+		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
+		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -204,6 +205,7 @@ public class DrawPane extends Pane {
 			}
 		}
 		unDoStack.push(ids, oldFrames);
+		reDoStack.clear();
 	}
 
 	public void unDo() {

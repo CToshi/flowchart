@@ -72,4 +72,8 @@ public class LimitedStack<K, V> {
 	public void push(Entry<K, V> entry) {
 		push(entry.getKey(), entry.getValue());
 	}
+
+	public void clear(){
+		list.clear();
+	}
 }

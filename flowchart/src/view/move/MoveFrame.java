@@ -57,13 +57,19 @@ public class MoveFrame implements Drawable, Cloneable {
 
 	private boolean isSelected;
 
+	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
+		this(parent, shapeItem, false);
+	}
 	/**
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
+	 * @param shapeItem
+	 * @param isClone clone时ID不会自增
+	 *
 	 */
-	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
-		this.ID = MOVE_FRAME_ID++;
+	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean isClone) {
+		if(!isClone) this.ID = MOVE_FRAME_ID++;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
@@ -234,7 +240,8 @@ public class MoveFrame implements Drawable, Cloneable {
 	@Override
 	public MoveFrame clone() {
 //		try {
-			MoveFrame frame = new MoveFrame(parent, shapeItem.clone());
+			MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
+			frame.ID = ID;
 //			MoveFrame frame = (MoveFrame) super.clone();
 //			frame.shapeItem = frame.shapeItem.clone();
 //			frame.rectangle = frame.rectangle.clone();
