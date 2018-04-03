@@ -1,9 +1,11 @@
 package view.inter;
 
+import java.util.LinkedList;
+
 import javafx.scene.Node;
 
 public interface Drawable{
-	Node[] getNodes();
+	LinkedList<Node> getNodes();
 
 }
 

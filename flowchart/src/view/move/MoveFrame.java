@@ -20,9 +20,9 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Drawable {
+public class MoveFrame implements Drawable, Cloneable {
 
-	private DraggableRectangle rectangle;
+	public DraggableRectangle rectangle;
 	/**
 	 * 移动框的8个点
 	 */
@@ -55,13 +55,21 @@ public class MoveFrame implements Drawable {
 	private int ID;
 	private static int MOVE_FRAME_ID;
 
+	private boolean isSelected;
+
+	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
+		this(parent, shapeItem, false);
+	}
 	/**
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
+	 * @param shapeItem
+	 * @param isClone clone时ID不会自增
+	 *
 	 */
-	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
-		this.ID = MOVE_FRAME_ID++;
+	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean isClone) {
+		if(!isClone) this.ID = MOVE_FRAME_ID++;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
@@ -77,6 +85,8 @@ public class MoveFrame implements Drawable {
 			protected void whenReleased(MouseEvent mouse) {
 				fixPosition();
 				setHasSelected(false);
+				informChange();
+
 			}
 
 			@Override
@@ -90,7 +100,7 @@ public class MoveFrame implements Drawable {
 				return parent.isOutBound(x, y);
 			}
 		};
-		rectangle.setAppearence(Color.TRANSPARENT, Color.WHITE, 1);
+		rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];
 		/**
 		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替 x
@@ -119,8 +129,8 @@ public class MoveFrame implements Drawable {
 	}
 
 	@Override
-	public Node[] getNodes() {
-		return getNodeListToArray();
+	public LinkedList<Node> getNodes() {
+		return nodeList;
 	}
 
 	/**
@@ -178,11 +188,13 @@ public class MoveFrame implements Drawable {
 	/**
 	 * 是否显示移动框
 	 *
-	 * @param isSelected true时显示，否则隐藏
+	 * @param isSelected
+	 *            true时显示，否则隐藏
 	 * @param onlyOne
 	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
 	 */
 	public void setSelected(boolean isSelected, boolean onlyOne) {
+		this.isSelected = isSelected;
 		if (isSelected) {
 			setShow();
 			if (onlyOne && !parent.hasKey(KeyCode.CONTROL))
@@ -192,25 +204,21 @@ public class MoveFrame implements Drawable {
 		}
 	}
 
+	public boolean isSelected() {
+		return isSelected;
+	}
+
 	/**
 	 *
 	 * @return 数组形式的nodeList里的Node
 	 */
-	private Node[] getNodeListToArray() {
-		return nodeList.toArray(new Node[0]);
-	}
 
 	private void initNodeList() {
 		nodeList.clear();
-		for (Node e : shapeItem.getNodes()) {
-			nodeList.add(e);
-		}
-		// for (Node e : textManager.getNodes()) {
-		// nodeList.add(e);
-		// }
-		nodeList.add(rectangle);
+		nodeList.addAll(shapeItem.getNodes());
+		nodeList.addAll(rectangle.getNodes());
 		for (int i = 0; i < points.length; i++) {
-			nodeList.add(points[i]);
+			nodeList.addAll(points[i].getNodes());
 		}
 	}
 
@@ -221,6 +229,7 @@ public class MoveFrame implements Drawable {
 	public RectangleEntity getRectangle() {
 		return rectangle.getRectangle();
 	}
+
 	// @Override
 	// public void setRectangle(RectangleEntity rectangle) {
 	// setX(rectangle.getX());
@@ -228,5 +237,30 @@ public class MoveFrame implements Drawable {
 	// setWidth(rectangle.getWidth());
 	// setHeight(rectangle.getHeight());
 	// }
+	@Override
+	public MoveFrame clone() {
+//		try {
+			MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
+			frame.ID = ID;
+//			MoveFrame frame = (MoveFrame) super.clone();
+//			frame.shapeItem = frame.shapeItem.clone();
+//			frame.rectangle = frame.rectangle.clone();
+//			frame.points = new MovePoint[8];
+			return frame;
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof MoveFrame) {
+			return ((MoveFrame) obj).getID() == this.getID();
+		}
+		return false;
+	}
+	public void informChange(){
+		parent.change(getID(), this);
+	}
 }

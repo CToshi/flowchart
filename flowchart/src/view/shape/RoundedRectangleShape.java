@@ -1,5 +1,7 @@
 package view.shape;
 
+import factory.RectangleShapeFactory;
+import factory.RectangleShapeFactory.TYPE;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
@@ -19,23 +21,27 @@ public class RoundedRectangleShape extends RectangleShape {
 		setHeight(self.getHeight());
 	}
 
-	public Rectangle getSelf() {
-		return self;
-	}
-
 	@Override
 	public void setWidth(double value) {
 		super.setWidth(value);
 		setArc();
 	}
+
 	@Override
 	public void setHeight(double value) {
 		super.setHeight(value);
 		setArc();
 	}
-	private void setArc(){
+
+	private void setArc() {
 		self.setArcWidth(Math.min(self.getWidth(), self.getHeight()) * 0.5);
 		self.setArcHeight(Math.min(self.getWidth(), self.getHeight()) * 0.5);
 	}
 
+	@Override
+	public RoundedRectangleShape clone() {
+		RoundedRectangleShape res = (RoundedRectangleShape) RectangleShapeFactory.create(self.getX(), self.getY(),
+				false, TYPE.ROUDED);
+		return res;
+	}
 }

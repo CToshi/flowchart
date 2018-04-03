@@ -1,10 +1,15 @@
 package view.shape;
 
+import java.util.LinkedList;
+
 import entities.PointEntity;
 import entities.RectangleEntity;
+import factory.RectangleShapeFactory;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import utility.Util;
 
 public class RectangleShape extends ShapeItem {
 	private Rectangle self;
@@ -12,20 +17,12 @@ public class RectangleShape extends ShapeItem {
 	public RectangleShape(double x, double y, double width, double height, Paint color) {
 		self = new Rectangle(x, y, width, height);
 		self.setFill(color);
+		self.setStroke(Color.BLACK);
 	}
 
 	@Override
-	public Node[] getNodes() {
-		Node[] nodes = { self };
-		return nodes;
-	}
-
-	@Override
-	public void setRectangle(RectangleEntity rectangle) {
-		self.setX(rectangle.getX());
-		self.setY(rectangle.getY());
-		self.setWidth(rectangle.getWidth());
-		self.setHeight(rectangle.getHeight());
+	public LinkedList<Node> getNodes() {
+		return Util.getList(self);
 	}
 
 	@Override
@@ -57,4 +54,9 @@ public class RectangleShape extends ShapeItem {
 		return self;
 	}
 
+	@Override
+	public RectangleShape clone() {
+		RectangleShape res = RectangleShapeFactory.create(self.getX(), self.getY(), false);
+		return res;
+	}
 }

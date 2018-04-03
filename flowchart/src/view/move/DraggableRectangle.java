@@ -1,20 +1,30 @@
 package view.move;
 
+import java.util.LinkedList;
+
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
+import utility.Util;
+import view.inter.Changable;
+import view.inter.Drawable;
 
-public abstract class DraggableRectangle extends Rectangle implements Cloneable{
+
+public abstract class DraggableRectangle implements Changable, Drawable {
+	public Rectangle self;
+
 	private PointEntity lastPosition;
 	private PointEntity startPosition;
 	private PointEntity mousePosition;
 	private Cursor cursor;
 	private Paint fill;
 	private Paint stroke;
+	private boolean isHidden;
 
 	public DraggableRectangle(double x, double y, double width, double height) {
 		this(x, y, width, height, Cursor.DEFAULT);
@@ -30,7 +40,7 @@ public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 	 *            鼠标放到该矩形上时的鼠标样式
 	 */
 	public DraggableRectangle(double x, double y, double width, double height, Cursor cursor) {
-		super(x, y, width, height);
+		self = new Rectangle(x, y, width, height);
 		this.cursor = cursor;
 		initListener();
 		lastPosition = new PointEntity(0, 0);
@@ -43,12 +53,12 @@ public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 	 * 鼠标按下、鼠标拖动、鼠标释放的监听器初始化
 	 */
 	private void initListener() {
-		this.setOnMousePressed(e -> {
+		self.setOnMousePressed(e -> {
 			lastPosition.setXY(e.getX(), e.getY());
 			startPosition.setXY(this.getX(), this.getY());
 			whenPressed(e);
 		});
-		this.setOnMouseDragged(e -> {
+		self.setOnMouseDragged(e -> {
 			if (isOutBound(e.getX(), e.getY())) {
 				return;
 			}
@@ -58,7 +68,7 @@ public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 			this.deal(xDelta, yDelta);
 			lastPosition.setXY(e.getX(), e.getY());
 		});
-		this.setOnMouseReleased(e -> {
+		self.setOnMouseReleased(e -> {
 			if (isOutBound(e.getX(), e.getY())) {
 				this.setX(startPosition.getX());
 				this.setY(startPosition.getY());
@@ -66,8 +76,8 @@ public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 			whenReleased(e);
 		});
 		if (this.cursor != Cursor.DEFAULT) {
-			this.setOnMouseMoved(e -> {
-				this.setCursor(this.cursor);
+			self.setOnMouseMoved(e -> {
+				self.setCursor(this.cursor);
 			});
 		}
 	}
@@ -152,26 +162,81 @@ public abstract class DraggableRectangle extends Rectangle implements Cloneable{
 	public PointEntity getLastMouses() {
 		return lastPosition;
 	}
-
 	public void setHide() {
-		this.setStroke(Color.TRANSPARENT);
-		this.setFill(Color.TRANSPARENT);
+		setHidden(true);
 	}
 
 	public void setShow() {
-		this.setStroke(stroke);
-		this.setFill(fill);
+		setHidden(false);
 	}
 
-	public RectangleEntity getRectangle() {
-		return new RectangleEntity(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+	public void setHidden(boolean isHidden) {
+		this.isHidden = isHidden;
+		if(isHidden){
+//			if(this.getClass().getName().equals("view.move.MoveFrame$1")){
+//				Main.test("hid", stroke, fill, this.hashCode());
+//			}
+			self.setStroke(Color.TRANSPARENT);
+			self.setFill(Color.TRANSPARENT);
+		} else {
+//			if(this.getClass().getName().equals("view.move.MoveFrame$1")){
+//				Main.test("shw", stroke, fill, this.hashCode());
+//			}
+			self.setStroke(stroke);
+			self.setFill(fill);
+		}
 	}
-	public void setAppearence(Color fill, Color stroke, double strokeWidth){
+
+	@Override
+	public RectangleEntity getRectangle() {
+		return new RectangleEntity(self.getX(), self.getY(), self.getWidth(), self.getHeight());
+	}
+
+	public void setAppearence(Paint fill, Paint stroke, double strokeWidth) {
 		this.fill = fill;
 		this.stroke = stroke;
-		this.setFill(fill);
-		this.setStroke(stroke);
-		this.setStrokeWidth(strokeWidth);
+		self.setFill(fill);
+		self.setStroke(stroke);
+		self.setStrokeWidth(strokeWidth);
+	}
+
+//	@Override
+//	public DraggableRectangle clone() {
+//		try {
+//			DraggableRectangle res = (DraggableRectangle) super.clone();
+//			res.self = new Rectangle(getX(), getY(), getWidth(), getHeight());
+//			res.setAppearence(fill, stroke, self.getStrokeWidth());
+//			res.setHidden(this.isHidden);
+//			return res;
+//		} catch (CloneNotSupportedException e) {
+//			e.printStackTrace();
+//		}
+//		return null;
+//	}
+
+	@Override
+	public LinkedList<Node> getNodes() {
+		return Util.getList(self);
+	}
+
+	@Override
+	public void setX(double value) {
+		self.setX(value);
+	}
+
+	@Override
+	public void setY(double value) {
+		self.setY(value);
+	}
+
+	@Override
+	public void setWidth(double value) {
+		self.setWidth(value);
+	}
+
+	@Override
+	public void setHeight(double value) {
+		self.setHeight(value);
 	}
 
 }
