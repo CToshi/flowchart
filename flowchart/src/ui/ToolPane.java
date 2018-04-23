@@ -1,9 +1,7 @@
 package ui;
 
 import factory.RectangleShapeFactory;
-import factory.RectangleShapeFactory.TYPE;
 import javafx.beans.binding.DoubleExpression;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.Background;
@@ -14,7 +12,6 @@ import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import view.move.MoveFrame;
@@ -41,7 +38,8 @@ public class ToolPane extends Pane {
 		Rectangle rectangle = new Rectangle();
 		rectangle.xProperty().bind(width.subtract(width.multiply(0.8)).divide(2.0));
 		rectangle.yProperty().bind(height.divide(30.0));
-		rectangle.setFill(Color.YELLOW);
+		rectangle.setFill(Color.WHITE);
+		rectangle.setStroke(Color.BLACK);
 		rectangle.widthProperty().bind(width.multiply(0.8));
 		rectangle.heightProperty().bind(height.divide(HEIGHT_PROPORTION));
 		Label label = new Label();

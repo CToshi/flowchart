@@ -1,7 +1,6 @@
 package factory;
 
 import entities.PointEntity;
-import javafx.beans.property.DoubleProperty;
 import javafx.scene.paint.Color;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;

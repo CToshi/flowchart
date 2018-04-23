@@ -3,7 +3,7 @@ package datastructure;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
-import view.move.MoveFrame;
+import javafx.util.Pair;
 
 /**
  * 限制大小的栈，在元素超过最大数量maxSize时会自动删去栈底元素
@@ -14,34 +14,7 @@ import view.move.MoveFrame;
  *            V> 数据类型
  */
 public class LimitedStack<K, V> {
-	private LinkedList<Node<K, V>> list;
-
-	static class Node<K, V> implements Entry<K, V> {
-
-		private K key;
-		private V value;
-
-		public Node(K key, V value) {
-			this.key = key;
-			this.value = value;
-		}
-
-		@Override
-		public K getKey() {
-			return key;
-		}
-
-		@Override
-		public V getValue() {
-			return value;
-		}
-
-		@Override
-		public V setValue(V value) {
-			return this.value = value;
-		}
-
-	}
+	private LinkedList<Pair<K, V>> list;
 
 	private int maxSize;
 
@@ -55,13 +28,13 @@ public class LimitedStack<K, V> {
 	}
 
 	public void push(K key, V value) {
-		list.addLast(new Node<K, V>(key, value));
+		list.addLast(new Pair<K, V>(key, value));
 		if (list.size() > maxSize) {
 			list.pollFirst();
 		}
 	}
 
-	public Node<K, V> pop() {
+	public Pair<K, V> pop() {
 		return list.pollLast();
 	}
 

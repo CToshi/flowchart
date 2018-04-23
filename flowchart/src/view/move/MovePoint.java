@@ -1,10 +1,7 @@
 package view.move;
 
-import application.Main;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 
 public class MovePoint extends DraggableRectangle{
 	private static final double size = 10;

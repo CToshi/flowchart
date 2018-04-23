@@ -6,6 +6,7 @@ import application.Main;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -41,7 +42,6 @@ public class RootPane extends Pane {
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
-
 		keyList = new LinkedList<>();
 		this.setOnKeyPressed(key -> {
 			if(!keyList.contains(key.getCode())) {
@@ -89,4 +89,22 @@ public class RootPane extends Pane {
 		}
 		return true;
 	}
+
+	public void keyPressed(KeyEvent key){
+//		Main.test(233);
+		if(!keyList.contains(key.getCode())) {
+			keyList.add(key.getCode());
+		}
+		if(hasKey(KeyCode.DELETE)){
+			drawPane.deleteAllSelected();
+		} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
+			drawPane.unDo();
+		} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
+			drawPane.reDo();
+		}
+	}
+	public void KeyReleased(KeyEvent key){
+		keyList.remove(key.getCode());
+	}
+
 }

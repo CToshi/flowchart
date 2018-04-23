@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import datastructure.LimitedStack;
 import entities.PointEntity;
 import entities.RectangleEntity;
@@ -21,6 +22,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Pair;
 import view.inter.Draggable;
 import view.move.MoveFrame;
 
@@ -32,6 +34,7 @@ import view.move.MoveFrame;
  */
 public class DrawPane extends Pane {
 	// private DrawManager manager;
+
 	private RootPane parent;
 	private boolean hasSelected;
 	/**
@@ -52,23 +55,21 @@ public class DrawPane extends Pane {
 		this.prefHeightProperty().bind(height);
 		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
-		this.setOnKeyPressed(e->{
-			if(e.getCode()==KeyCode.A){
-				System.out.println("233");
-			}
-		});
-
-		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1));
+		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10),
+				new BorderWidths(1));
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
-		this.setOnMousePressed(mouse -> {
-		});
 		map = new HashMap<>();
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
 
+//		this.setOnMouseClicked(e->{
+//			e.getClickCount();
+//
+//			Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
+//		});
 		add(selectRect);
 		new Draggable() {
 			@Override
@@ -81,7 +82,7 @@ public class DrawPane extends Pane {
 				for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
 					MoveFrame frame = entry.getValue();
 					if (rectE.contains(frame.getRectangle())) {
-						frame.setSelected(true, false);
+						frame.setSelected(true);
 					}
 				}
 			}
@@ -97,10 +98,10 @@ public class DrawPane extends Pane {
 				selectRect.setY(mouse.getY());
 				selectRect.setWidth(0);
 				selectRect.setHeight(0);
-				selectRect.setStroke(Color.WHITE);
-				if (!DrawPane.this.hasSelected) {
-					closeOthers(null);
-				}
+				selectRect.setStroke(Color.BLACK);
+				// if (!DrawPane.this.hasSelected) {
+				closeOthers(null);
+				// }
 			}
 
 			@Override
@@ -118,6 +119,7 @@ public class DrawPane extends Pane {
 		};
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
+
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -129,8 +131,15 @@ public class DrawPane extends Pane {
 	 *
 	 * @param hasSelected
 	 */
-	public void setHasSelected(boolean hasSelected) {
-		this.hasSelected = hasSelected;
+//	public void setHasSelected(boolean hasSelected) {
+//
+//		this.hasSelected = hasSelected;
+//	}
+	public void informSelected(MoveFrame frame, boolean isSelected){
+		this.hasSelected = isSelected;
+		if(!hasKey(KeyCode.CONTROL) && isSelected){
+			closeOthers(frame);
+		}
 	}
 
 	/**
@@ -189,7 +198,7 @@ public class DrawPane extends Pane {
 	public void closeOthers(MoveFrame frame) {
 		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
 			if (!entry.getValue().equals(frame)) {
-				entry.getValue().setSelected(false, false);
+				entry.getValue().setSelected(false);
 			}
 		}
 	}
@@ -233,13 +242,13 @@ public class DrawPane extends Pane {
 		if (unDoS.size() == 0) {
 			return;
 		}
-		Entry<Integer[], MoveFrame[]> entry = unDoS.pop();
+		Pair<Integer[], MoveFrame[]> entry = unDoS.pop();
 		Integer[] ids = entry.getKey();
 		MoveFrame[] oldFrames = entry.getValue();
 		MoveFrame[] nowFrames = new MoveFrame[ids.length];
 		for (int i = 0; i < ids.length; i++) {
 			nowFrames[i] = map.get(ids[i]);
-			if(nowFrames[i] != null){
+			if (nowFrames[i] != null) {
 				delete(nowFrames[i].getNodes());
 			}
 			if (oldFrames[i] != null) {
@@ -257,5 +266,11 @@ public class DrawPane extends Pane {
 		 * reDo和unDo是相反过程，只需要颠倒顺序即可
 		 */
 		unDo(this.reDoStack, this.unDoStack);
+	}
+
+	public void remove(Node...nodes){
+		for (Node node : nodes) {
+			this.getChildren().remove(node);
+		}
 	}
 }

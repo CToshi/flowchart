@@ -6,6 +6,5 @@ import javafx.scene.Node;
 
 public interface Drawable{
 	LinkedList<Node> getNodes();
-
 }
 
