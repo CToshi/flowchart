@@ -259,6 +259,7 @@ public class DrawPane extends Pane {
 			}
 		}
 		reDoS.push(ids, nowFrames);
+		//
 	}
 
 	public void reDo() {
