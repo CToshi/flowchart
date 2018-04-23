@@ -25,39 +25,27 @@ public class RootPane extends Pane {
 	private MenuBar menuBar;
 	private Pane bottomPane;
 	private LinkedList<KeyCode> keyList;
+	private LinkedList<KeyListener> keyListeners;
 
 	public RootPane(ReadOnlyDoubleProperty stageWidth, ReadOnlyDoubleProperty stageHeight) {
 		this.prefHeightProperty().bind(stageWidth);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
+		keyListeners = new LinkedList<>();
 
 		bottomPane = new Pane();
 
 		menuBar = new MenuBar();
 		menuBar.prefWidthProperty().bind(this.widthProperty());
 		this.getChildren().addAll(bottomPane, menuBar);
-		toolPane = new ToolPane(this, this.widthProperty().multiply(0.2), this.heightProperty().subtract(menuBar.heightProperty()));
+		toolPane = new ToolPane(this, this.widthProperty().multiply(0.2),
+				this.heightProperty().subtract(menuBar.heightProperty()));
 		drawPane = new DrawPane(this, this.widthProperty().multiply(0.8),
 				this.heightProperty().subtract(menuBar.heightProperty()));
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
-		this.setOnKeyPressed(key -> {
-			if(!keyList.contains(key.getCode())) {
-				keyList.add(key.getCode());
-			}
-			if(hasKey(KeyCode.DELETE)){
-				drawPane.deleteAllSelected();
-			} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
-				drawPane.unDo();
-			} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
-				drawPane.reDo();
-			}
-		});
-		this.setOnKeyReleased(key -> {
-			keyList.remove(key.getCode());
-		});
 	}
 
 	public void addToDrawPane(MoveFrame frame) {
@@ -90,21 +78,23 @@ public class RootPane extends Pane {
 		return true;
 	}
 
-	public void keyPressed(KeyEvent key){
-//		Main.test(233);
-		if(!keyList.contains(key.getCode())) {
+	public void keyPressed(KeyEvent key) {
+		if (!keyList.contains(key.getCode())) {
 			keyList.add(key.getCode());
 		}
-		if(hasKey(KeyCode.DELETE)){
-			drawPane.deleteAllSelected();
-		} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
-			drawPane.unDo();
-		} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
-			drawPane.reDo();
+		KeyCode[] codes = keyList.toArray(new KeyCode[0]);
+		for (KeyListener listener : keyListeners) {
+			if (listener.equals(codes)) {
+				listener.run();
+			}
 		}
 	}
-	public void KeyReleased(KeyEvent key){
+
+	public void KeyReleased(KeyEvent key) {
 		keyList.remove(key.getCode());
 	}
 
+	public void add(KeyListener listener) {
+		keyListeners.add(listener);
+	}
 }

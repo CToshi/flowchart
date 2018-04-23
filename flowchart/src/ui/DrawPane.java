@@ -65,11 +65,11 @@ public class DrawPane extends Pane {
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
 
-//		this.setOnMouseClicked(e->{
-//			e.getClickCount();
-//
-//			Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
-//		});
+		// this.setOnMouseClicked(e->{
+		// e.getClickCount();
+		//
+		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
+		// });
 		add(selectRect);
 		new Draggable() {
 			@Override
@@ -119,7 +119,24 @@ public class DrawPane extends Pane {
 		};
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
-
+		parent.add(new KeyListener(KeyCode.DELETE) {
+			@Override
+			public void run() {
+				deleteAllSelected();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Z) {
+			@Override
+			public void run() {
+				unDo();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Y) {
+			@Override
+			public void run() {
+				reDo();
+			}
+		});
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -131,13 +148,13 @@ public class DrawPane extends Pane {
 	 *
 	 * @param hasSelected
 	 */
-//	public void setHasSelected(boolean hasSelected) {
-//
-//		this.hasSelected = hasSelected;
-//	}
-	public void informSelected(MoveFrame frame, boolean isSelected){
+	// public void setHasSelected(boolean hasSelected) {
+	//
+	// this.hasSelected = hasSelected;
+	// }
+	public void informSelected(MoveFrame frame, boolean isSelected) {
 		this.hasSelected = isSelected;
-		if(!hasKey(KeyCode.CONTROL) && isSelected){
+		if (!hasKey(KeyCode.CONTROL) && isSelected) {
 			closeOthers(frame);
 		}
 	}
@@ -220,14 +237,16 @@ public class DrawPane extends Pane {
 			if (!map.containsKey(ids[i])) {// 新建
 				map.put(ids[i], newFrames[i]);
 				add(newFrames[i].getNodes());
-			}
-			if (newFrames[i] == null) {// 删除
-				oldMap.put(ids[i], null);
+			}else if (newFrames[i] == null) {// 删除
+				oldMap.remove(ids[i]);
+				MoveFrame frame = map.get(ids[i]);
 				map.remove(ids[i]);
-				delete(oldFrames[i].getNodes());
-			} else {// 改变
-				MoveFrame old = newFrames[i].clone();
-				oldMap.put(ids[i], old);
+				delete(frame.getNodes());
+//				delete(oldFrames[i].getNodes());
+			}
+
+			if(newFrames[i] != null){
+				oldMap.put(ids[i], newFrames[i].clone());
 			}
 		}
 		unDoStack.push(ids, oldFrames);
@@ -254,6 +273,7 @@ public class DrawPane extends Pane {
 			if (oldFrames[i] != null) {
 				add(oldFrames[i].getNodes());
 				map.put(ids[i], oldFrames[i]);
+				oldMap.put(ids[i], oldFrames[i].clone());
 			} else {
 				map.remove(ids[i]);
 			}
@@ -269,7 +289,7 @@ public class DrawPane extends Pane {
 		unDo(this.reDoStack, this.unDoStack);
 	}
 
-	public void remove(Node...nodes){
+	public void remove(Node... nodes) {
 		for (Node node : nodes) {
 			this.getChildren().remove(node);
 		}
