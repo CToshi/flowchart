@@ -22,7 +22,7 @@ import view.text_input.TextManager;
  */
 public class MoveFrame implements Drawable, Cloneable {
 
-	public DraggableRectangle rectangle;
+	private DraggableRectangle rectangle;
 	/**
 	 * 移动框的8个点
 	 */
@@ -60,20 +60,24 @@ public class MoveFrame implements Drawable, Cloneable {
 	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
 		this(parent, shapeItem, false);
 	}
+
 	/**
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
 	 * @param shapeItem
-	 * @param isClone clone时ID不会自增
+	 * @param isClone
+	 *            clone时ID不会自增
 	 *
 	 */
-	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean isClone) {
-		if(!isClone) this.ID = MOVE_FRAME_ID++;
+	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean autoID) {
+		if (autoID)
+			this.ID = MOVE_FRAME_ID++;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
 				shapeItem.getHeight()) {
+			private RectangleEntity lastRect;
 
 			@Override
 			protected void deal(double xDelta, double yDelta) {
@@ -82,17 +86,19 @@ public class MoveFrame implements Drawable, Cloneable {
 			}
 
 			@Override
-			protected void whenReleased(MouseEvent mouse) {
-				fixPosition();
-				setHasSelected(false);
-				informChange();
-
+			protected void whenPressed(MouseEvent mouse) {
+				lastRect = this.getRectangle();
+				setHasSelected(true);
+				setSelected(true, true);
 			}
 
 			@Override
-			protected void whenPressed(MouseEvent mouse) {
-				setHasSelected(true);
-				setSelected(true, true);
+			protected void whenReleased(MouseEvent mouse) {
+				setHasSelected(false);
+				if (!getRectangle().equals(lastRect)) {
+					fixPosition();
+					informChange();
+				}
 			}
 
 			@Override
@@ -113,10 +119,11 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setOtherPoint(points[i ^ 1]);
 		}
-		this.fixPosition();
+		textManager = new TextManager(this);
 		nodeList = new LinkedList<>();
-		this.initNodeList();
 		setHidden();
+		this.initNodeList();
+		this.fixPosition();
 	}
 
 	/**
@@ -134,14 +141,16 @@ public class MoveFrame implements Drawable, Cloneable {
 	}
 
 	/**
-	 * 纠正8个拖动点的坐标
+	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
 					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
 		}
-		shapeItem.setRectangle(rectangle.getRectangle());
+		RectangleEntity rect = rectangle.getRectangle();
+		shapeItem.setRectangle(rect);
+		textManager.setRectangle(rect);
 	}
 
 	/**
@@ -152,6 +161,7 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setHide();
 		}
+		textManager.closeInput();
 	}
 
 	/**
@@ -177,7 +187,6 @@ public class MoveFrame implements Drawable, Cloneable {
 	public void setWidth(double value) {
 		rectangle.setWidth(value);
 		shapeItem.setWidth(value);
-
 	}
 
 	public void setHeight(double value) {
@@ -197,8 +206,10 @@ public class MoveFrame implements Drawable, Cloneable {
 		this.isSelected = isSelected;
 		if (isSelected) {
 			setShow();
-			if (onlyOne && !parent.hasKey(KeyCode.CONTROL))
+			if (onlyOne && !parent.hasKey(KeyCode.CONTROL)) {
 				parent.closeOthers(this);
+//				textManager.showInput();
+			}
 		} else {
 			setHidden();
 		}
@@ -216,10 +227,11 @@ public class MoveFrame implements Drawable, Cloneable {
 	private void initNodeList() {
 		nodeList.clear();
 		nodeList.addAll(shapeItem.getNodes());
-		nodeList.addAll(rectangle.getNodes());
+//		nodeList.addAll(textManager.getNodes());
 		for (int i = 0; i < points.length; i++) {
 			nodeList.addAll(points[i].getNodes());
 		}
+		nodeList.addAll(rectangle.getNodes());
 	}
 
 	public int getID() {
@@ -230,28 +242,18 @@ public class MoveFrame implements Drawable, Cloneable {
 		return rectangle.getRectangle();
 	}
 
-	// @Override
-	// public void setRectangle(RectangleEntity rectangle) {
-	// setX(rectangle.getX());
-	// setY(rectangle.getY());
-	// setWidth(rectangle.getWidth());
-	// setHeight(rectangle.getHeight());
-	// }
 	@Override
 	public MoveFrame clone() {
-//		try {
-			MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-			frame.ID = ID;
-//			MoveFrame frame = (MoveFrame) super.clone();
-//			frame.shapeItem = frame.shapeItem.clone();
-//			frame.rectangle = frame.rectangle.clone();
-//			frame.points = new MovePoint[8];
-			return frame;
-//		} catch (CloneNotSupportedException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
+		return clone(false);
 	}
+	public MoveFrame clone(boolean autoID) {
+		MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), autoID);
+		if(!autoID) {
+			frame.ID = ID;
+		}
+		return frame;
+	}
+
 
 	@Override
 	public boolean equals(Object obj) {
@@ -260,7 +262,20 @@ public class MoveFrame implements Drawable, Cloneable {
 		}
 		return false;
 	}
-	public void informChange(){
+
+	public void informChange() {
 		parent.change(getID(), this);
 	}
+
+//	public void addNodeToPane(Node node) {
+//		Main.test("add", node.hashCode());
+////		parent.add(node);
+//		nodeList.add(node);
+//	}
+
+//	public void deleteFromPane(Node node) {
+//		Main.test("delete", node.hashCode());
+////		parent.delete(node);
+//		nodeList.remove(node);
+//	}
 }

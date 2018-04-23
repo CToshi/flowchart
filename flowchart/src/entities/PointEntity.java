@@ -32,6 +32,7 @@ public class PointEntity {
 		setX(x);
 		setY(y);
 	}
+	
 
 //	public double getDistanceFrom(PointEntity other) {
 //		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));

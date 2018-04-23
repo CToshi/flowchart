@@ -16,7 +16,7 @@ import view.inter.Drawable;
 
 
 public abstract class DraggableRectangle implements Changable, Drawable {
-	public Rectangle self;
+	private Rectangle self;
 
 	private PointEntity lastPosition;
 	private PointEntity startPosition;
@@ -187,6 +187,9 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 		}
 	}
 
+	/**
+	 * 会new一个新的rectangle返回
+	 */
 	@Override
 	public RectangleEntity getRectangle() {
 		return new RectangleEntity(self.getX(), self.getY(), self.getWidth(), self.getHeight());

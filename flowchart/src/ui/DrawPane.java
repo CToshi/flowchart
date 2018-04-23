@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import datastructure.LimitedStack;
 import entities.PointEntity;
 import entities.RectangleEntity;
@@ -52,12 +53,11 @@ public class DrawPane extends Pane {
 		this.prefHeightProperty().bind(height);
 		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
-		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1));
+		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10),
+				new BorderWidths(1));
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
-		this.setOnMousePressed(mouse -> {
-		});
 		map = new HashMap<>();
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
@@ -91,10 +91,8 @@ public class DrawPane extends Pane {
 				selectRect.setY(mouse.getY());
 				selectRect.setWidth(0);
 				selectRect.setHeight(0);
-				selectRect.setStroke(Color.WHITE);
-				if (!DrawPane.this.hasSelected) {
-					closeOthers(null);
-				}
+				selectRect.setStroke(Color.BLACK);
+				closeOthers(null);
 			}
 
 			@Override
@@ -112,6 +110,24 @@ public class DrawPane extends Pane {
 		};
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
+		parent.add(new KeyListener(KeyCode.DELETE) {
+			@Override
+			public void run() {
+				deleteAllSelected();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Z) {
+			@Override
+			public void run() {
+				unDo();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Y) {
+			@Override
+			public void run() {
+				reDo();
+			}
+		});
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -148,6 +164,12 @@ public class DrawPane extends Pane {
 	public void add(Node... nodes) {
 		for (Node e : nodes) {
 			this.getChildren().add(e);
+		}
+	}
+
+	public void delete(Node... nodes) {
+		for (Node e : nodes) {
+			this.getChildren().remove(e);
 		}
 	}
 
@@ -205,14 +227,16 @@ public class DrawPane extends Pane {
 			if (!map.containsKey(ids[i])) {// 新建
 				map.put(ids[i], newFrames[i]);
 				add(newFrames[i].getNodes());
-			}
-			if (newFrames[i] == null) {// 删除
-				oldMap.put(ids[i], null);
+			}else if (newFrames[i] == null) {// 删除
+				oldMap.remove(ids[i]);
+				MoveFrame frame = map.get(ids[i]);
 				map.remove(ids[i]);
-				delete(oldFrames[i].getNodes());
-			} else {// 改变
-				MoveFrame old = newFrames[i].clone();
-				oldMap.put(ids[i], old);
+				delete(frame.getNodes());
+//				delete(oldFrames[i].getNodes());
+			}
+
+			if(newFrames[i] != null){
+				oldMap.put(ids[i], newFrames[i].clone());
 			}
 		}
 		unDoStack.push(ids, oldFrames);
@@ -228,17 +252,18 @@ public class DrawPane extends Pane {
 			return;
 		}
 		Entry<Integer[], MoveFrame[]> entry = unDoS.pop();
-		Integer[] ids = entry.getKey();
+		Integer[] ids = entry.getKey(); 
 		MoveFrame[] oldFrames = entry.getValue();
 		MoveFrame[] nowFrames = new MoveFrame[ids.length];
 		for (int i = 0; i < ids.length; i++) {
 			nowFrames[i] = map.get(ids[i]);
-			if(nowFrames[i] != null){
+			if (nowFrames[i] != null) {
 				delete(nowFrames[i].getNodes());
 			}
 			if (oldFrames[i] != null) {
 				add(oldFrames[i].getNodes());
 				map.put(ids[i], oldFrames[i]);
+				oldMap.put(ids[i], oldFrames[i].clone());
 			} else {
 				map.remove(ids[i]);
 			}

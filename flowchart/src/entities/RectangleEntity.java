@@ -25,16 +25,16 @@ public class RectangleEntity {
 		return width;
 	}
 
-	public void setWidth(double width) {
-		this.width = width;
+	public void setWidth(double value) {
+		this.width = value;
 	}
 
 	public double getHeight() {
 		return height;
 	}
 
-	public void setHeight(double height) {
-		this.height = height;
+	public void setHeight(double value) {
+		this.height = value;
 	}
 
 	public PointEntity getLeftTop() {
@@ -118,5 +118,19 @@ public class RectangleEntity {
 
 	private boolean equals(double a, double b, double eps) {
 		return Math.abs(a - b) < eps;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return equals(obj, 0.001);
+	}
+
+	public boolean equals(Object obj, double eps) {
+		if (obj instanceof RectangleEntity) {
+			RectangleEntity rect = (RectangleEntity) obj;
+			return equals(rect.getX(), this.getX(), eps) && equals(rect.getY(), this.getY(), eps)
+					&& equals(rect.width, this.width, eps) && equals(rect.height, this.height, eps);
+		}
+		return false;
 	}
 }

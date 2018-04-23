@@ -6,6 +6,7 @@ import application.Main;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -24,10 +25,12 @@ public class RootPane extends Pane {
 	private MenuBar menuBar;
 	private Pane bottomPane;
 	private LinkedList<KeyCode> keyList;
+	private LinkedList<KeyListener> keyListeners;
 
 	public RootPane(ReadOnlyDoubleProperty stageWidth, ReadOnlyDoubleProperty stageHeight) {
 		this.prefHeightProperty().bind(stageWidth);
 
+		keyListeners = new LinkedList<>();
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
 
 		bottomPane = new Pane();
@@ -41,23 +44,7 @@ public class RootPane extends Pane {
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
-
 		keyList = new LinkedList<>();
-		this.setOnKeyPressed(key -> {
-			if(!keyList.contains(key.getCode())) {
-				keyList.add(key.getCode());
-			}
-			if(hasKey(KeyCode.DELETE)){
-				drawPane.deleteAllSelected();
-			} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
-				drawPane.unDo();
-			} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
-				drawPane.reDo();
-			}
-		});
-		this.setOnKeyReleased(key -> {
-			keyList.remove(key.getCode());
-		});
 	}
 
 	public void addToDrawPane(MoveFrame frame) {
@@ -89,4 +76,33 @@ public class RootPane extends Pane {
 		}
 		return true;
 	}
+	public void keyPressed(KeyEvent key){
+		if(!keyList.contains(key.getCode())) {
+			keyList.add(key.getCode());
+		}
+//		if(hasKey(KeyCode.DELETE)){
+//			drawPane.deleteAllSelected();
+//		} else if (hasKey(KeyCode.CONTROL, KeyCode.Z)){
+//			drawPane.unDo();
+//		} else if (hasKey(KeyCode.CONTROL, KeyCode.Y)){
+//			drawPane.reDo();
+//		}
+		KeyCode[] codes = keyList.toArray(new KeyCode[0]);
+//		for(KeyCode e:codes){
+//			System.out.print(e + " ");
+//		}
+//		System.out.println();
+		for(KeyListener listener:keyListeners){
+			if(listener.equals(codes)){
+				listener.run();
+			}
+		}
+	}
+	public void add(KeyListener listener){
+		keyListeners.add(listener);
+	}
+	public void keyReleased(KeyEvent key){
+		keyList.remove(key.getCode());
+	}
+
 }
