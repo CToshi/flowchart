@@ -52,6 +52,12 @@ public class DrawPane extends Pane {
 		this.prefHeightProperty().bind(height);
 		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
+		this.setOnKeyPressed(e->{
+			if(e.getCode()==KeyCode.A){
+				System.out.println("233");
+			}
+		});
+
 		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1));
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
