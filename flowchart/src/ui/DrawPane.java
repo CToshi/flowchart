@@ -252,7 +252,7 @@ public class DrawPane extends Pane {
 			return;
 		}
 		Entry<Integer[], MoveFrame[]> entry = unDoS.pop();
-		Integer[] ids = entry.getKey(); 
+		Integer[] ids = entry.getKey();
 		MoveFrame[] oldFrames = entry.getValue();
 		MoveFrame[] nowFrames = new MoveFrame[ids.length];
 		for (int i = 0; i < ids.length; i++) {
@@ -269,6 +269,7 @@ public class DrawPane extends Pane {
 			}
 		}
 		reDoS.push(ids, nowFrames);
+		//
 	}
 
 	public void reDo() {
