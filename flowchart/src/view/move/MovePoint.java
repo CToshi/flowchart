@@ -48,13 +48,13 @@ public class MovePoint extends DraggableRectangle{
 
 	@Override
 	protected void whenPressed(MouseEvent mouse) {
-		parent.setHasSelected(true);
+//		parent.setHasSelected(true);
 		parent.setHidden();
 	}
 
 	@Override
 	protected void whenReleased(MouseEvent mouse) {
-		parent.setHasSelected(false);
+//		parent.setHasSelected(false);
 		parent.fixPosition();
 		parent.setShow();
 	}

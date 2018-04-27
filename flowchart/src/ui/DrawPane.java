@@ -19,6 +19,7 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -36,7 +37,7 @@ public class DrawPane extends Pane {
 	// private DrawManager manager;
 
 	private RootPane parent;
-	private boolean hasSelected;
+//	private boolean hasSelected;
 	/**
 	 * 存放MoveFrame, 用以取消选中、撤销和反撤销操作
 	 */
@@ -45,9 +46,9 @@ public class DrawPane extends Pane {
 
 	private LimitedStack<Integer[], MoveFrame[]> unDoStack;
 	private LimitedStack<Integer[], MoveFrame[]> reDoStack;
-
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
+	private int selectedCount;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
@@ -64,12 +65,6 @@ public class DrawPane extends Pane {
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
-
-		// this.setOnMouseClicked(e->{
-		// e.getClickCount();
-		//
-		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
-		// });
 		add(selectRect);
 		new Draggable() {
 			@Override
@@ -85,12 +80,21 @@ public class DrawPane extends Pane {
 						frame.setSelected(true);
 					}
 				}
+				/**
+				 * 移除屏幕，否则会影响点击空白判定
+				 */
+				selectRect.setX(-100);
+				selectRect.setWidth(0);
 			}
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
-				if (hasSelected)
+				if (!mouse.getTarget().equals(DrawPane.this)) {
+
 					return;
+				}
+				selectedCount = 0;
+				Main.test(selectedCount);
 				/**
 				 * 按下时，位置移动到按下点，长宽设为0，显示框颜色，关闭所有图形的选中
 				 */
@@ -99,9 +103,7 @@ public class DrawPane extends Pane {
 				selectRect.setWidth(0);
 				selectRect.setHeight(0);
 				selectRect.setStroke(Color.BLACK);
-				// if (!DrawPane.this.hasSelected) {
 				closeOthers(null);
-				// }
 			}
 
 			@Override
@@ -148,15 +150,24 @@ public class DrawPane extends Pane {
 	 *
 	 * @param hasSelected
 	 */
-	// public void setHasSelected(boolean hasSelected) {
-	//
-	// this.hasSelected = hasSelected;
-	// }
-	public void informSelected(MoveFrame frame, boolean isSelected) {
-		this.hasSelected = isSelected;
-		if (!hasKey(KeyCode.CONTROL) && isSelected) {
+//	public void setHasSelected(boolean hasSelected) {
+//		this.hasSelected = hasSelected;
+//		if (selectedCount == 0 || hasKey(KeyCode.CONTROL)) {
+//			selectedCount++;
+//		} else if (selectedCount == 1 && !hasKey(KeyCode.CONTROL)) {
+//			closeOthers((MoveFrame) mouse.getTarget());
+//		}
+//		Main.test(selectedCount);
+//	}
+
+	public void informSelected(MoveFrame frame) {
+//		this.hasSelected = isSelected;
+		if (selectedCount == 0 || hasKey(KeyCode.CONTROL)) {
+			selectedCount++;
+		} else if (selectedCount == 1 && !hasKey(KeyCode.CONTROL)) {
 			closeOthers(frame);
 		}
+		Main.test(selectedCount);
 	}
 
 	/**
@@ -237,15 +248,15 @@ public class DrawPane extends Pane {
 			if (!map.containsKey(ids[i])) {// 新建
 				map.put(ids[i], newFrames[i]);
 				add(newFrames[i].getNodes());
-			}else if (newFrames[i] == null) {// 删除
+			} else if (newFrames[i] == null) {// 删除
 				oldMap.remove(ids[i]);
 				MoveFrame frame = map.get(ids[i]);
 				map.remove(ids[i]);
 				delete(frame.getNodes());
-//				delete(oldFrames[i].getNodes());
+				// delete(oldFrames[i].getNodes());
 			}
 
-			if(newFrames[i] != null){
+			if (newFrames[i] != null) {
 				oldMap.put(ids[i], newFrames[i].clone());
 			}
 		}
