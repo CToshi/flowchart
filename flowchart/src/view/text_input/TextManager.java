@@ -24,7 +24,7 @@ public class TextManager implements Drawable, Changable {
 	private TextFlow textFlow;
 	private RectangleEntity rect;
 	private Text text;
-	private TextArea textArea;
+//	private TextArea textArea;
 	private CharSizeCalculator calculator;
 	private String content;
 
@@ -37,11 +37,11 @@ public class TextManager implements Drawable, Changable {
 		textFlow = new TextFlow(text);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
 		this.rect = rect;
-		textArea = new TextArea();
-		textArea.setFont(font);
-		textArea.setWrapText(true);
+//		textArea = new TextArea();
+//		textArea.setFont(font);
+//		textArea.setWrapText(true);
 		textFlow.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-		textArea.setDisable(true);
+//		textArea.setDisable(true);
 		calculator = new CharSizeCalculator(font);
 		fixWidth();
 	}
@@ -53,35 +53,35 @@ public class TextManager implements Drawable, Changable {
 		double x = rect.getX() + (rect.getWidth() - bounds.getWidth()) / 2f;
 		double y = rect.getY() + (rect.getHeight() - bounds.getHeight()) / 2f;
 		textFlow.relocate(x, y);
-		textArea.relocate(rect.getX(), rect.getY());
-		textArea.setMinSize(rect.getWidth(), rect.getHeight());
-		textArea.setMaxSize(rect.getWidth(), rect.getHeight());
+//		textArea.relocate(rect.getX(), rect.getY());
+//		textArea.setMinSize(rect.getWidth(), rect.getHeight());
+//		textArea.setMaxSize(rect.getWidth(), rect.getHeight());
 	}
 
 	private double getTextWidth(String s) {
 		return calculator.getBounds(s).getWidth();
 	}
 
-	public void showInput() {
-		if (!textArea.isDisable())
-			return;
-		textArea.setText(content);
-		textFlow.setDisable(true);
-		fixWidth();
-		text.setText("");
-		textArea.setDisable(false);
-	}
+//	public void showInput() {
+//		if (!textArea.isDisable())
+//			return;
+//		textArea.setText(content);
+//		textFlow.setDisable(true);
+//		fixWidth();
+//		text.setText("");
+//		textArea.setDisable(false);
+//	}
 
-	public void closeInput() {
-		if (textArea.isDisable())
-			return;
-		content = textArea.getText();
+//	public void closeInput() {
+//		if (textArea.isDisable())
+//			return;
+//		content = textArea.getText();
 //		text.setText(content);
-		fixWidth();
-		textFlow.setDisable(false);
-		textArea.setText("");
-		textArea.setDisable(true);
-	}
+//		fixWidth();
+//		textFlow.setDisable(false);
+//		textArea.setText("");
+//		textArea.setDisable(true);
+//	}
 //	public void setState(boolean isInput){
 //		if(isInput == !textArea.isDisable()){
 //			return;
@@ -132,7 +132,7 @@ public class TextManager implements Drawable, Changable {
 
 	@Override
 	public LinkedList<Node> getNodes() {
-		Node[] nodes = { textFlow, textArea };
+		Node[] nodes = { textFlow };
 		return Util.getList(nodes);
 	}
 
@@ -167,12 +167,14 @@ public class TextManager implements Drawable, Changable {
 		rect.setHeight(value);
 	}
 
-	public Node getBottomNode(){
-		return textFlow;
+	public String getText() {
+		return text.getText();
 	}
-	public Node getTopNode(){
-		return textArea;
-	}
+
+//	public Node getBottomNode(){
+//		return textFlow;
+//	}
+
 
 	// private static final char CONTROL_LIMIT = ' ';
 	// private static final char PRINTABLE_LIMIT = '\u007e';

@@ -10,8 +10,11 @@ import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -19,12 +22,11 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import view.inter.Draggable;
-import view.move.MoveFrame;
+import view.move.MoveController;
 
 /**
  * 图形的绘制区域
@@ -32,19 +34,20 @@ import view.move.MoveFrame;
  * @author Toshi
  *
  */
-public class DrawPane extends Pane {
+public class DrawPane extends ScrollPane {
 	// private DrawManager manager;
 
+	private AnchorPane anchorPane;
 	private RootPane parent;
 	private boolean hasSelected;
 	/**
-	 * 存放MoveFrame, 用以取消选中、撤销和反撤销操作
+	 * 存放MoveController, 用以取消选中、撤销和反撤销操作
 	 */
-	private HashMap<Integer, MoveFrame> oldMap;
-	private HashMap<Integer, MoveFrame> map;
+	private HashMap<Integer, MoveController> oldMap;
+	private HashMap<Integer, MoveController> map;
 
-	private LimitedStack<Integer[], MoveFrame[]> unDoStack;
-	private LimitedStack<Integer[], MoveFrame[]> reDoStack;
+	private LimitedStack<Integer[], MoveController[]> unDoStack;
+	private LimitedStack<Integer[], MoveController[]> reDoStack;
 
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
@@ -64,25 +67,31 @@ public class DrawPane extends Pane {
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
-
+		this.anchorPane = new AnchorPane();
+		this.setOnMouseMoved(e->{
+			Main.test(this.getHvalue());
+		});
+		this.setContent(this.anchorPane);
 		// this.setOnMouseClicked(e->{
 		// e.getClickCount();
 		//
 		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
 		// });
 		add(selectRect);
+		Parent p = null;
+		ScrollPane s = (ScrollPane) p;
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
 				/**
-				 * 放开时，隐藏框，遍历所有MoveFrame，如果该frame处于选中框(selectRect)中，则设置为选中
+				 * 放开时，隐藏框，遍历所有MoveController，如果该controller处于选中框(selectRect)中，则设置为选中
 				 */
 				selectRect.setStroke(Color.TRANSPARENT);
 				RectangleEntity rectE = new RectangleEntity(selectRect);
-				for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
-					MoveFrame frame = entry.getValue();
-					if (rectE.contains(frame.getRectangle())) {
-						frame.setSelected(true);
+				for (Entry<Integer, MoveController> entry : map.entrySet()) {
+					MoveController controller = entry.getValue();
+					if (rectE.contains(controller.getRectangle())) {
+						controller.setSelected(true);
 					}
 				}
 			}
@@ -144,7 +153,7 @@ public class DrawPane extends Pane {
 	}
 
 	/**
-	 * DrawPane会根据有没有MoveFrame被选中而执行动作，当没有MoveFrame被选中时DrawPane会设置所有MoveFrame为未选中状态
+	 * DrawPane会根据有没有MoveController被选中而执行动作，当没有MoveController被选中时DrawPane会设置所有MoveController为未选中状态
 	 *
 	 * @param hasSelected
 	 */
@@ -152,23 +161,23 @@ public class DrawPane extends Pane {
 	//
 	// this.hasSelected = hasSelected;
 	// }
-	public void informSelected(MoveFrame frame, boolean isSelected) {
+	public void informSelected(MoveController controller, boolean isSelected) {
 		this.hasSelected = isSelected;
 		if (!hasKey(KeyCode.CONTROL) && isSelected) {
-			closeOthers(frame);
+			closeOthers(controller);
 		}
 	}
 
 	/**
 	 *
-	 * @param frame
+	 * @param controller
 	 */
-	public void add(MoveFrame frame) {
-		change(frame.getID(), frame);
+	public void add(MoveController controller) {
+		change(controller.getID(), controller);
 	}
 
-	public void delete(MoveFrame frame) {
-		change(frame.getID(), null);
+	public void delete(MoveController controller) {
+		change(controller.getID(), null);
 	}
 
 	/**
@@ -179,7 +188,7 @@ public class DrawPane extends Pane {
 	 */
 	public void add(Node... nodes) {
 		for (Node e : nodes) {
-			this.getChildren().add(e);
+			anchorPane.getChildren().add(e);
 		}
 	}
 
@@ -188,17 +197,17 @@ public class DrawPane extends Pane {
 	}
 
 	public void deleteAllSelected() {
-		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
-			MoveFrame frame = entry.getValue();
-			if (frame.isSelected()) {
-				delete(frame);
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			MoveController controller = entry.getValue();
+			if (controller.isSelected()) {
+				delete(controller);
 			}
 		}
 	}
 
 	private void delete(LinkedList<Node> nodes) {
 		for (Node e : nodes) {
-			this.getChildren().remove(e);
+			anchorPane.getChildren().remove(e);
 		}
 	}
 
@@ -207,14 +216,14 @@ public class DrawPane extends Pane {
 	}
 
 	/**
-	 * 关闭除frame外所有MoveFrame的选中状态
+	 * 关闭除controller外所有MoveController的选中状态
 	 *
-	 * @param frame
-	 *            不关闭的那个frame，为null时关闭所有MoveFrame的选中
+	 * @param controller
+	 *            不关闭的那个controller，为null时关闭所有MoveController的选中
 	 */
-	public void closeOthers(MoveFrame frame) {
-		for (Entry<Integer, MoveFrame> entry : map.entrySet()) {
-			if (!entry.getValue().equals(frame)) {
+	public void closeOthers(MoveController controller) {
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			if (!entry.getValue().equals(controller)) {
 				entry.getValue().setSelected(false);
 			}
 		}
@@ -224,32 +233,32 @@ public class DrawPane extends Pane {
 		return parent.hasKey(keyCodes);
 	}
 
-	public void change(int id, MoveFrame newFrame) {
+	public void change(int id, MoveController newController) {
 		Integer[] ids = { id };
-		MoveFrame[] newFrames = { newFrame };
-		change(ids, newFrames);
+		MoveController[] newControllers = { newController };
+		change(ids, newControllers);
 	}
 
-	public void change(Integer[] ids, MoveFrame[] newFrames) {
-		MoveFrame[] oldFrames = new MoveFrame[ids.length];
+	public void change(Integer[] ids, MoveController[] newControllers) {
+		MoveController[] oldcontrollers = new MoveController[ids.length];
 		for (int i = 0; i < ids.length; i++) {
-			oldFrames[i] = oldMap.get(ids[i]);
+			oldcontrollers[i] = oldMap.get(ids[i]);
 			if (!map.containsKey(ids[i])) {// 新建
-				map.put(ids[i], newFrames[i]);
-				add(newFrames[i].getNodes());
-			}else if (newFrames[i] == null) {// 删除
+				map.put(ids[i], newControllers[i]);
+				add(newControllers[i].getNodes());
+			}else if (newControllers[i] == null) {// 删除
 				oldMap.remove(ids[i]);
-				MoveFrame frame = map.get(ids[i]);
+				MoveController controller = map.get(ids[i]);
 				map.remove(ids[i]);
-				delete(frame.getNodes());
-//				delete(oldFrames[i].getNodes());
+				delete(controller.getNodes());
+//				delete(oldControllers[i].getNodes());
 			}
 
-			if(newFrames[i] != null){
-				oldMap.put(ids[i], newFrames[i].clone());
+			if(newControllers[i] != null){
+				oldMap.put(ids[i], newControllers[i].clone());
 			}
 		}
-		unDoStack.push(ids, oldFrames);
+		unDoStack.push(ids, oldcontrollers);
 		reDoStack.clear();
 	}
 
@@ -257,28 +266,28 @@ public class DrawPane extends Pane {
 		unDo(this.unDoStack, this.reDoStack);
 	}
 
-	private void unDo(LimitedStack<Integer[], MoveFrame[]> unDoS, LimitedStack<Integer[], MoveFrame[]> reDoS) {
+	private void unDo(LimitedStack<Integer[], MoveController[]> unDoS, LimitedStack<Integer[], MoveController[]> reDoS) {
 		if (unDoS.size() == 0) {
 			return;
 		}
-		Pair<Integer[], MoveFrame[]> entry = unDoS.pop();
+		Pair<Integer[], MoveController[]> entry = unDoS.pop();
 		Integer[] ids = entry.getKey();
-		MoveFrame[] oldFrames = entry.getValue();
-		MoveFrame[] nowFrames = new MoveFrame[ids.length];
+		MoveController[] oldControllers = entry.getValue();
+		MoveController[] nowControllers = new MoveController[ids.length];
 		for (int i = 0; i < ids.length; i++) {
-			nowFrames[i] = map.get(ids[i]);
-			if (nowFrames[i] != null) {
-				delete(nowFrames[i].getNodes());
+			nowControllers[i] = map.get(ids[i]);
+			if (nowControllers[i] != null) {
+				delete(nowControllers[i].getNodes());
 			}
-			if (oldFrames[i] != null) {
-				add(oldFrames[i].getNodes());
-				map.put(ids[i], oldFrames[i]);
-				oldMap.put(ids[i], oldFrames[i].clone());
+			if (oldControllers[i] != null) {
+				add(oldControllers[i].getNodes());
+				map.put(ids[i], oldControllers[i]);
+				oldMap.put(ids[i], oldControllers[i].clone());
 			} else {
 				map.remove(ids[i]);
 			}
 		}
-		reDoS.push(ids, nowFrames);
+		reDoS.push(ids, nowControllers);
 		//
 	}
 
@@ -291,7 +300,7 @@ public class DrawPane extends Pane {
 
 	public void remove(Node... nodes) {
 		for (Node node : nodes) {
-			this.getChildren().remove(node);
+			anchorPane.getChildren().remove(node);
 		}
 	}
 }

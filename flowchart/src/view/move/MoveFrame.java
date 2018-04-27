@@ -5,12 +5,11 @@ import java.util.LinkedList;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.DrawPane;
-import view.inter.Drawable;
 import view.shape.ShapeItem;
+import view.text_input.InputController;
 import view.text_input.TextManager;
 
 /**
@@ -19,7 +18,7 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Drawable, Cloneable {
+public class MoveFrame implements Cloneable ,MoveController{
 
 	private DraggableRectangle rectangle;
 	/**
@@ -46,6 +45,7 @@ public class MoveFrame implements Drawable, Cloneable {
 	 */
 	private ShapeItem shapeItem;
 	private TextManager textManager;
+	private InputController inputController;
 
 	private LinkedList<Node> nodeList;
 	/**
@@ -74,6 +74,7 @@ public class MoveFrame implements Drawable, Cloneable {
 			this.ID = MOVE_FRAME_ID++;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
+		this.inputController = InputController.getInstance();
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
 				shapeItem.getHeight()) {
 			private RectangleEntity lastRect;
@@ -92,7 +93,9 @@ public class MoveFrame implements Drawable, Cloneable {
 				setSelected(true);
 //				setSelected(true, true);
 				if(mouse.getClickCount() >= 2){
-					textManager.showInput();
+					inputController.setInformation(this.getRectangle(), textManager.getText());
+					parent.add(inputController.getTextArea());
+//					textManager.showInput();
 				}
 			}
 
@@ -166,7 +169,7 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setHide();
 		}
-		textManager.closeInput();
+		this.closeInput();
 	}
 
 	/**
@@ -243,9 +246,9 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			nodeList.addAll(points[i].getNodes());
 		}
-		nodeList.add(textManager.getBottomNode());
+		nodeList.addAll(textManager.getNodes());
 		nodeList.addAll(rectangle.getNodes());
-		nodeList.add(textManager.getTopNode());
+//		nodeList.add(textManager.getTopNode());
 //		nodeList.addAll(textManager.getNodes());
 
 	}
@@ -283,5 +286,8 @@ public class MoveFrame implements Drawable, Cloneable {
 
 	public void add(Node...nodes){
 		parent.add(nodes);
+	}
+	private void closeInput(){
+		parent.remove(inputController.getTextArea());
 	}
 }
