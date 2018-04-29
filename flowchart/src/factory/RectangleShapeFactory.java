@@ -6,17 +6,22 @@ import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
 
 public class RectangleShapeFactory {
-	public static enum TYPE {
+	public static enum Type {
 		DEFAULT, ROUDED
 	};
 
-//	private static final Color DEFAULT_COLOR = Color.BLACK;
+	// private static final Color DEFAULT_COLOR = Color.BLACK;
 
+	
 	public static RectangleShape create(PointEntity center) {
 		return create(center.getX(), center.getY());
 	}
 
-	public static RectangleShape create(PointEntity center, TYPE type) {
+	public static RectangleShape create(Type type) {
+		return create(0, 0, false, type);
+	}
+
+	public static RectangleShape create(PointEntity center, Type type) {
 		return create(center.getX(), center.getY(), true, type);
 	}
 
@@ -43,9 +48,9 @@ public class RectangleShapeFactory {
 	 * @param type
 	 * @return
 	 */
-	public static RectangleShape create(double x, double y, boolean isCenter, TYPE type) {
+	public static RectangleShape create(double x, double y, boolean isCenter, Type type) {
 		RectangleShape res = create(x, y, isCenter);
-		if (type == TYPE.ROUDED) {
+		if (type == Type.ROUDED) {
 			res = new RoundedRectangleShape(res);
 		}
 		return res;

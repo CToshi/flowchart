@@ -1,9 +1,15 @@
 package ui;
 
+import java.util.LinkedList;
+
+import entities.RectangleEntity;
 import factory.RectangleShapeFactory;
+import factory.RectangleShapeFactory.Type;
 import javafx.beans.binding.DoubleExpression;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -38,29 +44,52 @@ public class ToolPane extends Pane {
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
-		Rectangle rectangle = new Rectangle();
+		ToolItem[] toolItems = new ToolItem[2];
+		toolItems[0] = new ToolItem(new RectangleEntity(0, 0, width, width / 1.5f), RectangleShapeFactory.create(0, 0),
+				"处理框,表示算法的一个步骤,一个处理环节") {
+
+			@Override
+			public void whenClicked(MouseEvent mouse) {
+				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+						RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
+			}
+		};
+		toolItems[1] = new ToolItem(new RectangleEntity(0, width / 1.5f, width, width / 1.5f),
+				RectangleShapeFactory.create(Type.ROUDED), "圆角矩形，起止框，表示算法的开始和结束") {
+
+			@Override
+			public void whenClicked(MouseEvent mouse) {
+				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+						RectangleShapeFactory.create(parent.getDrawPane().getCenter(), Type.ROUDED)));
+			}
+		};
+
+		this.add(toolItems[0].getNodes());
+		this.add(toolItems[1].getNodes());
+		// Rectangle rectangle = new Rectangle();
+		// //
 		// rectangle.xProperty().bind(width.subtract(width.multiply(0.8)).divide(2.0));
-		rectangle.setX((width - width * 0.8f) / 2f);
-		rectangle.setY(width * 0.1);
-//		rectangle.yProperty().bind(height.divide(30.0));
-		rectangle.setFill(Color.WHITE);
-		rectangle.setStroke(Color.BLACK);
-//		rectangle.widthProperty().bind(width.multiply(0.8));
-		rectangle.setWidth(width * 0.8f);
-		rectangle.setHeight(width/2f);
-//		rectangle.heightProperty().bind(height.divide(HEIGHT_PROPORTION));
-		Label label = new Label();
-		label.setLayoutX(rectangle.getX());
-		label.setLayoutY(rectangle.getY());
-		label.minWidthProperty().bind(rectangle.widthProperty());
-		label.minHeightProperty().bind(rectangle.heightProperty());
-		this.getChildren().addAll(rectangle, label);
-		Tooltip tooltip = new Tooltip("处理框,表示算法的一个步骤,一个处理环节");
-		label.setTooltip(tooltip);
-		label.setOnMouseClicked(e -> {
-			parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
-					RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
-		});
+		// rectangle.setX((width - width * 0.8f) / 2f);
+		// rectangle.setY(width * 0.1);
+		//// rectangle.yProperty().bind(height.divide(30.0));
+		// rectangle.setFill(Color.WHITE);
+		// rectangle.setStroke(Color.BLACK);
+		//// rectangle.widthProperty().bind(width.multiply(0.8));
+		// rectangle.setWidth(width * 0.8f);
+		// rectangle.setHeight(width/2f);
+		//// rectangle.heightProperty().bind(height.divide(HEIGHT_PROPORTION));
+		// Label label = new Label();
+		// label.setLayoutX(rectangle.getX());
+		// label.setLayoutY(rectangle.getY());
+		// label.minWidthProperty().bind(rectangle.widthProperty());
+		// label.minHeightProperty().bind(rectangle.heightProperty());
+		// this.getChildren().addAll(rectangle, label);
+		// Tooltip tooltip = new Tooltip("处理框,表示算法的一个步骤,一个处理环节");
+		// label.setTooltip(tooltip);
+		// label.setOnMouseClicked(e -> {
+		// parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+		// RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
+		// });
 
 		// rectangle.setFill(Color.TRANSPARENT);
 		// Button rectangleButton = new Button("",rectangle);
@@ -80,5 +109,15 @@ public class ToolPane extends Pane {
 		// TYPE.ROUDED)));
 		// });
 
+	}
+
+	private void add(LinkedList<Node> nodes) {
+		add(nodes.toArray(new Node[0]));
+	}
+
+	private void add(Node... nodes) {
+		for (Node e : nodes) {
+			this.getChildren().add(e);
+		}
 	}
 }

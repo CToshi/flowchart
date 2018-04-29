@@ -1,7 +1,7 @@
 package view.shape;
 
 import factory.RectangleShapeFactory;
-import factory.RectangleShapeFactory.TYPE;
+import factory.RectangleShapeFactory.Type;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
@@ -41,7 +41,7 @@ public class RoundedRectangleShape extends RectangleShape {
 	@Override
 	public RoundedRectangleShape clone() {
 		RoundedRectangleShape res = (RoundedRectangleShape) RectangleShapeFactory.create(self.getX(), self.getY(),
-				false, TYPE.ROUDED);
+				false, Type.ROUDED);
 		return res;
 	}
 }
