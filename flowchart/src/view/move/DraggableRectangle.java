@@ -241,5 +241,12 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	public void setHeight(double value) {
 		self.setHeight(value);
 	}
+	@Override
+	public void setRectangle(RectangleEntity rectangle) {
+		setX(rectangle.getX());
+		setY(rectangle.getY());
+		setWidth(rectangle.getWidth());
+		setHeight(rectangle.getHeight());
+	}
 
 }

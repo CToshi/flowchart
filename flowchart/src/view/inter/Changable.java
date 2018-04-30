@@ -28,12 +28,13 @@ public interface Changable {
 		return getRectangle().getHeight();
 	}
 
-	default void setRectangle(RectangleEntity rectangle) {
-		setX(rectangle.getX());
-		setY(rectangle.getY());
-		setWidth(rectangle.getWidth());
-		setHeight(rectangle.getHeight());
-	}
+	void setRectangle(RectangleEntity rectangle);
+//	default void setRectangle(RectangleEntity rectangle) {
+//		setX(rectangle.getX());
+//		setY(rectangle.getY());
+//		setWidth(rectangle.getWidth());
+//		setHeight(rectangle.getHeight());
+//	}
 
 	void setX(double value);
 

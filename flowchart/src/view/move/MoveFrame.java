@@ -112,6 +112,7 @@ public class MoveFrame implements Drawable, Cloneable {
 			protected boolean isOutBound(double x, double y) {
 				return parent.isOutBound(x, y);
 			}
+
 		};
 		rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];

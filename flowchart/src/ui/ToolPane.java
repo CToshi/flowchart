@@ -3,12 +3,10 @@ package ui;
 import java.util.LinkedList;
 
 import entities.RectangleEntity;
-import factory.RectangleShapeFactory;
-import factory.RectangleShapeFactory.Type;
+import entities.ShapeState.Type;
+import factory.ShapeFactory;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -19,7 +17,6 @@ import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Rectangle;
 import view.move.MoveFrame;
 
 /**
@@ -29,8 +26,6 @@ import view.move.MoveFrame;
  *
  */
 public class ToolPane extends Pane {
-
-	private static final double HEIGHT_PROPORTION = 10;
 
 	public ToolPane(RootPane parent, double width, DoubleExpression height) {
 		this.prefHeightProperty().bind(height);
@@ -44,28 +39,36 @@ public class ToolPane extends Pane {
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
-		ToolItem[] toolItems = new ToolItem[2];
-		toolItems[0] = new ToolItem(new RectangleEntity(0, 0, width, width / 1.5f), RectangleShapeFactory.create(0, 0),
-				"处理框,表示算法的一个步骤,一个处理环节") {
+		ToolItem[] toolItems = new ToolItem[Type.values().length];
 
+		toolItems[0] = new ToolItem(new RectangleEntity(0, 0, width, width / 1.5f), ShapeFactory.create(0, 0, Type.RECTANGLE),
+				"处理框,表示算法的一个步骤,一个处理环节") {
 			@Override
 			public void whenClicked(MouseEvent mouse) {
 				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
-						RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
+						ShapeFactory.create(parent.getDrawPane().getCenter(), Type.RECTANGLE)));
 			}
 		};
 		toolItems[1] = new ToolItem(new RectangleEntity(0, width / 1.5f, width, width / 1.5f),
-				RectangleShapeFactory.create(Type.ROUDED), "圆角矩形，起止框，表示算法的开始和结束") {
-
+				ShapeFactory.create(Type.ROUNDED_RECTANGLE), "圆角矩形，起止框，表示算法的开始和结束") {
 			@Override
 			public void whenClicked(MouseEvent mouse) {
 				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
-						RectangleShapeFactory.create(parent.getDrawPane().getCenter(), Type.ROUDED)));
+						ShapeFactory.create(parent.getDrawPane().getCenter(), Type.ROUNDED_RECTANGLE)));
+			}
+		};
+		toolItems[2] = new ToolItem(new RectangleEntity(0, 2 * width / 1.5f, width, width / 1.5f),
+				ShapeFactory.create(Type.DIAMOND), "菱形，判断框，表示算法的一个判断、一个条件") {
+			@Override
+			public void whenClicked(MouseEvent mouse) {
+				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
+						ShapeFactory.create(parent.getDrawPane().getCenter(), Type.DIAMOND)));
 			}
 		};
 
 		this.add(toolItems[0].getNodes());
 		this.add(toolItems[1].getNodes());
+		this.add(toolItems[2].getNodes());
 		// Rectangle rectangle = new Rectangle();
 		// //
 		// rectangle.xProperty().bind(width.subtract(width.multiply(0.8)).divide(2.0));

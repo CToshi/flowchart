@@ -1,17 +1,21 @@
 package view.shape;
 
-import factory.RectangleShapeFactory;
-import factory.RectangleShapeFactory.Type;
+import entities.ShapeState.Type;
+import factory.ShapeFactory;
+import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 
 public class RoundedRectangleShape extends RectangleShape {
 	private Rectangle self;
 
-
 	public RoundedRectangleShape(RectangleShape rectangle) {
 		this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight(),
 				rectangle.getSelf().getFill());
+	}
+
+	public RoundedRectangleShape(double x, double y, double width, double height) {
+		this(x, y, width, height, Color.WHITE);
 	}
 
 	public RoundedRectangleShape(double x, double y, double width, double height, Paint color) {
@@ -40,8 +44,8 @@ public class RoundedRectangleShape extends RectangleShape {
 
 	@Override
 	public RoundedRectangleShape clone() {
-		RoundedRectangleShape res = (RoundedRectangleShape) RectangleShapeFactory.create(self.getX(), self.getY(),
-				false, Type.ROUDED);
+		RoundedRectangleShape res = (RoundedRectangleShape) ShapeFactory.create(self.getX(), self.getY(), false,
+				Type.ROUNDED_RECTANGLE);
 		return res;
 	}
 }

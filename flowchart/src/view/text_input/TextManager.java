@@ -140,7 +140,6 @@ public class TextManager implements Drawable, Changable {
 	public RectangleEntity getRectangle() {
 		return rect;
 	}
-
 	@Override
 	public void setRectangle(RectangleEntity rectangle) {
 		this.rect = rectangle;
