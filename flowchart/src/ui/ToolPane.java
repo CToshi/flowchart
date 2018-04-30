@@ -1,6 +1,6 @@
 package ui;
 
-import factory.RectangleShapeFactory;
+import factory.ShapeFactory;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -26,22 +26,29 @@ public class ToolPane extends Pane {
 
 	private static final double HEIGHT_PROPORTION = 10;
 
-	public ToolPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
+	public ToolPane(RootPane parent, double width, DoubleExpression height) {
 		this.prefHeightProperty().bind(height);
-		this.prefWidthProperty().bind(width);
+		this.setPrefWidth(width);
+		// this.prefWidthProperty().bind(width);
+
 		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
-		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10), new BorderWidths(1));
+		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10),
+				new BorderWidths(1));
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
 		Rectangle rectangle = new Rectangle();
-		rectangle.xProperty().bind(width.subtract(width.multiply(0.8)).divide(2.0));
-		rectangle.yProperty().bind(height.divide(30.0));
+		// rectangle.xProperty().bind(width.subtract(width.multiply(0.8)).divide(2.0));
+		rectangle.setX((width - width * 0.8f) / 2f);
+		rectangle.setY(width * 0.1);
+//		rectangle.yProperty().bind(height.divide(30.0));
 		rectangle.setFill(Color.WHITE);
 		rectangle.setStroke(Color.BLACK);
-		rectangle.widthProperty().bind(width.multiply(0.8));
-		rectangle.heightProperty().bind(height.divide(HEIGHT_PROPORTION));
+//		rectangle.widthProperty().bind(width.multiply(0.8));
+		rectangle.setWidth(width * 0.8f);
+		rectangle.setHeight(width/2f);
+//		rectangle.heightProperty().bind(height.divide(HEIGHT_PROPORTION));
 		Label label = new Label();
 		label.setLayoutX(rectangle.getX());
 		label.setLayoutY(rectangle.getY());
@@ -52,7 +59,7 @@ public class ToolPane extends Pane {
 		label.setTooltip(tooltip);
 		label.setOnMouseClicked(e -> {
 			parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
-					RectangleShapeFactory.create(parent.getDrawPane().getCenter())));
+					ShapeFactory.create(parent.getDrawPane().getCenter())));
 		});
 
 		// rectangle.setFill(Color.TRANSPARENT);

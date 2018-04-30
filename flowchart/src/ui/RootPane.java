@@ -39,9 +39,10 @@ public class RootPane extends Pane {
 		menuBar = new MenuBar();
 		menuBar.prefWidthProperty().bind(this.widthProperty());
 		this.getChildren().addAll(bottomPane, menuBar);
-		toolPane = new ToolPane(this, this.widthProperty().multiply(0.2),
+		final double TOOL_PANE_WIDTH = 100;
+		toolPane = new ToolPane(this, TOOL_PANE_WIDTH,
 				this.heightProperty().subtract(menuBar.heightProperty()));
-		drawPane = new DrawPane(this, this.widthProperty().multiply(0.8),
+		drawPane = new DrawPane(this, this.widthProperty().subtract(TOOL_PANE_WIDTH),
 				this.heightProperty().subtract(menuBar.heightProperty()));
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());

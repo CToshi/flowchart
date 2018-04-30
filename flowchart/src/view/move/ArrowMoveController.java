@@ -2,45 +2,74 @@ package view.move;
 
 import java.util.LinkedList;
 
+import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
+import ui.DrawPane;
 import view.shape.ArrowShape;
 
 public class ArrowMoveController implements Cloneable,MoveController{
 
 	private ArrowShape arrowShape;
-	private DraggablePoint startPoint;
-	private DraggablePoint endPoint;
 	private LinkedList<Node> linkedList;
-	
-	
+	private DraggablePoint startdDraggablePoint;
+	private DraggablePoint endDraggablePoint;
+	private DrawPane parent;
+	private boolean isSelected;
+	private int ID;
+
+	public ArrowMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint) {
+		this(parent, startPoint,endPoint,false);
+	}
+
+	private ArrowMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint,boolean isClone) {
+		if(!isClone){
+			this.parent = parent;
+			this.ID = parent.getControllerID();
+			this.linkedList = new LinkedList<Node>();
+			this.arrowShape = new ArrowShape(startPoint, endPoint);
+			this.isSelected = false;
+			this.startdDraggablePoint = new DraggablePoint(startPoint) {
+				@Override
+				public void update(PointEntity pointEntity) {
+					startPoint.setX(pointEntity.getX());
+					startPoint.setY(pointEntity.getY());
+				}};
+			this.endDraggablePoint = new DraggablePoint(endPoint) {
+				@Override
+				public void update(PointEntity pointEntity) {
+					endPoint.setX(pointEntity.getX());
+					endPoint.setY(pointEntity.getY());
+				}};
+			this.linkedList.addAll(arrowShape.getNodes());
+		}
+	}
+
+
+
 	@Override
 	public LinkedList<Node> getNodes() {
-		// TODO Auto-generated method stub
-		return null;
+		return linkedList;
 	}
 
 	@Override
 	public int getID() {
-		// TODO Auto-generated method stub
-		return 0;
+		return ID;
 	}
 
 	@Override
 	public void setSelected(boolean isSelected) {
-		// TODO Auto-generated method stub
-		
+		this.isSelected = isSelected;
 	}
 
 	@Override
 	public boolean isSelected() {
 		// TODO Auto-generated method stub
-		return false;
+		return isSelected;
 	}
 
 	@Override
 	public MoveController clone() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -49,6 +78,4 @@ public class ArrowMoveController implements Cloneable,MoveController{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
-	
 }

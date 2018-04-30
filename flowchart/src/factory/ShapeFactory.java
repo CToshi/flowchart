@@ -5,7 +5,7 @@ import javafx.scene.paint.Color;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
 
-public class RectangleShapeFactory {
+public class ShapeFactory {
 	public static enum TYPE {
 		DEFAULT, ROUDED
 	};

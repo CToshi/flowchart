@@ -43,6 +43,21 @@ public class TriangleShape implements Drawable{
 		return new Double[] { vertex.getX(), vertex.getY(), x1, y1, x2, y2 };
 	}
 
+	private void update(){
+		this.polygon.getPoints().clear();
+		this.polygon.getPoints().addAll(getTriangle());
+	}
+
+	public void setDirectPoint(PointEntity directPoint) {
+		this.directPoint = directPoint;
+		update();
+	}
+
+	public void setVertex(PointEntity vertex) {
+		this.vertex = vertex;
+		update();
+	}
+
 	@Override
 	public LinkedList<Node> getNodes() {
 		return Util.getList(polygon);

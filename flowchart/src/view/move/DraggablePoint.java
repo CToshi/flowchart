@@ -19,7 +19,7 @@ public abstract class DraggablePoint{
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-				
+
 			}
 
 			@Override
@@ -43,7 +43,7 @@ public abstract class DraggablePoint{
 		circle.setCenterX(centerPoint.getX());
 		circle.setCenterY(centerPoint.getY());
 	}
-	public abstract void update(PointEntity point);
+	public abstract void update(PointEntity pointEntity);
 //	public abstract void whenReleased();
 //	public abstract void whenPressed();
 }

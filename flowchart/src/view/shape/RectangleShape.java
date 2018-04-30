@@ -4,7 +4,7 @@ import java.util.LinkedList;
 
 import entities.PointEntity;
 import entities.RectangleEntity;
-import factory.RectangleShapeFactory;
+import factory.ShapeFactory;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -56,7 +56,7 @@ public class RectangleShape extends ShapeItem {
 
 	@Override
 	public RectangleShape clone() {
-		RectangleShape res = RectangleShapeFactory.create(self.getX(), self.getY(), false);
+		RectangleShape res = ShapeFactory.create(self.getX(), self.getY(), false);
 		return res;
 	}
 }

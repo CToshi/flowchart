@@ -10,11 +10,8 @@ import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Border;
@@ -22,6 +19,7 @@ import javafx.scene.layout.BorderStroke;
 import javafx.scene.layout.BorderStrokeStyle;
 import javafx.scene.layout.BorderWidths;
 import javafx.scene.layout.CornerRadii;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
@@ -34,12 +32,11 @@ import view.move.MoveController;
  * @author Toshi
  *
  */
-public class DrawPane extends ScrollPane {
+public class DrawPane extends Pane{
 	// private DrawManager manager;
 
-	private AnchorPane anchorPane;
 	private RootPane parent;
-	private boolean hasSelected;
+//	private boolean hasSelected;
 	/**
 	 * 存放MoveController, 用以取消选中、撤销和反撤销操作
 	 */
@@ -51,11 +48,15 @@ public class DrawPane extends ScrollPane {
 
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
+	private int selectedCount;
+	private int controllerID;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
+		this.controllerID = 0;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
+
 		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
 		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10),
@@ -67,19 +68,25 @@ public class DrawPane extends ScrollPane {
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
-		this.anchorPane = new AnchorPane();
-		this.setOnMouseMoved(e->{
-			Main.test(this.getHvalue());
-		});
-		this.setContent(this.anchorPane);
+//		this.setPrefSize(100, 100);
+//		this.anchorPane.setPrefSize(100, 100);
+
+
+		this.minWidthProperty().bind(width.subtract(100));
+		this.minHeightProperty().bind(height.subtract(100));
+//		this.anchorPane.setOnMouseMoved(e->{
+//			Main.test(anchorPane.getMinWidth(), anchorPane.getMinHeight());
+//			Main.test(width.getValue(), height.getValue());
+//			Main.test(DrawPane.this.getHvalue(), DrawPane.this.getVvalue());
+//		});
 		// this.setOnMouseClicked(e->{
 		// e.getClickCount();
 		//
 		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
 		// });
 		add(selectRect);
-		Parent p = null;
-		ScrollPane s = (ScrollPane) p;
+//		this.getChildren().add(selectRect);
+//		this.add(selectRect);
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
@@ -94,12 +101,22 @@ public class DrawPane extends ScrollPane {
 						controller.setSelected(true);
 					}
 				}
+				/**
+				 * 移除屏幕，否则会影响点击空白判定
+				 */
+				selectRect.setX(-100);
+				selectRect.setWidth(0);
 			}
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
-				if (hasSelected)
+				Main.test(mouse.getTarget());
+				boolean clickNoting = mouse.getTarget().equals(DrawPane.this);
+				if (!clickNoting) {
 					return;
+				}
+				selectedCount = 0;
+				Main.test(clickNoting, selectedCount);
 				/**
 				 * 按下时，位置移动到按下点，长宽设为0，显示框颜色，关闭所有图形的选中
 				 */
@@ -108,9 +125,7 @@ public class DrawPane extends ScrollPane {
 				selectRect.setWidth(0);
 				selectRect.setHeight(0);
 				selectRect.setStroke(Color.BLACK);
-				// if (!DrawPane.this.hasSelected) {
 				closeOthers(null);
-				// }
 			}
 
 			@Override
@@ -161,10 +176,27 @@ public class DrawPane extends ScrollPane {
 	//
 	// this.hasSelected = hasSelected;
 	// }
-	public void informSelected(MoveController controller, boolean isSelected) {
-		this.hasSelected = isSelected;
-		if (!hasKey(KeyCode.CONTROL) && isSelected) {
-			closeOthers(controller);
+//	public void informSelected(MoveController controller, boolean isSelected) {
+//		this.hasSelected = isSelected;
+//		if (!hasKey(KeyCode.CONTROL) && isSelected) {
+//			closeOthers(controller);
+//	public void setHasSelected(boolean hasSelected) {
+//		this.hasSelected = hasSelected;
+//		if (selectedCount == 0 || hasKey(KeyCode.CONTROL)) {
+//			selectedCount++;
+//		} else if (selectedCount == 1 && !hasKey(KeyCode.CONTROL)) {
+//			closeOthers((MoveFrame) mouse.getTarget());
+//		}
+//		Main.test(selectedCount);
+//	}
+
+	public void informSelected(MoveController frame) {
+//		this.hasSelected = isSelected;
+		Main.test("inf");
+		if (selectedCount == 0 || hasKey(KeyCode.CONTROL)) {
+			selectedCount++;
+		} else if (selectedCount == 1 && !hasKey(KeyCode.CONTROL)) {
+			closeOthers(frame);
 		}
 	}
 
@@ -188,7 +220,7 @@ public class DrawPane extends ScrollPane {
 	 */
 	public void add(Node... nodes) {
 		for (Node e : nodes) {
-			anchorPane.getChildren().add(e);
+			this.getChildren().add(e);
 		}
 	}
 
@@ -207,7 +239,7 @@ public class DrawPane extends ScrollPane {
 
 	private void delete(LinkedList<Node> nodes) {
 		for (Node e : nodes) {
-			anchorPane.getChildren().remove(e);
+			this.getChildren().remove(e);
 		}
 	}
 
@@ -300,7 +332,11 @@ public class DrawPane extends ScrollPane {
 
 	public void remove(Node... nodes) {
 		for (Node node : nodes) {
-			anchorPane.getChildren().remove(node);
+			this.getChildren().remove(node);
 		}
+	}
+
+	public int getControllerID(){
+		return controllerID++;
 	}
 }

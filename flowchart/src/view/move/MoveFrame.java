@@ -88,8 +88,10 @@ public class MoveFrame implements Cloneable ,MoveController{
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
 				lastRect = this.getRectangle();
-//				setHasSelected(true);
-				parent.informSelected(MoveFrame.this, true);
+				// setHasSelected(true);
+				if (!isSelected) {
+					parent.informSelected(MoveFrame.this);
+				}
 				setSelected(true);
 //				setSelected(true, true);
 				if(mouse.getClickCount() >= 2){
@@ -101,8 +103,8 @@ public class MoveFrame implements Cloneable ,MoveController{
 
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-//				setHasSelected(false);
-				parent.informSelected(null, false);
+				// setHasSelected(false);
+				// parent.informSelected(null, false);
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
 					informChange();
@@ -139,9 +141,9 @@ public class MoveFrame implements Cloneable ,MoveController{
 	 *
 	 * @param hasSelected
 	 */
-	void setHasSelected(boolean hasSelected) {
-		parent.informSelected(this, hasSelected);
-	}
+	// void setHasSelected(boolean hasSelected) {
+	// parent.informSelected(this, hasSelected);
+	// }
 
 	@Override
 	public LinkedList<Node> getNodes() {
@@ -210,18 +212,18 @@ public class MoveFrame implements Cloneable ,MoveController{
 	 * @param onlyOne
 	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
 	 */
-//	public void setSelected(boolean isSelected, boolean onlyOne) {
-//		this.isSelected = isSelected;
-//		if (isSelected) {
-//			setShow();
-//			if (onlyOne && !parent.hasKey(KeyCode.CONTROL)) {
-//				parent.closeOthers(this);
-////				textManager.showInput();
-//			}
-//		} else {
-//			setHidden();
-//		}
-//	}
+	// public void setSelected(boolean isSelected, boolean onlyOne) {
+	// this.isSelected = isSelected;
+	// if (isSelected) {
+	// setShow();
+	// if (onlyOne && !parent.hasKey(KeyCode.CONTROL)) {
+	// parent.closeOthers(this);
+	//// textManager.showInput();
+	// }
+	// } else {
+	// setHidden();
+	// }
+	// }
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 		if (isSelected) {
@@ -250,7 +252,6 @@ public class MoveFrame implements Cloneable ,MoveController{
 		nodeList.addAll(rectangle.getNodes());
 //		nodeList.add(textManager.getTopNode());
 //		nodeList.addAll(textManager.getNodes());
-
 	}
 
 	public int getID() {
@@ -280,11 +281,11 @@ public class MoveFrame implements Cloneable ,MoveController{
 		parent.change(getID(), this);
 	}
 
-	public void remove(Node...nodes){
+	public void remove(Node... nodes) {
 		parent.remove(nodes);
 	}
 
-	public void add(Node...nodes){
+	public void add(Node... nodes) {
 		parent.add(nodes);
 	}
 	private void closeInput(){
