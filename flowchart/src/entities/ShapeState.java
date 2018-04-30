@@ -3,13 +3,13 @@ package entities;
 public class ShapeState {
 	private RectangleEntity rectangle;
 	private String text;
-	private TYPE type;
+	private Type type;
 
-	public static enum TYPE {
+	public static enum Type {
 		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW,
 	}
 
-	public ShapeState(RectangleEntity rectangle, String text, TYPE type) {
+	public ShapeState(RectangleEntity rectangle, String text, Type type) {
 		this.rectangle = rectangle;
 		this.text = text;
 		this.type = type;
@@ -31,7 +31,7 @@ public class ShapeState {
 		this.text = text;
 	}
 
-	public TYPE getType() {
+	public Type getType() {
 		return type;
 	}
 
