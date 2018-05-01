@@ -12,6 +12,8 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import view.move.ArrowMoveController;
+import view.move.MoveController;
 import view.move.MoveFrame;
 
 /**
@@ -49,6 +51,10 @@ public class RootPane extends Pane {
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
 
+	}
+
+	public void addToDrawPane(ArrowMoveController arrowMoveController){
+		drawPane.add(arrowMoveController);
 	}
 
 	public void addToDrawPane(MoveFrame frame) {

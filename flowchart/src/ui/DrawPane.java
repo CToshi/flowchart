@@ -24,6 +24,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import view.inter.Draggable;
+import view.move.ArrowMoveController;
 import view.move.MoveController;
 
 /**
@@ -71,6 +72,9 @@ public class DrawPane extends Pane{
 //		this.setPrefSize(100, 100);
 //		this.anchorPane.setPrefSize(100, 100);
 
+		ArrowMoveController arrowMoveController = new ArrowMoveController(this,
+				new PointEntity(400,400),new PointEntity(500,500));
+		this.add(arrowMoveController.getNodes());
 
 		this.minWidthProperty().bind(width.subtract(100));
 		this.minHeightProperty().bind(height.subtract(100));

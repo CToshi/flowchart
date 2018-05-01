@@ -5,6 +5,7 @@ import factory.ShapeFactory.Type;
 
 import java.util.LinkedList;
 
+import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
@@ -21,6 +22,7 @@ import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import view.move.ArrowMoveController;
 import view.move.MoveFrame;
 
 /**
@@ -45,7 +47,7 @@ public class ToolPane extends Pane {
 		Border border = new Border(borderStroke);
 		this.setBorder(border);
 
-		ToolItem[] toolItems = new ToolItem[2];
+		ToolItem[] toolItems = new ToolItem[3];
 		toolItems[0] = new ToolItem(new RectangleEntity(0, 0, width, width / 1.5f), ShapeFactory.create(0, 0),
 				"处理框,表示算法的一个步骤,一个处理环节") {
 
@@ -62,6 +64,16 @@ public class ToolPane extends Pane {
 			public void whenClicked(MouseEvent mouse) {
 				parent.addToDrawPane(new MoveFrame(parent.getDrawPane(),
 						ShapeFactory.create(parent.getDrawPane().getCenter(), Type.ROUDED)));
+			}
+		};
+		toolItems[2] = new ToolItem(new RectangleEntity(0, width / 1.5f*2f, width, width / 1.5f),
+				ShapeFactory.create(0,0,false,new PointEntity(0,width / 1.5f*2f),new PointEntity(width, width / 1.5f*2f)),
+				"直线箭头,连接不同操作框,表示两者之间有一定的联系") {
+
+			@Override
+			public void whenClicked(MouseEvent mouse) {
+				parent.addToDrawPane(new ArrowMoveController(parent.getDrawPane(),
+						ShapeFactory.create(parent.getDrawPane().getCenter(),true, Type.ROUDED)));
 			}
 		};
 

@@ -45,7 +45,9 @@ public class ArrowMoveController implements Cloneable,MoveController{
 		}
 	}
 
-
+	public ArrowShape getArrowShape() {
+		return arrowShape;
+	}
 
 	@Override
 	public LinkedList<Node> getNodes() {
