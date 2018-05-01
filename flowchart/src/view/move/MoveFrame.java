@@ -2,15 +2,15 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.DrawPane;
-import view.inter.Drawable;
 import view.shape.ShapeItem;
+import view.text_input.InputController;
 import view.text_input.TextManager;
 
 /**
@@ -19,7 +19,7 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Drawable, Cloneable {
+public class MoveFrame implements Cloneable, MoveController {
 
 	private DraggableRectangle rectangle;
 	/**
@@ -46,6 +46,7 @@ public class MoveFrame implements Drawable, Cloneable {
 	 */
 	private ShapeItem shapeItem;
 	private TextManager textManager;
+	private InputController inputController;
 
 	private LinkedList<Node> nodeList;
 	/**
@@ -56,6 +57,8 @@ public class MoveFrame implements Drawable, Cloneable {
 
 	private boolean isSelected;
 
+	private boolean isInputIng;
+
 	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
 		this(parent, shapeItem, false);
 	}
@@ -64,7 +67,7 @@ public class MoveFrame implements Drawable, Cloneable {
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
-	 * @param shapeItem
+	 * @param shapeItem MoveFrame的初始位置由ShapeItem决定
 	 * @param isClone
 	 *            clone时ID不会自增
 	 *
@@ -74,6 +77,7 @@ public class MoveFrame implements Drawable, Cloneable {
 			this.ID = MOVE_FRAME_ID++;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
+		this.inputController = InputController.getInstance();
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
 				shapeItem.getHeight()) {
 			private RectangleEntity lastRect;
@@ -94,7 +98,11 @@ public class MoveFrame implements Drawable, Cloneable {
 				setSelected(true);
 				// setSelected(true, true);
 				if (mouse.getClickCount() >= 2) {
-					textManager.showInput();
+					isInputIng = true;
+					inputController.getTextArea().setText(textManager.getText());
+					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
+					parent.add(inputController.getTextArea());
+					// textManager.showInput();
 				}
 			}
 
@@ -127,7 +135,7 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setOtherPoint(points[i ^ 1]);
 		}
-		textManager = new TextManager(shapeItem.getRectangle());
+		textManager = new TextManager(shapeItem.getTextRectangle());
 		setHidden();
 		nodeList = new LinkedList<>();
 		this.initNodeList();
@@ -158,7 +166,7 @@ public class MoveFrame implements Drawable, Cloneable {
 		}
 		RectangleEntity rect = rectangle.getRectangle();
 		shapeItem.setRectangle(rect);
-		textManager.setRectangle(rect);
+		textManager.setRectangle(shapeItem.getTextRectangle());
 	}
 
 	/**
@@ -169,7 +177,7 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setHide();
 		}
-		textManager.closeInput();
+		this.closeInput();
 	}
 
 	/**
@@ -246,11 +254,8 @@ public class MoveFrame implements Drawable, Cloneable {
 		for (int i = 0; i < points.length; i++) {
 			nodeList.addAll(points[i].getNodes());
 		}
-		nodeList.add(textManager.getBottomNode());
+		nodeList.addAll(textManager.getNodes());
 		nodeList.addAll(rectangle.getNodes());
-		nodeList.add(textManager.getTopNode());
-		// nodeList.addAll(textManager.getNodes());
-
 	}
 
 	public int getID() {
@@ -286,5 +291,12 @@ public class MoveFrame implements Drawable, Cloneable {
 
 	public void add(Node... nodes) {
 		parent.add(nodes);
+	}
+
+	private void closeInput() {
+		if (isInputIng) {
+			textManager.setText(inputController.getTextArea().getText());
+			parent.remove(inputController.getTextArea());
+		}
 	}
 }

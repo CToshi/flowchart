@@ -1,6 +1,5 @@
 package ui;
 
-import application.Main;
 import javafx.scene.Scene;
 
 public class MainScene extends Scene{

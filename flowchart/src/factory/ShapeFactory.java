@@ -1,8 +1,10 @@
 package factory;
 
+import application.Main;
 import entities.PointEntity;
 import entities.ShapeState.Type;
 import view.shape.Diamond;
+import view.shape.Parallelogram;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
 import view.shape.ShapeItem;
@@ -20,10 +22,6 @@ public class ShapeFactory {
 		return create(center.getX(), center.getY(), true, type);
 	}
 
-	public static ShapeItem create(double x, double y, Type type) {
-		return create(x, y, false, type);
-	}
-
 	/**
 	 *
 	 * @param x
@@ -34,20 +32,29 @@ public class ShapeFactory {
 	 * @return
 	 */
 	public static ShapeItem create(double x, double y, boolean isCenter, Type type) {
+		double width = DEFAULT_WIDTH;
+		double height = DEFAULT_HEIGHT;
 		if (isCenter) {
-			x -= DEFAULT_WIDTH / 2f;
-			y -= DEFAULT_HEIGHT / 2f;
+			x -= width / 2f;
+			y -= height / 2f;
 		}
 		switch (type) {
 		case RECTANGLE:
-			return new RectangleShape(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+			return new RectangleShape(x, y, width, height);
 		case ROUNDED_RECTANGLE:
-			return new RoundedRectangleShape(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+			return new RoundedRectangleShape(x, y, width, height);
 		case DIAMOND:
-			return new Diamond(x, y, DEFAULT_WIDTH, DEFAULT_HEIGHT);
+			return new Diamond(x, y, width, height);
+		case PARALLELOGRAM:
+			return new Parallelogram(x, y, width, height);
 		default:
+			Main.test("»¹Ã»×ö");
 			return null;
 		}
+	}
+
+	public static ShapeItem create(double x, double y, Type type) {
+		return create(x, y, false, type);
 	}
 
 }
