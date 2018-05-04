@@ -136,6 +136,6 @@ public class TextManager implements Drawable, Changable {
 	}
 
 	public String getText() {
-		return text.getText();
+		return content;
 	}
 }

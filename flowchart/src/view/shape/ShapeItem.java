@@ -1,10 +1,11 @@
 package view.shape;
 
 import entities.RectangleEntity;
+import entities.DrawableState.Type;
 import view.inter.Changable;
 import view.inter.Drawable;
 
-public abstract class ShapeItem implements Drawable, Changable, Cloneable {
+public abstract class ShapeItem implements Changable, Cloneable, Drawable{
 	@Override
 	public ShapeItem clone() {
 		try {
@@ -17,4 +18,5 @@ public abstract class ShapeItem implements Drawable, Changable, Cloneable {
 	public RectangleEntity getTextRectangle(){
 		return this.getRectangle();
 	}
+	public abstract Type getType();
 }

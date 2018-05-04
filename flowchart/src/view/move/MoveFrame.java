@@ -3,7 +3,9 @@ package view.move;
 import java.util.LinkedList;
 
 import application.Main;
+import entities.DrawableState;
 import entities.RectangleEntity;
+import entities.ShapeState;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -67,7 +69,8 @@ public class MoveFrame implements Cloneable, MoveController {
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
-	 * @param shapeItem MoveFrame的初始位置由ShapeItem决定
+	 * @param shapeItem
+	 *            MoveFrame的初始位置由ShapeItem决定
 	 * @param isClone
 	 *            clone时ID不会自增
 	 *
@@ -297,6 +300,19 @@ public class MoveFrame implements Cloneable, MoveController {
 		if (isInputIng) {
 			textManager.setText(inputController.getTextArea().getText());
 			parent.remove(inputController.getTextArea());
+			isInputIng = false;
 		}
+	}
+
+	@Override
+	public DrawableState getState() {
+		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType());
+	}
+
+	@Override
+	public void setState(DrawableState state) {
+		ShapeState shapeState = (ShapeState) state;
+		rectangle.setRectangle(shapeState.getRectangle());
+		textManager.setText(shapeState.getText());
 	}
 }

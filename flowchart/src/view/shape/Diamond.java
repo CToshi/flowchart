@@ -1,5 +1,6 @@
 package view.shape;
 
+import entities.DrawableState.Type;
 import entities.RectangleEntity;
 
 public class Diamond extends Polygonal {
@@ -28,6 +29,11 @@ public class Diamond extends Polygonal {
 		double w = getWidth() / 2f;
 		double h = getHeight() / 2f;
 		return new RectangleEntity(x, y, w, h);
+	}
+
+	@Override
+	public Type getType() {
+		return Type.DIAMOND;
 	}
 
 }

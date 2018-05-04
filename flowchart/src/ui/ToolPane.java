@@ -2,8 +2,8 @@ package ui;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;

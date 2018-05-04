@@ -2,9 +2,9 @@ package view.shape;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import factory.ShapeFactory;
 import javafx.scene.Node;
 import javafx.scene.paint.Color;
@@ -69,5 +69,9 @@ public class RectangleShape extends ShapeItem {
 	public RectangleShape clone() {
 		RectangleShape res = (RectangleShape) ShapeFactory.create(self.getX(), self.getY(), false, Type.RECTANGLE);
 		return res;
+	}
+	@Override
+	public Type getType() {
+		return Type.RECTANGLE;
 	}
 }

@@ -1,13 +1,9 @@
 package entities;
 
-public class ShapeState {
+public class ShapeState extends DrawableState{
 	private RectangleEntity rectangle;
 	private String text;
 	private Type type;
-
-	public static enum Type {
-		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW,
-	}
 
 	public ShapeState(RectangleEntity rectangle, String text, Type type) {
 		this.rectangle = rectangle;
@@ -22,7 +18,6 @@ public class ShapeState {
 	public void setRectangle(RectangleEntity rectangle) {
 		this.rectangle = rectangle;
 	}
-
 	public String getText() {
 		return text;
 	}
@@ -30,7 +25,7 @@ public class ShapeState {
 	public void setText(String text) {
 		this.text = text;
 	}
-
+	@Override
 	public Type getType() {
 		return type;
 	}

@@ -2,6 +2,7 @@ package view.move;
 
 import java.util.LinkedList;
 
+import entities.DrawableState;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
@@ -77,5 +78,14 @@ public class ArrowMoveController implements Cloneable,MoveController{
 	public RectangleEntity getRectangle() {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	@Override
+	public DrawableState getState() {
+		return null;
+	}
+
+	@Override
+	public void setState(DrawableState state) {
 	}
 }

@@ -5,9 +5,9 @@ import java.util.LinkedList;
 import java.util.Map.Entry;
 
 import datastructure.LimitedStack;
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import factory.ShapeFactory;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
@@ -27,6 +27,7 @@ import javafx.util.Pair;
 import view.inter.Draggable;
 import view.move.MoveController;
 import view.move.MoveFrame;
+import view.shape.ShapeItem;
 
 /**
  * 图形的绘制区域
@@ -71,24 +72,9 @@ public class DrawPane extends Pane {
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
-		// this.setPrefSize(100, 100);
-		// this.anchorPane.setPrefSize(100, 100);
-
 		this.minWidthProperty().bind(width.subtract(100));
 		this.minHeightProperty().bind(height.subtract(100));
-		// this.anchorPane.setOnMouseMoved(e->{
-		// Main.test(anchorPane.getMinWidth(), anchorPane.getMinHeight());
-		// Main.test(width.getValue(), height.getValue());
-		// Main.test(DrawPane.this.getHvalue(), DrawPane.this.getVvalue());
-		// });
-		// this.setOnMouseClicked(e->{
-		// e.getClickCount();
-		//
-		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
-		// });
 		add(selectRect);
-		// this.getChildren().add(selectRect);
-		// this.add(selectRect);
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
@@ -118,7 +104,7 @@ public class DrawPane extends Pane {
 				}
 				if (shapeCreationType != null) {
 					add(new MoveFrame(DrawPane.this,
-							ShapeFactory.create(mouse.getX(), mouse.getY(), true, shapeCreationType)));
+							(ShapeItem) ShapeFactory.create(mouse.getX(), mouse.getY(), true, shapeCreationType)));
 					shapeCreationType = null;
 					return;
 				}
@@ -271,7 +257,6 @@ public class DrawPane extends Pane {
 				delete(controller.getNodes());
 				// delete(oldControllers[i].getNodes());
 			}
-
 			if (newControllers[i] != null) {
 				oldMap.put(ids[i], newControllers[i].clone());
 			}

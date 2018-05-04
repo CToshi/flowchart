@@ -1,9 +1,11 @@
 package factory;
 
 import application.Main;
+import entities.DrawableState;
+import entities.DrawableState.Type;
 import entities.PointEntity;
-import entities.ShapeState.Type;
 import view.shape.Diamond;
+import view.shape.ShapeItem;
 import view.shape.Parallelogram;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
@@ -56,5 +58,4 @@ public class ShapeFactory {
 	public static ShapeItem create(double x, double y, Type type) {
 		return create(x, y, false, type);
 	}
-
 }
