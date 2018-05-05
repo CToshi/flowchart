@@ -9,7 +9,6 @@ public interface MoveController extends Drawable{
 	public int getID();
 	public void setSelected(boolean isSelected);
 	public boolean isSelected();
-	public MoveController clone();
 	public RectangleEntity getRectangle();
 	public DrawableState getState();
 	public void setState(DrawableState state);

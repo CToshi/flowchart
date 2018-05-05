@@ -133,4 +133,8 @@ public class RectangleEntity {
 		}
 		return false;
 	}
+	@Override
+	public String toString() {
+		return String.format("[x=%.2f, y=%.2f][width=%.2f, height=%.2f]", getX(), getY(), getWidth(), getHeight());
+	}
 }

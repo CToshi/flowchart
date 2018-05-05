@@ -1,6 +1,7 @@
 package controller;
 
 import entities.DrawableState.Type;
+import factory.MoveControllerFactory;
 import factory.ShapeFactory;
 import javafx.scene.input.MouseEvent;
 import ui.DrawPane;
@@ -25,7 +26,8 @@ public class ShapeCreationController {
 		if (mouse.getClickCount() == 1) {
 			drawPane.setShapeCreationType(shapeType);
 		} else {
-			drawPane.add(new MoveFrame(drawPane, ShapeFactory.create(drawPane.getCenter(), shapeType)));
+//			drawPane.add(new MoveFrame(drawPane, ShapeFactory.create(drawPane.getCenter(), shapeType)));
+			drawPane.add(MoveControllerFactory.create(drawPane.getCenter(), shapeType));
 			drawPane.setShapeCreationType(null);
 		}
 	}

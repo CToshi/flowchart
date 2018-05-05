@@ -3,6 +3,7 @@ package ui;
 import java.util.LinkedList;
 
 import controller.ShapeCreationController;
+import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
@@ -48,7 +49,7 @@ public class RootPane extends Pane {
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
-
+		MoveControllerFactory.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveFrame frame) {

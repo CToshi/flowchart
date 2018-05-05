@@ -21,7 +21,7 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Cloneable, MoveController {
+public class MoveFrame implements MoveController {
 
 	private DraggableRectangle rectangle;
 	/**
@@ -61,10 +61,6 @@ public class MoveFrame implements Cloneable, MoveController {
 
 	private boolean isInputIng;
 
-	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
-		this(parent, shapeItem, false);
-	}
-
 	/**
 	 *
 	 * @param parent
@@ -75,9 +71,8 @@ public class MoveFrame implements Cloneable, MoveController {
 	 *            clone时ID不会自增
 	 *
 	 */
-	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean isClone) {
-		if (!isClone)
-			this.ID = MOVE_FRAME_ID++;
+	public MoveFrame(DrawPane parent, ShapeItem shapeItem, int ID) {
+		this.ID = ID;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
 		this.inputController = InputController.getInstance();
@@ -269,12 +264,12 @@ public class MoveFrame implements Cloneable, MoveController {
 		return rectangle.getRectangle();
 	}
 
-	@Override
-	public MoveFrame clone() {
-		MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-		frame.ID = ID;
-		return frame;
-	}
+//	@Override
+//	public MoveFrame clone() {
+//		MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
+//		frame.ID = ID;
+//		return frame;
+//	}
 
 	@Override
 	public boolean equals(Object obj) {
@@ -306,7 +301,7 @@ public class MoveFrame implements Cloneable, MoveController {
 
 	@Override
 	public DrawableState getState() {
-		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType());
+		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType(), getID());
 	}
 
 	@Override
@@ -314,5 +309,7 @@ public class MoveFrame implements Cloneable, MoveController {
 		ShapeState shapeState = (ShapeState) state;
 		rectangle.setRectangle(shapeState.getRectangle());
 		textManager.setText(shapeState.getText());
+		fixPosition();
+		this.ID = state.getID();
 	}
 }
