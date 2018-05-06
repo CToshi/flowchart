@@ -9,24 +9,19 @@ import javafx.scene.Node;
 import ui.DrawPane;
 import view.shape.ArrowShape;
 
-public class ArrowMoveController implements Cloneable,MoveController{
+public class ArrowMoveController implements Cloneable, MoveController {
 
 	private ArrowShape arrowShape;
 	private LinkedList<Node> linkedList;
 	private DraggablePoint startDraggablePoint;
 	private DraggablePoint endDraggablePoint;
-	private DrawPane parent;
+//	private DrawPane parent;
 	private boolean isSelected;
-	private int ID;
+	private int id;
 
-	public ArrowMoveController(DrawPane parent,ArrowShape arrowShape) {
-		this(parent,arrowShape,false);
-	}
-
-	private ArrowMoveController(DrawPane parent,ArrowShape arrowShape,boolean isClone) {
-		this.parent = parent;
-		if(!isClone)
-			this.ID = parent.getControllerID();
+	public ArrowMoveController(DrawPane parent, ArrowShape arrowShape, int id) {
+		this.id = id;
+//		this.parent = parent;
 		this.linkedList = new LinkedList<Node>();
 		this.arrowShape = arrowShape;
 		this.isSelected = false;
@@ -37,19 +32,21 @@ public class ArrowMoveController implements Cloneable,MoveController{
 			public void update(PointEntity pointEntity) {
 				startPoint.setX(pointEntity.getX());
 				startPoint.setY(pointEntity.getY());
-			}};
+			}
+		};
 		this.endDraggablePoint = new DraggablePoint(endPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
 				endPoint.setX(pointEntity.getX());
 				endPoint.setY(pointEntity.getY());
-			}};
+			}
+		};
 		this.linkedList.addAll(arrowShape.getNodes());
 		this.linkedList.addAll(this.startDraggablePoint.getNodes());
 		this.linkedList.addAll(this.endDraggablePoint.getNodes());
 	}
 
-	public void hide(){
+	public void hide() {
 
 	}
 
@@ -64,7 +61,7 @@ public class ArrowMoveController implements Cloneable,MoveController{
 
 	@Override
 	public int getID() {
-		return ID;
+		return id;
 	}
 
 	@Override

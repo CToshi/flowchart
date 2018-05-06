@@ -49,7 +49,7 @@ public class MoveControllerFactory {
 		switch (shapeType) {
 		case ARROW:
 			return new ArrowMoveController(MoveControllerFactory.drawPane,
-					(ArrowShape) ShapeFactory.create(x, y, isCenter, shapeType));
+					(ArrowShape) ShapeFactory.create(x, y, isCenter, shapeType), ID);
 		default:
 			return new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
 		}

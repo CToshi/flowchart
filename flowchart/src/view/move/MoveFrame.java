@@ -55,7 +55,7 @@ public class MoveFrame implements MoveController {
 	 * 唯一ID，用于撤销操作
 	 */
 	private int ID;
-	private static int MOVE_FRAME_ID;
+	// private static int MOVE_FRAME_ID;
 
 	private boolean isSelected;
 
@@ -77,7 +77,7 @@ public class MoveFrame implements MoveController {
 		this.parent = parent;
 		this.inputController = InputController.getInstance();
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
-				shapeItem.getHeight()) {
+				shapeItem.getHeight(), Cursor.MOVE, Color.TRANSPARENT) {
 			private RectangleEntity lastRect;
 
 			@Override
@@ -120,7 +120,7 @@ public class MoveFrame implements MoveController {
 			}
 
 		};
-		rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
+		// rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];
 		/**
 		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替 x
@@ -158,9 +158,23 @@ public class MoveFrame implements MoveController {
 	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
-		for (int i = 0; i < points.length; i++) {
-			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
-					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+//		Main.test("fix");
+//		for (int i = 0; i < points.length; i++) {
+//			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
+//					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+//		}
+//		RectangleEntity rect = rectangle.getRectangle();
+//		shapeItem.setRectangle(rect);
+//		textManager.setRectangle(shapeItem.getTextRectangle());
+		fixPosition(true);
+	}
+
+	private void fixPosition(boolean needFixPoints) {
+		if (needFixPoints) {
+			for (int i = 0; i < points.length; i++) {
+				points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
+						rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+			}
 		}
 		RectangleEntity rect = rectangle.getRectangle();
 		shapeItem.setRectangle(rect);
@@ -171,10 +185,12 @@ public class MoveFrame implements MoveController {
 	 * 在8个点被拖动过程中会调用此函数，会隐藏这8个点
 	 */
 	void setHidden() {
-		rectangle.setHide();
+		// rectangle.setHidden(true);
+		rectangle.setStroke(Color.TRANSPARENT);
 		for (int i = 0; i < points.length; i++) {
-			points[i].setHide();
+			points[i].setHidden(true);
 		}
+		// textManager.setHidden(true);
 		this.closeInput();
 	}
 
@@ -182,10 +198,12 @@ public class MoveFrame implements MoveController {
 	 * 拖动结束后恢复显示
 	 */
 	void setShow() {
-		rectangle.setShow();
+		// rectangle.setHidden(false);
+		rectangle.setStroke(Color.BLACK);
 		for (int i = 0; i < points.length; i++) {
-			points[i].setShow();
+			points[i].setHidden(false);
 		}
+		// textManager.setHidden(false);
 	}
 
 	public void setX(double value) {
@@ -264,12 +282,12 @@ public class MoveFrame implements MoveController {
 		return rectangle.getRectangle();
 	}
 
-//	@Override
-//	public MoveFrame clone() {
-//		MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-//		frame.ID = ID;
-//		return frame;
-//	}
+	// @Override
+	// public MoveFrame clone() {
+	// MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
+	// frame.ID = ID;
+	// return frame;
+	// }
 
 	@Override
 	public boolean equals(Object obj) {
@@ -311,5 +329,13 @@ public class MoveFrame implements MoveController {
 		textManager.setText(shapeState.getText());
 		fixPosition();
 		this.ID = state.getID();
+	}
+
+	public void whenChanging() {
+		fixPosition(false);
+	}
+
+	public void changeFinished() {
+		textManager.setHidden(false);
 	}
 }

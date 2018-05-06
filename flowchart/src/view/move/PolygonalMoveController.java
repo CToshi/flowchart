@@ -17,33 +17,28 @@ public class PolygonalMoveController implements Cloneable,MoveController{
 	private DraggablePoint endDraggablePoint;
 	private DrawPane parent;
 	private boolean isSelected;
-	private int ID;
+	private int id;
 
-	public PolygonalMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint) {
-		this(parent,startPoint,endPoint,false);
-	}
 
-	private PolygonalMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint,boolean isClone){
-		if(!isClone){
-			this.parent = parent;
-			this.ID = parent.getControllerID();
-			this.linkedList = new LinkedList<Node>();
-			this.polygonalArrowShape = new PolygonalArrowShape(startPoint, endPoint);
-			this.isSelected = false;
-			this.startdDraggablePoint = new DraggablePoint(startPoint) {
-				@Override
-				public void update(PointEntity pointEntity) {
-					startPoint.setX(pointEntity.getX());
-					startPoint.setY(pointEntity.getY());
-				}};
-			this.endDraggablePoint = new DraggablePoint(endPoint) {
-				@Override
-				public void update(PointEntity pointEntity) {
-					endPoint.setX(pointEntity.getX());
-					endPoint.setY(pointEntity.getY());
-				}};
-			this.linkedList.addAll(polygonalArrowShape.getNodes());
-		}
+	public PolygonalMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint, int id){
+		this.id = id;
+		this.parent = parent;
+		this.linkedList = new LinkedList<Node>();
+		this.polygonalArrowShape = new PolygonalArrowShape(startPoint, endPoint);
+		this.isSelected = false;
+		this.startdDraggablePoint = new DraggablePoint(startPoint) {
+			@Override
+			public void update(PointEntity pointEntity) {
+				startPoint.setX(pointEntity.getX());
+				startPoint.setY(pointEntity.getY());
+			}};
+		this.endDraggablePoint = new DraggablePoint(endPoint) {
+			@Override
+			public void update(PointEntity pointEntity) {
+				endPoint.setX(pointEntity.getX());
+				endPoint.setY(pointEntity.getY());
+			}};
+		this.linkedList.addAll(polygonalArrowShape.getNodes());
 	}
 
 	@Override
@@ -53,7 +48,7 @@ public class PolygonalMoveController implements Cloneable,MoveController{
 
 	@Override
 	public int getID() {
-		return ID;
+		return id;
 	}
 
 	@Override

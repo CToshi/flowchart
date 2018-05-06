@@ -2,7 +2,7 @@ package entities;
 
 import javafx.scene.shape.Rectangle;
 
-public class RectangleEntity {
+public class RectangleEntity implements Cloneable{
 	private double width;
 	private double height;
 	private PointEntity leftTop;
@@ -136,5 +136,14 @@ public class RectangleEntity {
 	@Override
 	public String toString() {
 		return String.format("[x=%.2f, y=%.2f][width=%.2f, height=%.2f]", getX(), getY(), getWidth(), getHeight());
+	}
+	@Override
+	public RectangleEntity clone(){
+		try {
+			return (RectangleEntity) super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

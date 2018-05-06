@@ -2,6 +2,7 @@ package view.move;
 
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 public class MovePoint extends DraggableRectangle{
 	private static final double size = 10;
@@ -11,12 +12,13 @@ public class MovePoint extends DraggableRectangle{
 	private boolean yChangable;
 
 	public MovePoint(MoveFrame target, boolean xChangable, boolean yChangable, Cursor cursor) {
-		super(0, 0, size, size, cursor);
+		super(0, 0, size, size, cursor, Color.BLACK);
 		this.setWidth(size);
 		this.setHeight(size);
 		this.parent = target;
 		this.xChangable = xChangable;
 		this.yChangable = yChangable;
+
 	}
 
 	/**
@@ -44,12 +46,14 @@ public class MovePoint extends DraggableRectangle{
 			parent.setY(Math.min(this.getCenterY(), other.getCenterY()));
 			parent.setHeight(Math.abs(this.getCenterY() - other.getCenterY()));
 		}
+		parent.whenChanging();
 	}
 
 	@Override
 	protected void whenPressed(MouseEvent mouse) {
 //		parent.setHasSelected(true);
 		parent.setHidden();
+//		parent.whenChanging();
 	}
 
 	@Override
@@ -57,6 +61,7 @@ public class MovePoint extends DraggableRectangle{
 //		parent.setHasSelected(false);
 		parent.fixPosition();
 		parent.setShow();
+//		parent.changeFinished();
 	}
 
 	/**
