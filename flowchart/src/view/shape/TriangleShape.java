@@ -24,23 +24,7 @@ public class TriangleShape implements Drawable{
 	}
 
 	private Double[] getTriangle() {
-		// Point A = new Point(2, 30), B = new Point(30, 30); // Line's two
-		// points
-		double t = EDGE_SIZE; // Triangle's length of sides
-		Vector alpha = new Vector(vertex, directPoint);
-		double a = alpha.getMod() * alpha.getMod();
-		double b = -Math.sqrt(3) * t * alpha.getMod() * alpha.getX();
-		double c = 3.0 / 4.0 * t * t * a - t * t * alpha.getY() * alpha.getY();
-		double X1 = (-b + Math.sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
-		double X2 = (-b - Math.sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
-		double x1 = X1 + vertex.getX(), x2 = X2 + vertex.getX();
-		double y1 = vertex.getY() + 0.5 * t;
-		double y2 = vertex.getY() - 0.5 * t;
-		if (alpha.getY() != 0) {
-			y1 = (Math.sqrt(3) / 2.0 * t * alpha.getMod() - alpha.getX() * X1) / alpha.getY() + vertex.getY();
-			y2 = (Math.sqrt(3) / 2.0 * t * alpha.getMod() - alpha.getX() * X2) / alpha.getY() + vertex.getY();
-		}
-		return new Double[] { vertex.getX(), vertex.getY(), x1, y1, x2, y2 };
+		return getTriangle(directPoint,vertex);
 	}
 
 	private void update(){
@@ -62,5 +46,33 @@ public class TriangleShape implements Drawable{
 	public LinkedList<Node> getNodes() {
 		return Util.getList(polygon);
 	}
+
+	private Double[] getTriangle(PointEntity A, PointEntity B) {
+		// Point A = new Point(2, 30), B = new Point(30, 30); // Line's two
+		// points
+		double t = 10, x1, x2, y1, y2; // Triangle's length of sides
+		Vector alpha = new Vector(B, A);
+		if (alpha.getY() == 0) {
+			double k = 1;
+			if (alpha.getX() < 0)
+				k = -1;
+			x1 = x2 = B.getX() + k * Math.sqrt(3.0) * 0.5 * t;
+			y1 = B.getY() + 0.5 * t;
+			y2 = B.getY() - 0.5 * t;
+		} else {
+			double k = alpha.getMod() * t * Math.sqrt(3.0) * 0.5;
+			double a = alpha.getMod() * alpha.getMod();
+			double b = -2 * alpha.getX() * k;
+			double c = k * k - alpha.getY() * alpha.getY() * t * t;
+			double n1 = (-b + Math.sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
+			double n2 = (-b - Math.sqrt(b * b - 4.0 * a * c)) / (2.0 * a);
+			x1 = n1 + B.getX();
+			x2 = n2 + B.getX();
+			y1 = (k - alpha.getX() * (x1 - B.getX())) / alpha.getY() + B.getY();
+			y2 = (k - alpha.getX() * (x2 - B.getX())) / alpha.getY() + B.getY();
+		}
+		return new Double[] { B.getX(), B.getY(), x1, y1, x2, y2 };
+	}
+
 
 }

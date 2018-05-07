@@ -3,6 +3,8 @@ package ui;
 import java.util.LinkedList;
 
 import application.Main;
+import controller.ShapeCreationController;
+import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.control.ScrollPane;
@@ -50,15 +52,13 @@ public class RootPane extends Pane {
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
-
+		ShapeCreationController.getInstance().setDrawPane(drawPane);
+		ShapeCreationController.getInstance().setToolPane(toolPane);;
+		MoveControllerFactory.setDrawPane(drawPane);
 	}
 
-	public void addToDrawPane(ArrowMoveController arrowMoveController){
-		drawPane.add(arrowMoveController);
-	}
-
-	public void addToDrawPane(MoveFrame frame) {
-		drawPane.add(frame);
+	public void addToDrawPane(MoveController moveController) {
+		drawPane.add(moveController);
 	}
 
 	public void addToDrawPane(Node... nodes) {
@@ -67,6 +67,10 @@ public class RootPane extends Pane {
 
 	public DrawPane getDrawPane() {
 		return drawPane;
+	}
+
+	public ToolPane getToolPane() {
+		return toolPane;
 	}
 
 	/**

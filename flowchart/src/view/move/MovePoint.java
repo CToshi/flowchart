@@ -4,6 +4,7 @@ import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 
 public class MovePoint extends DraggableRectangle{
+	
 	private static final double size = 10;
 	private MoveFrame parent;
 	private MovePoint other;
@@ -49,14 +50,14 @@ public class MovePoint extends DraggableRectangle{
 	@Override
 	protected void whenPressed(MouseEvent mouse) {
 //		parent.setHasSelected(true);
-		parent.setHidden();
+		parent.setHidden(true);
 	}
 
 	@Override
 	protected void whenReleased(MouseEvent mouse) {
 //		parent.setHasSelected(false);
 		parent.fixPosition();
-		parent.setShow();
+		parent.setHidden(false);
 	}
 
 	/**

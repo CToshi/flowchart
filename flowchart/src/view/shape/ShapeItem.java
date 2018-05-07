@@ -1,5 +1,6 @@
 package view.shape;
 
+import entities.RectangleEntity;
 import view.inter.Changable;
 import view.inter.Drawable;
 
@@ -12,5 +13,8 @@ public abstract class ShapeItem implements Drawable, Changable, Cloneable {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	public RectangleEntity getTextRectangle(){
+		return this.getRectangle();
 	}
 }

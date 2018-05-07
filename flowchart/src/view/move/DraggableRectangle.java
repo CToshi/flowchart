@@ -2,6 +2,7 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
@@ -22,8 +23,7 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	private PointEntity startPosition;
 	private PointEntity mousePosition;
 	private Cursor cursor;
-	private Paint fill;
-	private Paint stroke;
+	private RectangleEntity rectangle;
 	private boolean isHidden;
 
 	public DraggableRectangle(double x, double y, double width, double height) {
@@ -162,28 +162,26 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	public PointEntity getLastMouses() {
 		return lastPosition;
 	}
-	public void setHide() {
-		setHidden(true);
-	}
-
-	public void setShow() {
-		setHidden(false);
-	}
+//	public void setHide() {
+//		setHidden(true);
+//	}
+//
+//	public void setShow() {
+//		setHidden(false);
+//	}
 
 	public void setHidden(boolean isHidden) {
+		if(this.isHidden==isHidden)return;
 		this.isHidden = isHidden;
 		if(isHidden){
-//			if(this.getClass().getName().equals("view.move.MoveFrame$1")){
-//				Main.test("hid", stroke, fill, this.hashCode());
-//			}
-			self.setStroke(Color.TRANSPARENT);
-			self.setFill(Color.TRANSPARENT);
+			rectangle = this.getRectangle();
+			Main.test(this, rectangle.getX());
+			self.setX(-100);
+			self.setY(-100);
+			self.setWidth(0);
+			self.setHeight(0);
 		} else {
-//			if(this.getClass().getName().equals("view.move.MoveFrame$1")){
-//				Main.test("shw", stroke, fill, this.hashCode());
-//			}
-			self.setStroke(stroke);
-			self.setFill(fill);
+			this.setRectangle(rectangle);
 		}
 	}
 
@@ -196,8 +194,6 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	}
 
 	public void setAppearence(Paint fill, Paint stroke, double strokeWidth) {
-		this.fill = fill;
-		this.stroke = stroke;
 		self.setFill(fill);
 		self.setStroke(stroke);
 		self.setStrokeWidth(strokeWidth);
@@ -240,6 +236,13 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	@Override
 	public void setHeight(double value) {
 		self.setHeight(value);
+	}
+	@Override
+	public void setRectangle(RectangleEntity rectangle) {
+		setX(rectangle.getX());
+		setY(rectangle.getY());
+		setWidth(rectangle.getWidth());
+		setHeight(rectangle.getHeight());
 	}
 
 }

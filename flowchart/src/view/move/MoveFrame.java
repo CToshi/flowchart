@@ -18,7 +18,7 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Cloneable ,MoveController{
+public class MoveFrame implements Cloneable, MoveController {
 
 	private DraggableRectangle rectangle;
 	/**
@@ -56,6 +56,8 @@ public class MoveFrame implements Cloneable ,MoveController{
 
 	private boolean isSelected;
 
+	private boolean isInputIng;
+
 	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
 		this(parent, shapeItem, false);
 	}
@@ -64,7 +66,7 @@ public class MoveFrame implements Cloneable ,MoveController{
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
-	 * @param shapeItem
+	 * @param shapeItem MoveFrame的初始位置由ShapeItem决定
 	 * @param isClone
 	 *            clone时ID不会自增
 	 *
@@ -88,23 +90,20 @@ public class MoveFrame implements Cloneable ,MoveController{
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
 				lastRect = this.getRectangle();
-				// setHasSelected(true);
 				if (!isSelected) {
 					parent.informSelected(MoveFrame.this);
 				}
 				setSelected(true);
-//				setSelected(true, true);
-				if(mouse.getClickCount() >= 2){
-					inputController.setInformation(this.getRectangle(), textManager.getText());
+				if (mouse.getClickCount() >= 2) {
+					isInputIng = true;
+					inputController.getTextArea().setText(textManager.getText());
+					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
 					parent.add(inputController.getTextArea());
-//					textManager.showInput();
 				}
 			}
 
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-				// setHasSelected(false);
-				// parent.informSelected(null, false);
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
 					informChange();
@@ -115,6 +114,7 @@ public class MoveFrame implements Cloneable ,MoveController{
 			protected boolean isOutBound(double x, double y) {
 				return parent.isOutBound(x, y);
 			}
+
 		};
 		rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];
@@ -129,21 +129,13 @@ public class MoveFrame implements Cloneable ,MoveController{
 		for (int i = 0; i < points.length; i++) {
 			points[i].setOtherPoint(points[i ^ 1]);
 		}
-		textManager = new TextManager(shapeItem.getRectangle());
-		setHidden();
+		textManager = new TextManager(shapeItem.getTextRectangle());
+		this.setHidden(true);
 		nodeList = new LinkedList<>();
 		this.initNodeList();
 		this.fixPosition();
 	}
 
-	/**
-	 * 告知parent自己被选中
-	 *
-	 * @param hasSelected
-	 */
-	// void setHasSelected(boolean hasSelected) {
-	// parent.informSelected(this, hasSelected);
-	// }
 
 	@Override
 	public LinkedList<Node> getNodes() {
@@ -160,27 +152,16 @@ public class MoveFrame implements Cloneable ,MoveController{
 		}
 		RectangleEntity rect = rectangle.getRectangle();
 		shapeItem.setRectangle(rect);
-		textManager.setRectangle(rect);
+		textManager.setRectangle(shapeItem.getTextRectangle());
 	}
 
-	/**
-	 * 在8个点被拖动过程中会调用此函数，会隐藏这8个点
-	 */
-	void setHidden() {
-		rectangle.setHide();
+	public void setHidden(boolean isHidden){
+//		rectangle.setHidden(isHidden);
 		for (int i = 0; i < points.length; i++) {
-			points[i].setHide();
+			points[i].setHidden(isHidden);
 		}
-		this.closeInput();
-	}
-
-	/**
-	 * 拖动结束后恢复显示
-	 */
-	void setShow() {
-		rectangle.setShow();
-		for (int i = 0; i < points.length; i++) {
-			points[i].setShow();
+		if(isHidden){
+			this.closeInput();
 		}
 	}
 
@@ -204,32 +185,12 @@ public class MoveFrame implements Cloneable ,MoveController{
 		shapeItem.setHeight(value);
 	}
 
-	/**
-	 * 是否显示移动框
-	 *
-	 * @param isSelected
-	 *            true时显示，否则隐藏
-	 * @param onlyOne
-	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
-	 */
-	// public void setSelected(boolean isSelected, boolean onlyOne) {
-	// this.isSelected = isSelected;
-	// if (isSelected) {
-	// setShow();
-	// if (onlyOne && !parent.hasKey(KeyCode.CONTROL)) {
-	// parent.closeOthers(this);
-	//// textManager.showInput();
-	// }
-	// } else {
-	// setHidden();
-	// }
-	// }
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 		if (isSelected) {
-			setShow();
+			setHidden(false);
 		} else {
-			setHidden();
+			setHidden(true);
 		}
 	}
 
@@ -250,8 +211,6 @@ public class MoveFrame implements Cloneable ,MoveController{
 		}
 		nodeList.addAll(textManager.getNodes());
 		nodeList.addAll(rectangle.getNodes());
-//		nodeList.add(textManager.getTopNode());
-//		nodeList.addAll(textManager.getNodes());
 	}
 
 	public int getID() {
@@ -288,7 +247,11 @@ public class MoveFrame implements Cloneable ,MoveController{
 	public void add(Node... nodes) {
 		parent.add(nodes);
 	}
-	private void closeInput(){
-		parent.remove(inputController.getTextArea());
+
+	private void closeInput() {
+		if (isInputIng) {
+			textManager.setText(inputController.getTextArea().getText());
+			parent.remove(inputController.getTextArea());
+		}
 	}
 }

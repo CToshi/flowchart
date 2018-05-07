@@ -38,6 +38,9 @@ public abstract class Draggable{
 		getNode().setOnMouseReleased(e -> {
 			whenReleased(e);
 		});
+		getNode().setOnMouseMoved(e->{
+			whenMoved(e);
+		});
 	}
 
 	/**
@@ -66,6 +69,12 @@ public abstract class Draggable{
 	 */
 	protected abstract void whenDragged(double xDelta, double yDelta);
 
+	/**
+	 * 鼠标移动到图形上时会调用这个函数
+	 *
+	 * @param mouse
+	 */
+	protected abstract void whenMoved(MouseEvent mouse);
 	// public void setCenterXY(double x, double y) {
 	// this.setCenterX(x);
 	// this.setCenterY(y);

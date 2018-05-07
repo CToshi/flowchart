@@ -11,38 +11,45 @@ import view.shape.ArrowShape;
 public class ArrowMoveController implements Cloneable,MoveController{
 
 	private ArrowShape arrowShape;
+	private DraggableLine draggableLine;
 	private LinkedList<Node> linkedList;
-	private DraggablePoint startdDraggablePoint;
+	private DraggablePoint startDraggablePoint;
 	private DraggablePoint endDraggablePoint;
 	private DrawPane parent;
 	private boolean isSelected;
 	private int ID;
 
-	public ArrowMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint) {
-		this(parent, startPoint,endPoint,false);
+	public ArrowMoveController(DrawPane parent,ArrowShape arrowShape) {
+		this(parent,arrowShape,false);
 	}
 
-	private ArrowMoveController(DrawPane parent,PointEntity startPoint,PointEntity endPoint,boolean isClone) {
-		if(!isClone){
-			this.parent = parent;
+	private ArrowMoveController(DrawPane parent,ArrowShape arrowShape,boolean isClone) {
+		this.parent = parent;
+		if(!isClone)
 			this.ID = parent.getControllerID();
-			this.linkedList = new LinkedList<Node>();
-			this.arrowShape = new ArrowShape(startPoint, endPoint);
-			this.isSelected = false;
-			this.startdDraggablePoint = new DraggablePoint(startPoint) {
-				@Override
-				public void update(PointEntity pointEntity) {
-					startPoint.setX(pointEntity.getX());
-					startPoint.setY(pointEntity.getY());
-				}};
-			this.endDraggablePoint = new DraggablePoint(endPoint) {
-				@Override
-				public void update(PointEntity pointEntity) {
-					endPoint.setX(pointEntity.getX());
-					endPoint.setY(pointEntity.getY());
-				}};
-			this.linkedList.addAll(arrowShape.getNodes());
-		}
+		this.linkedList = new LinkedList<Node>();
+		this.arrowShape = arrowShape;
+		this.isSelected = false;
+		this.draggableLine = new DraggableLine(arrowShape.getLine(),this);
+		PointEntity startPoint = arrowShape.getStartPoint();
+		PointEntity endPoint = arrowShape.getEndPoint();
+		this.startDraggablePoint = new DraggablePoint(startPoint) {
+			@Override
+			public void update(PointEntity pointEntity) {
+				arrowShape.setStartPoint(pointEntity);
+			}};
+		this.endDraggablePoint = new DraggablePoint(endPoint) {
+			@Override
+			public void update(PointEntity pointEntity) {
+				arrowShape.setEndPoint(pointEntity);
+			}};
+		this.linkedList.addAll(arrowShape.getNodes());
+		this.linkedList.addAll(this.startDraggablePoint.getNodes());
+		this.linkedList.addAll(this.endDraggablePoint.getNodes());
+	}
+
+	public void hide(){
+
 	}
 
 	public ArrowShape getArrowShape() {
@@ -77,7 +84,12 @@ public class ArrowMoveController implements Cloneable,MoveController{
 
 	@Override
 	public RectangleEntity getRectangle() {
-		// TODO Auto-generated method stub
-		return null;
+		return arrowShape.getRectangle();
+	}
+
+	public void update(){
+		startDraggablePoint.updateCircle(draggableLine.getStartPoint());
+		endDraggablePoint.updateCircle(draggableLine.getEndPoint());
+		arrowShape.update();
 	}
 }

@@ -6,7 +6,7 @@ public class ShapeState {
 	private Type type;
 
 	public static enum Type {
-		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW,
+		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW, POLYGONALARROW
 	}
 
 	public ShapeState(RectangleEntity rectangle, String text, Type type) {

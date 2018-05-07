@@ -8,10 +8,6 @@ import java.util.regex.Pattern;
 import entities.RectangleEntity;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
-import javafx.scene.control.TextArea;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
@@ -40,54 +36,27 @@ public class TextManager implements Drawable, Changable {
 //		textArea = new TextArea();
 //		textArea.setFont(font);
 //		textArea.setWrapText(true);
-		textFlow.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
+//		textFlow.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
 //		textArea.setDisable(true);
 		calculator = new CharSizeCalculator(font);
 		fixWidth();
 	}
 
+	public void setText(String text){
+		content = text;
+		fixWidth();
+	}
 	private void fixPosition() {
 		Bounds bounds = calculator.getBounds(text.getText());
-//		Main.test("bounds", bounds.getWidth(), bounds.getHeight());
-//		Main.test("rect", rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
 		double x = rect.getX() + (rect.getWidth() - bounds.getWidth()) / 2f;
 		double y = rect.getY() + (rect.getHeight() - bounds.getHeight()) / 2f;
 		textFlow.relocate(x, y);
-//		textArea.relocate(rect.getX(), rect.getY());
-//		textArea.setMinSize(rect.getWidth(), rect.getHeight());
-//		textArea.setMaxSize(rect.getWidth(), rect.getHeight());
 	}
 
 	private double getTextWidth(String s) {
 		return calculator.getBounds(s).getWidth();
 	}
 
-//	public void showInput() {
-//		if (!textArea.isDisable())
-//			return;
-//		textArea.setText(content);
-//		textFlow.setDisable(true);
-//		fixWidth();
-//		text.setText("");
-//		textArea.setDisable(false);
-//	}
-
-//	public void closeInput() {
-//		if (textArea.isDisable())
-//			return;
-//		content = textArea.getText();
-//		text.setText(content);
-//		fixWidth();
-//		textFlow.setDisable(false);
-//		textArea.setText("");
-//		textArea.setDisable(true);
-//	}
-//	public void setState(boolean isInput){
-//		if(isInput == !textArea.isDisable()){
-//			return;
-//		}
-//
-//	}
 
 	/**
 	 * 从上往下扫每一行，如果该行宽度超过rect的宽度，则将尾部的文字平移到下一行开头，依次下去
@@ -140,7 +109,6 @@ public class TextManager implements Drawable, Changable {
 	public RectangleEntity getRectangle() {
 		return rect;
 	}
-
 	@Override
 	public void setRectangle(RectangleEntity rectangle) {
 		this.rect = rectangle;
@@ -170,79 +138,4 @@ public class TextManager implements Drawable, Changable {
 	public String getText() {
 		return text.getText();
 	}
-
-//	public Node getBottomNode(){
-//		return textFlow;
-//	}
-
-
-	// private static final char CONTROL_LIMIT = ' ';
-	// private static final char PRINTABLE_LIMIT = '\u007e';
-	// private static final char[] HEX_DIGITS = new char[] { '0', '1', '2', '3',
-	// '4', '5', '6', '7', '8', '9', 'a', 'b',
-	// 'c', 'd', 'e', 'f' };
-	//
-	// public static String toPrintableRepresentation(String source) {
-	//
-	// if (source == null)
-	// return null;
-	// else {
-	//
-	// final StringBuilder sb = new StringBuilder();
-	// final int limit = source.length();
-	// char[] hexbuf = null;
-	//
-	// int pointer = 0;
-	//
-	// sb.append('"');
-	//
-	// while (pointer < limit) {
-	//
-	// int ch = source.charAt(pointer++);
-	//
-	// switch (ch) {
-	//
-	// case '\0':
-	// sb.append("\\0");
-	// break;
-	// case '\t':
-	// sb.append("\\t");
-	// break;
-	// case '\n':
-	// sb.append("\\n");
-	// break;
-	// case '\r':
-	// sb.append("\\r");
-	// break;
-	// case '\"':
-	// sb.append("\\\"");
-	// break;
-	// case '\\':
-	// sb.append("\\\\");
-	// break;
-	//
-	// default:
-	// if (CONTROL_LIMIT <= ch && ch <= PRINTABLE_LIMIT)
-	// sb.append((char) ch);
-	// else {
-	//
-	// sb.append("\\u");
-	//
-	// if (hexbuf == null)
-	// hexbuf = new char[4];
-	//
-	// for (int offs = 4; offs > 0;) {
-	//
-	// hexbuf[--offs] = HEX_DIGITS[ch & 0xf];
-	// ch >>>= 4;
-	// }
-	//
-	// sb.append(hexbuf, 0, 4);
-	// }
-	// }
-	// }
-	//
-	// return sb.append('"').toString();
-	// }
-	// }
 }

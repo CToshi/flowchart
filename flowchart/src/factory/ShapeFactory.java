@@ -1,49 +1,28 @@
 package factory;
 
-import javax.print.attribute.standard.MediaSize.Other;
-
+import application.Main;
 import entities.PointEntity;
-import javafx.scene.paint.Color;
+import entities.ShapeState.Type;
 import view.shape.ArrowShape;
+import view.shape.Diamond;
+import view.shape.Parallelogram;
+import view.shape.PolygonalArrowShape;
 import view.shape.RectangleShape;
 import view.shape.RoundedRectangleShape;
+import view.shape.ShapeItem;
 
 public class ShapeFactory {
-	public static enum Type {
-		DEFAULT, ROUDED,ARROW
-	};
 
-	// private static final Color DEFAULT_COLOR = Color.BLACK;
+	private static final double DEFAULT_WIDTH = 200;
+	private static final double DEFAULT_HEIGHT = 100;
+	private static final double DEFAULT_ARROW_LENGTH = 100;
 
-
-	public static RectangleShape create(PointEntity center) {
-		return create(center.getX(), center.getY());
-	}
-
-	public static RectangleShape create(Type type) {
+	public static ShapeItem create(Type type) {
 		return create(0, 0, false, type);
 	}
-	
-//	public static ArrowShape create(PointEntity center){
-//		
-//	}
-	
-	public static RectangleShape create(PointEntity center, Type type) {
-		return create(center.getX(), center.getY(), true, type);			
-	}
 
-	public static RectangleShape create(double x, double y) {
-		return create(x, y, true);
-	}
-
-	public static RectangleShape create(double x, double y, boolean isCenter) {
-		double width = 200;
-		double height = 100;
-		if (isCenter) {
-			x -= width / 2f;
-			y -= height / 2f;
-		}
-		return new RectangleShape(x, y, width, height, Color.WHITE);
+	public static ShapeItem create(PointEntity center, Type type) {
+		return create(center.getX(), center.getY(), true, type);
 	}
 
 	/**
@@ -55,22 +34,40 @@ public class ShapeFactory {
 	 * @param type
 	 * @return
 	 */
-	public static RectangleShape create(double x, double y, boolean isCenter, Type type) {
-		RectangleShape res = create(x, y, isCenter);
-		if (type == Type.ROUDED) {
-			res = new RoundedRectangleShape(res);
-		}
-		return res;
-	}
 
-	public static ArrowShape create(double x,double y,boolean isCenter,PointEntity startPoint,PointEntity endPoint){
-		double width = 200;
-		double height = 100;
+
+	public static ShapeItem create(double x, double y, boolean isCenter, Type type) {
+		double width = DEFAULT_WIDTH;
+		double height = DEFAULT_HEIGHT;
+		if(type == Type.ARROW){
+			width = DEFAULT_ARROW_LENGTH;
+			height = 0;
+		}
 		if (isCenter) {
 			x -= width / 2f;
 			y -= height / 2f;
 		}
-		return new ArrowShape(x,y,width,height,startPoint, endPoint);
+		switch (type) {
+		case RECTANGLE:
+			return new RectangleShape(x, y, width, height);
+		case ROUNDED_RECTANGLE:
+			return new RoundedRectangleShape(x, y, width, height);
+		case DIAMOND:
+			return new Diamond(x, y, width, height);
+		case PARALLELOGRAM:
+			return new Parallelogram(x, y, width, height);
+		case ARROW:
+			return new ArrowShape(new PointEntity(x,y),DEFAULT_ARROW_LENGTH);
+		case POLYGONALARROW:
+			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height));
+		default:
+			Main.test("»¹Ã»×ö");
+			return null;
+		}
+	}
+
+	public static ShapeItem create(double x, double y, Type type) {
+		return create(x, y, false, type);
 	}
 
 }
