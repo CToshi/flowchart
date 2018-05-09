@@ -3,8 +3,8 @@ package ui;
 import java.util.LinkedList;
 
 import controller.ShapeCreationController;
+import entities.DrawableState.Type;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import factory.ShapeFactory;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -21,7 +21,6 @@ import view.shape.ShapeItem;
 public class ToolItem implements Drawable {
 	private static final double DEFAULT_INSET = 10;
 	private LinkedList<Node> list;
-	private Type shapeType;
 	private Label label;
 	private ShapeItem shapeItem;
 	private BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.DOTTED, new CornerRadii(10),new BorderWidths(3));
@@ -33,7 +32,6 @@ public class ToolItem implements Drawable {
 	}
 	public ToolItem(RectangleEntity rectangle, Type shapeType, String tipString,int ID) {
 		this(rectangle, ShapeFactory.create(shapeType), tipString);
-		this.shapeType = shapeType;
 		this.ID = ID;
 	}
 
@@ -45,7 +43,7 @@ public class ToolItem implements Drawable {
 		setRectangle(rectangle);
 		label.setOnMouseClicked(e -> {
 			// whenClicked(e);
-			ShapeCreationController.getInstance().inform(e, this.shapeType,ID);
+			ShapeCreationController.getInstance().inform(e, shapeItem.getType(),ID);
 			label.setBorder(border);
 		});
 		list = new LinkedList<>();

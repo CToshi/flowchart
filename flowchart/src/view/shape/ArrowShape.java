@@ -2,6 +2,7 @@ package view.shape;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
@@ -15,12 +16,11 @@ public class ArrowShape extends ShapeItem{
 	private LinkedList<Node> linkedList;
 
 	public ArrowShape(PointEntity startPoint,double length){
-		this(startPoint, new PointEntity(startPoint.getX(),startPoint.getY()+length));
+		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));
 	}
 
 	public ArrowShape(PointEntity startPoint,PointEntity endPoint){
 		this.rectangle = new RectangleEntity(0,0,0,0);
-		System.out.println(startPoint.getX()+" "+startPoint.getY()+" "+endPoint.getX()+" "+endPoint.getY());
 		line = new Line(startPoint.getX(),startPoint.getY(),endPoint.getX(),endPoint.getY());
 		triangleShape = new TriangleShape(startPoint, endPoint);
 		this.linkedList = new LinkedList<Node>();
@@ -98,5 +98,9 @@ public class ArrowShape extends ShapeItem{
 	public void update(){
 		triangleShape.setDirectPoint(this.getStartPoint());
 		triangleShape.setVertex(this.getEndPoint());
+	}
+	@Override
+	public Type getType() {
+		return Type.ARROW;
 	}
 }

@@ -2,6 +2,7 @@ package view.shape;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
@@ -172,6 +173,15 @@ public class PolygonalArrowShape extends ShapeItem {
 		}
 		update();
 		adjust();
+	}
+
+	@Override
+	public Type getType() {
+		return Type.POLYGONAL_ARROW;
+	}
+
+	public boolean getInit(){
+		return init;
 	}
 
 }

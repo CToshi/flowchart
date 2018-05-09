@@ -23,12 +23,12 @@ public abstract class DraggablePoint implements Drawable{
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-
+				released(this.getMousePosition());
 			}
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
-
+				pressed(this.getMousePosition());
 			}
 
 			@Override
@@ -64,6 +64,6 @@ public abstract class DraggablePoint implements Drawable{
 		}
 	}
 	public abstract void update(PointEntity pointEntity);
-//	public abstract void whenReleased();
-//	public abstract void whenPressed();
+	public abstract void released(PointEntity pointEntity);
+	public abstract void pressed(PointEntity pointEntity);
 }

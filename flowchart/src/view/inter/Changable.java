@@ -29,39 +29,38 @@ public interface Changable {
 	}
 
 	void setRectangle(RectangleEntity rectangle);
-//	default void setRectangle(RectangleEntity rectangle) {
-//		setX(rectangle.getX());
-//		setY(rectangle.getY());
-//		setWidth(rectangle.getWidth());
-//		setHeight(rectangle.getHeight());
-//	}
-
-	void setX(double value);
-
-	void setY(double value);
-
-	void setWidth(double value);
-
-	void setHeight(double value);
-
-	// default void setX(double value) {
-	// getRectangle().setX(value);
-	// setRectangle(getRectangle());
+	// default void setRectangle(RectangleEntity rectangle) {
+	// setX(rectangle.getX());
+	// setY(rectangle.getY());
+	// setWidth(rectangle.getWidth());
+	// setHeight(rectangle.getHeight());
 	// }
+
+	// void setX(double value);
 	//
-	// default void setY(double value) {
-	// getRectangle().setY(value);
-	// setRectangle(getRectangle());
-	// }
+	// void setY(double value);
 	//
-	// default void setWidth(double value) {
-	// getRectangle().setWidth(value);
-	// setRectangle(getRectangle());
-	// }
+	// void setWidth(double value);
 	//
-	// default void setHeight(double value) {
-	// getRectangle().setHeight(value);
-	// setRectangle(getRectangle());
-	// }
+	// void setHeight(double value);
+
+	default void setX(double value) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setX(value);
+		setRectangle(rectangle);
+	}
+	default void setY(double value) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setY(value);
+		setRectangle(rectangle);
+	}default void setWidth(double value) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setWidth(value);
+		setRectangle(rectangle);
+	}default void setHeight(double value) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setHeight(value);
+		setRectangle(rectangle);
+	}
 
 }

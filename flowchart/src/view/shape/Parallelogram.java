@@ -1,5 +1,6 @@
 package view.shape;
 
+import entities.DrawableState.Type;
 import entities.RectangleEntity;
 
 public class Parallelogram extends Polygonal{
@@ -25,6 +26,10 @@ public class Parallelogram extends Polygonal{
 	public RectangleEntity getTextRectangle() {
 		double len = getWidth() * TILT_RATE;
 		return new RectangleEntity(getX() + len, getY(), getWidth() - 2 * len, getHeight());
+	}
+	@Override
+	public Type getType() {
+		return Type.PARALLELOGRAM;
 	}
 
 }

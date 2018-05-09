@@ -1,6 +1,6 @@
 package controller;
 
-import entities.ShapeState.Type;
+import entities.DrawableState.Type;
 import factory.MoveControllerFactory;
 import javafx.scene.input.MouseEvent;
 import ui.DrawPane;
@@ -32,7 +32,7 @@ public class ShapeCreationController {
 			toolPane.setiDSelected(ID);
 		} else {
 			drawPane.add(MoveControllerFactory.create(drawPane.getCenter(), shapeType));
-//			drawPane.add(new MoveFrame(drawPane, ShapeFactory.create(drawPane.getCenter(), shapeType)));
+			drawPane.setShapeCreationType(null);
 		}
 	}
 

@@ -2,7 +2,6 @@ package view.move;
 
 import java.util.LinkedList;
 
-import application.Main;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
@@ -15,7 +14,6 @@ import utility.Util;
 import view.inter.Changable;
 import view.inter.Drawable;
 
-
 public abstract class DraggableRectangle implements Changable, Drawable {
 	private Rectangle self;
 
@@ -23,11 +21,11 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	private PointEntity startPosition;
 	private PointEntity mousePosition;
 	private Cursor cursor;
-	private RectangleEntity rectangle;
 	private boolean isHidden;
+	private RectangleEntity rectangle;
 
 	public DraggableRectangle(double x, double y, double width, double height) {
-		this(x, y, width, height, Cursor.DEFAULT);
+		this(x, y, width, height, Cursor.DEFAULT, Color.TRANSPARENT);
 	}
 
 	/**
@@ -39,14 +37,17 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	 * @param cursor
 	 *            鼠标放到该矩形上时的鼠标样式
 	 */
-	public DraggableRectangle(double x, double y, double width, double height, Cursor cursor) {
+	public DraggableRectangle(double x, double y, double width, double height, Cursor cursor, Color fill) {
 		self = new Rectangle(x, y, width, height);
+		rectangle = new RectangleEntity(self);
 		this.cursor = cursor;
 		initListener();
 		lastPosition = new PointEntity(0, 0);
 		startPosition = new PointEntity(this.getX(), this.getY());
 		mousePosition = new PointEntity(0, 0);
-		setAppearence(Color.BLACK, Color.BLACK, 0);
+		self.setFill(fill);
+//		self.setStroke(Color.BLACK);
+		// setAppearence(Color.BLACK, Color.BLACK, 0);
 	}
 
 	/**
@@ -162,27 +163,26 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	public PointEntity getLastMouses() {
 		return lastPosition;
 	}
-//	public void setHide() {
-//		setHidden(true);
-//	}
-//
-//	public void setShow() {
-//		setHidden(false);
-//	}
 
 	public void setHidden(boolean isHidden) {
-		if(this.isHidden==isHidden)return;
+		if (this.isHidden == isHidden)
+			return;
 		this.isHidden = isHidden;
-		if(isHidden){
-			rectangle = this.getRectangle();
-			Main.test(this, rectangle.getX());
-			self.setX(-100);
-			self.setY(-100);
-			self.setWidth(0);
-			self.setHeight(0);
+		if (isHidden) {
+			// rectangle = getRectangle();
+			saveState();
+			setRectangle(new RectangleEntity(-100, -100, 0, 0), false);
 		} else {
-			this.setRectangle(rectangle);
+			getBack();
+			setRectangle(rectangle);
 		}
+		// if(isHidden){
+		// self.setStroke(Color.TRANSPARENT);
+		// self.setFill(Color.TRANSPARENT);
+		// } else {
+		// self.setStroke(stroke);
+		// self.setFill(fill);
+		// }
 	}
 
 	/**
@@ -190,28 +190,9 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	 */
 	@Override
 	public RectangleEntity getRectangle() {
-		return new RectangleEntity(self.getX(), self.getY(), self.getWidth(), self.getHeight());
+		return rectangle.clone();
 	}
 
-	public void setAppearence(Paint fill, Paint stroke, double strokeWidth) {
-		self.setFill(fill);
-		self.setStroke(stroke);
-		self.setStrokeWidth(strokeWidth);
-	}
-
-//	@Override
-//	public DraggableRectangle clone() {
-//		try {
-//			DraggableRectangle res = (DraggableRectangle) super.clone();
-//			res.self = new Rectangle(getX(), getY(), getWidth(), getHeight());
-//			res.setAppearence(fill, stroke, self.getStrokeWidth());
-//			res.setHidden(this.isHidden);
-//			return res;
-//		} catch (CloneNotSupportedException e) {
-//			e.printStackTrace();
-//		}
-//		return null;
-//	}
 
 	@Override
 	public LinkedList<Node> getNodes() {
@@ -221,28 +202,51 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	@Override
 	public void setX(double value) {
 		self.setX(value);
+		rectangle.setX(value);
 	}
 
 	@Override
 	public void setY(double value) {
 		self.setY(value);
+		rectangle.setY(value);
 	}
 
 	@Override
 	public void setWidth(double value) {
 		self.setWidth(value);
+		rectangle.setWidth(value);
 	}
 
 	@Override
 	public void setHeight(double value) {
 		self.setHeight(value);
-	}
-	@Override
-	public void setRectangle(RectangleEntity rectangle) {
-		setX(rectangle.getX());
-		setY(rectangle.getY());
-		setWidth(rectangle.getWidth());
-		setHeight(rectangle.getHeight());
+		rectangle.setHeight(value);
 	}
 
+	@Override
+	public void setRectangle(RectangleEntity rectangle) {
+		setRectangle(rectangle, true);
+	}
+
+	private void setRectangle(RectangleEntity rectangle, boolean saveState) {
+		self.setX(rectangle.getX());
+		self.setY(rectangle.getY());
+		self.setWidth(rectangle.getWidth());
+		self.setHeight(rectangle.getHeight());
+		if (saveState) {
+			saveState();
+		}
+	}
+
+	private void saveState() {
+		this.rectangle = getRectangle();
+	}
+
+	private void getBack() {
+		setRectangle(this.rectangle);
+	}
+
+	public void setStroke(Paint value) {
+		self.setStroke(value);
+	}
 }

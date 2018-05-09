@@ -1,6 +1,6 @@
 package view.shape;
 
-import entities.ShapeState.Type;
+import entities.DrawableState.Type;
 import factory.ShapeFactory;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -47,5 +47,9 @@ public class RoundedRectangleShape extends RectangleShape {
 		RoundedRectangleShape res = (RoundedRectangleShape) ShapeFactory.create(self.getX(), self.getY(), false,
 				Type.ROUNDED_RECTANGLE);
 		return res;
+	}
+	@Override
+	public Type getType() {
+		return Type.ROUNDED_RECTANGLE;
 	}
 }

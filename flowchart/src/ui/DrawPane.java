@@ -6,9 +6,10 @@ import java.util.Map.Entry;
 
 import controller.ShapeCreationController;
 import datastructure.LimitedStack;
+import entities.DrawableState;
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import factory.MoveControllerFactory;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
@@ -42,21 +43,21 @@ public class DrawPane extends Pane {
 	/**
 	 * 存放MoveController, 用以取消选中、撤销和反撤销操作
 	 */
-	private HashMap<Integer, MoveController> oldMap;
+	private HashMap<Integer, DrawableState> oldMap;
 	private HashMap<Integer, MoveController> map;
 
-	private LimitedStack<Integer[], MoveController[]> unDoStack;
-	private LimitedStack<Integer[], MoveController[]> reDoStack;
+	private LimitedStack<Integer[], DrawableState[]> unDoStack;
+	private LimitedStack<Integer[], DrawableState[]> reDoStack;
 
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
 	private int selectedCount;
-	private int controllerID;
+//	private int controllerID;
 	private Type shapeCreationType;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
-		this.controllerID = 0;
+//		this.controllerID = 0;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
 
@@ -71,27 +72,9 @@ public class DrawPane extends Pane {
 		oldMap = new HashMap<>();
 		selectRect = new Rectangle();
 		selectRect.setFill(Color.TRANSPARENT);
-
-		// ArrowMoveController arrowMoveController = new
-		// ArrowMoveController(this,
-		// new PointEntity(400,400),new PointEntity(500,400));
-		// this.add(arrowMoveController.getNodes());
-
 		this.minWidthProperty().bind(width.subtract(100));
 		this.minHeightProperty().bind(height.subtract(100));
-		// this.anchorPane.setOnMouseMoved(e->{
-		// Main.test(anchorPane.getMinWidth(), anchorPane.getMinHeight());
-		// Main.test(width.getValue(), height.getValue());
-		// Main.test(DrawPane.this.getHvalue(), DrawPane.this.getVvalue());
-		// });
-		// this.setOnMouseClicked(e->{
-		// e.getClickCount();
-		//
-		// Main.test("鼠标", e.getX(), e.getY(), e.getClickCount());
-		// });
 		add(selectRect);
-		// this.getChildren().add(selectRect);
-		// this.add(selectRect);
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
@@ -267,9 +250,9 @@ public class DrawPane extends Pane {
 	}
 
 	public void change(Integer[] ids, MoveController[] newControllers) {
-		MoveController[] oldcontrollers = new MoveController[ids.length];
+		DrawableState[] oldStates = new DrawableState[ids.length];
 		for (int i = 0; i < ids.length; i++) {
-			oldcontrollers[i] = oldMap.get(ids[i]);
+			oldStates[i] = oldMap.get(ids[i]);
 			if (!map.containsKey(ids[i])) {// 新建
 				map.put(ids[i], newControllers[i]);
 				add(newControllers[i].getNodes());
@@ -278,14 +261,12 @@ public class DrawPane extends Pane {
 				MoveController controller = map.get(ids[i]);
 				map.remove(ids[i]);
 				delete(controller.getNodes());
-				// delete(oldControllers[i].getNodes());
 			}
-
 			if (newControllers[i] != null) {
-				oldMap.put(ids[i], newControllers[i].clone());
+				oldMap.put(ids[i], newControllers[i].getState());
 			}
 		}
-		unDoStack.push(ids, oldcontrollers);
+		unDoStack.push(ids, oldStates);
 		reDoStack.clear();
 	}
 
@@ -293,30 +274,52 @@ public class DrawPane extends Pane {
 		unDo(this.unDoStack, this.reDoStack);
 	}
 
-	private void unDo(LimitedStack<Integer[], MoveController[]> unDoS,
-			LimitedStack<Integer[], MoveController[]> reDoS) {
+	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS,
+			LimitedStack<Integer[], DrawableState[]> reDoS) {
 		if (unDoS.size() == 0) {
 			return;
 		}
-		Pair<Integer[], MoveController[]> entry = unDoS.pop();
+		/**
+		 * 撤销时，需要维护map, oldMap, undoStack, redoStack
+		 */
+		Pair<Integer[], DrawableState[]> entry = unDoS.pop();
 		Integer[] ids = entry.getKey();
-		MoveController[] oldControllers = entry.getValue();
-		MoveController[] nowControllers = new MoveController[ids.length];
+		MoveController[] oldControllers = new MoveController[ids.length];
+		DrawableState[] oldStates = new DrawableState[ids.length];
+		DrawableState[] newStates = entry.getValue();
 		for (int i = 0; i < ids.length; i++) {
-			nowControllers[i] = map.get(ids[i]);
-			if (nowControllers[i] != null) {
-				delete(nowControllers[i].getNodes());
-			}
-			if (oldControllers[i] != null) {
-				add(oldControllers[i].getNodes());
-				map.put(ids[i], oldControllers[i]);
-				oldMap.put(ids[i], oldControllers[i].clone());
-			} else {
+			oldControllers[i] = map.get(ids[i]);
+			if(oldControllers[i] != null && newStates[i] != null){//改变
+				oldControllers[i].setState(newStates[i]);
+				oldMap.put(ids[i], newStates[i]);
+			}else if (newStates[i] == null){//旧状态为空，需要删除
+				delete(oldControllers[i].getNodes());
 				map.remove(ids[i]);
+				oldMap.remove(ids[i]);
+			}else if(oldControllers[i] == null){//当前不存在屏幕上，则需要新建
+				MoveController mc = MoveControllerFactory.create(newStates[i]);
+				this.add(mc.getNodes());
+				map.put(ids[i], mc);
+				oldMap.put(ids[i], newStates[i]);
 			}
+			if(oldControllers[i] != null){
+				oldStates[i] = oldControllers[i].getState();
+			}
+//			if (nowControllers[i] != null) {
+//				if(oldStates[i] != null){
+//					nowControllers[i].setState(oldStates[i]);
+//				}else{
+//					delete(nowControllers[i].getNodes());
+//					map.remove(ids[i]);
+//				}
+//			}else{
+//				Main.test(nowControllers[i], oldStates[i]);
+//				MoveController mc = MoveControllerFactory.create(oldStates[i]);
+//				this.add(MoveControllerFactory.create(oldStates[i]));
+//				map.put(ids[i], mc);
+//			}
 		}
-		reDoS.push(ids, nowControllers);
-		//
+		reDoS.push(ids, oldStates);
 	}
 
 	public void reDo() {
@@ -332,9 +335,9 @@ public class DrawPane extends Pane {
 		}
 	}
 
-	public int getControllerID() {
-		return controllerID++;
-	}
+//	public int getControllerID() {
+//		return controllerID++;
+//	}
 
 	public void setShapeCreationType(Type shapeCreationType) {
 		this.shapeCreationType = shapeCreationType;

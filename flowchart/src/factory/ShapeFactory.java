@@ -1,8 +1,8 @@
 package factory;
 
 import application.Main;
+import entities.DrawableState.Type;
 import entities.PointEntity;
-import entities.ShapeState.Type;
 import view.shape.ArrowShape;
 import view.shape.Diamond;
 import view.shape.Parallelogram;
@@ -58,7 +58,7 @@ public class ShapeFactory {
 			return new Parallelogram(x, y, width, height);
 		case ARROW:
 			return new ArrowShape(new PointEntity(x,y),DEFAULT_ARROW_LENGTH);
-		case POLYGONALARROW:
+		case POLYGONAL_ARROW:
 			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height));
 		default:
 			Main.test("»¹Ã»×ö");
@@ -69,5 +69,4 @@ public class ShapeFactory {
 	public static ShapeItem create(double x, double y, Type type) {
 		return create(x, y, false, type);
 	}
-
 }

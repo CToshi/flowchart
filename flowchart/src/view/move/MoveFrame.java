@@ -2,7 +2,10 @@ package view.move;
 
 import java.util.LinkedList;
 
+import entities.DrawableState;
+import entities.PointEntity;
 import entities.RectangleEntity;
+import entities.ShapeState;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
@@ -18,8 +21,9 @@ import view.text_input.TextManager;
  * @author Toshi
  *
  */
-public class MoveFrame implements Cloneable, MoveController {
+public class MoveFrame implements MoveController {
 
+	private LinkedList<MoveController> connections;
 	private DraggableRectangle rectangle;
 	/**
 	 * 移动框的8个点
@@ -52,33 +56,30 @@ public class MoveFrame implements Cloneable, MoveController {
 	 * 唯一ID，用于撤销操作
 	 */
 	private int ID;
-	private static int MOVE_FRAME_ID;
+	// private static int MOVE_FRAME_ID;
 
 	private boolean isSelected;
 
 	private boolean isInputIng;
 
-	public MoveFrame(DrawPane parent, ShapeItem shapeItem) {
-		this(parent, shapeItem, false);
-	}
-
 	/**
 	 *
 	 * @param parent
 	 *            该MoveFrame的父亲，即显示的Pane
-	 * @param shapeItem MoveFrame的初始位置由ShapeItem决定
+	 * @param shapeItem
+	 *            MoveFrame的初始位置由ShapeItem决定
 	 * @param isClone
 	 *            clone时ID不会自增
 	 *
 	 */
-	private MoveFrame(DrawPane parent, ShapeItem shapeItem, boolean isClone) {
-		if (!isClone)
-			this.ID = MOVE_FRAME_ID++;
+	public MoveFrame(DrawPane parent, ShapeItem shapeItem, int ID) {
+		this.ID = ID;
 		this.shapeItem = shapeItem;
 		this.parent = parent;
 		this.inputController = InputController.getInstance();
+		this.connections = new LinkedList<MoveController>();
 		rectangle = new DraggableRectangle(shapeItem.getX(), shapeItem.getY(), shapeItem.getWidth(),
-				shapeItem.getHeight()) {
+				shapeItem.getHeight(), Cursor.MOVE, Color.TRANSPARENT) {
 			private RectangleEntity lastRect;
 
 			@Override
@@ -116,7 +117,7 @@ public class MoveFrame implements Cloneable, MoveController {
 			}
 
 		};
-		rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
+		// rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];
 		/**
 		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替 x
@@ -146,9 +147,23 @@ public class MoveFrame implements Cloneable, MoveController {
 	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
-		for (int i = 0; i < points.length; i++) {
-			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
-					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+//		Main.test("fix");
+//		for (int i = 0; i < points.length; i++) {
+//			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
+//					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+//		}
+//		RectangleEntity rect = rectangle.getRectangle();
+//		shapeItem.setRectangle(rect);
+//		textManager.setRectangle(shapeItem.getTextRectangle());
+		fixPosition(true);
+	}
+
+	private void fixPosition(boolean needFixPoints) {
+		if (needFixPoints) {
+			for (int i = 0; i < points.length; i++) {
+				points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
+						rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+			}
 		}
 		RectangleEntity rect = rectangle.getRectangle();
 		shapeItem.setRectangle(rect);
@@ -164,7 +179,6 @@ public class MoveFrame implements Cloneable, MoveController {
 			this.closeInput();
 		}
 	}
-
 	public void setX(double value) {
 		rectangle.setX(value);
 		shapeItem.setX(value);
@@ -221,12 +235,12 @@ public class MoveFrame implements Cloneable, MoveController {
 		return rectangle.getRectangle();
 	}
 
-	@Override
-	public MoveFrame clone() {
-		MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-		frame.ID = ID;
-		return frame;
-	}
+	// @Override
+	// public MoveFrame clone() {
+	// MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
+	// frame.ID = ID;
+	// return frame;
+	// }
 
 	@Override
 	public boolean equals(Object obj) {
@@ -252,6 +266,50 @@ public class MoveFrame implements Cloneable, MoveController {
 		if (isInputIng) {
 			textManager.setText(inputController.getTextArea().getText());
 			parent.remove(inputController.getTextArea());
+			isInputIng = false;
 		}
 	}
+
+	@Override
+	public DrawableState getState() {
+		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType(), getID());
+	}
+
+	@Override
+	public void setState(DrawableState state) {
+		ShapeState shapeState = (ShapeState) state;
+		rectangle.setRectangle(shapeState.getRectangle());
+		textManager.setText(shapeState.getText());
+		fixPosition();
+		this.ID = state.getID();
+	}
+
+	public void whenChanging() {
+		fixPosition(false);
+	}
+
+	public void changeFinished() {
+		textManager.setHidden(false);
+	}
+
+
+	@Override
+	public LinkedList<PointEntity> getConnectionPoints() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public void addConnection(MoveController moveController) {
+		connections.add(moveController);
+	}
+
+
+	@Override
+	public void removeConnection(MoveController moveController) {
+		connections.remove(moveController);
+	}
+
+
 }

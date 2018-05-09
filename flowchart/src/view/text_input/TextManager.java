@@ -33,11 +33,6 @@ public class TextManager implements Drawable, Changable {
 		textFlow = new TextFlow(text);
 		textFlow.setTextAlignment(TextAlignment.CENTER);
 		this.rect = rect;
-//		textArea = new TextArea();
-//		textArea.setFont(font);
-//		textArea.setWrapText(true);
-//		textFlow.setBackground(new Background(new BackgroundFill(Color.RED, null, null)));
-//		textArea.setDisable(true);
 		calculator = new CharSizeCalculator(font);
 		fixWidth();
 	}
@@ -136,6 +131,17 @@ public class TextManager implements Drawable, Changable {
 	}
 
 	public String getText() {
-		return text.getText();
+		return content;
+	}
+	public void setHidden(boolean isHidden){
+		if(isHidden){
+			text.setText("");
+		}else{
+			text.setText(content);
+			fixWidth();
+		}
+	}
+	public void update(){
+		fixWidth();
 	}
 }

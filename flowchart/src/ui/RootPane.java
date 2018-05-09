@@ -2,12 +2,10 @@ package ui;
 
 import java.util.LinkedList;
 
-import application.Main;
 import controller.ShapeCreationController;
 import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;

@@ -2,8 +2,8 @@ package ui;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.RectangleEntity;
-import entities.ShapeState.Type;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
@@ -46,7 +46,7 @@ public class ToolPane extends Pane {
 		toolItems[index] = new ToolItem(Type.DIAMOND, "菱形，判断框，表示算法的一个判断、一个条件",index++);
 		toolItems[index] = new ToolItem(Type.PARALLELOGRAM, "平行四边形，输入输出框，表示算法的一个输入或输出",index++);
 		toolItems[index] = new ToolItem(Type.ARROW, "箭头类,连接两个框",index++);
-		toolItems[index] = new ToolItem(Type.POLYGONALARROW, "折线箭头", index++);
+		toolItems[index] = new ToolItem(Type.POLYGONAL_ARROW, "折线箭头", index++);
 		for (int i = 0; i < index; i++) {
 			toolItems[i].setRectangle(new RectangleEntity(0, i * width / 1.5f, width, width / 1.5f));
 			this.add(toolItems[i].getNodes());
