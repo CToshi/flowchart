@@ -258,12 +258,12 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 		self.setWidth(rectangle.getWidth());
 		self.setHeight(rectangle.getHeight());
 		if (saveState) {
-			saveState();
+			this.rectangle = rectangle;
 		}
 	}
 
 	private void saveState() {
-		this.rectangle = getRectangle();
+		this.rectangle = new RectangleEntity(self);
 	}
 
 	private void getBack() {

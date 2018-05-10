@@ -27,7 +27,7 @@ public class TextManager implements Drawable, Changable {
 
 	public TextManager(RectangleEntity rect) {
 		Font font = new Font("System Regularc", 20);
-		content = "128946238746238174";
+		content = "";
 		text = new Text(content);
 		text.setFont(font);
 		textFlow = new TextFlow(text);

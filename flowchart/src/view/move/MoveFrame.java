@@ -89,6 +89,7 @@ public class MoveFrame implements MoveController {
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
+				MoveFrame.this.closeInput();
 				lastRect = this.getRectangle();
 				// setHasSelected(true);
 				if (!isSelected) {
@@ -96,13 +97,7 @@ public class MoveFrame implements MoveController {
 				}
 				setSelected(true);
 				// setSelected(true, true);
-				if (mouse.getClickCount() >= 2) {
-					isInputIng = true;
-					inputController.getTextArea().setText(textManager.getText());
-					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
-					parent.add(inputController.getTextArea());
-					// textManager.showInput();
-				}
+				
 			}
 
 			@Override
@@ -112,6 +107,14 @@ public class MoveFrame implements MoveController {
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
 					informChange();
+				}else{
+					if (mouse.getClickCount() >= 2) {
+						isInputIng = true;
+						inputController.getTextArea().setText(textManager.getText());
+						inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
+						parent.add(inputController.getTextArea());
+						// textManager.showInput();
+					}
 				}
 			}
 
@@ -159,21 +162,13 @@ public class MoveFrame implements MoveController {
 	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
-		// Main.test("fix");
-		// for (int i = 0; i < points.length; i++) {
-		// points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() *
-		// offset[i][0],
-		// rectangle.getY() + rectangle.getHeight() * offset[i][1]);
-		// }
-		// RectangleEntity rect = rectangle.getRectangle();
-		// shapeItem.setRectangle(rect);
-		// textManager.setRectangle(shapeItem.getTextRectangle());
 		fixPosition(true);
 	}
 
 	private void fixPosition(boolean needFixPoints) {
 		if (needFixPoints) {
 			for (int i = 0; i < points.length; i++) {
+//				Main.test(233);
 				points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
 						rectangle.getY() + rectangle.getHeight() * offset[i][1]);
 			}
@@ -228,26 +223,6 @@ public class MoveFrame implements MoveController {
 		shapeItem.setHeight(value);
 	}
 
-	/**
-	 * 是否显示移动框
-	 *
-	 * @param isSelected
-	 *            true时显示，否则隐藏
-	 * @param onlyOne
-	 *            isSelected和onlyOne都为true且当前没有按下Ctrl键时，会调用parent(DrawPane)的closeOthers函数取消其它MoveFrame的选中
-	 */
-	// public void setSelected(boolean isSelected, boolean onlyOne) {
-	// this.isSelected = isSelected;
-	// if (isSelected) {
-	// setShow();
-	// if (onlyOne && !parent.hasKey(KeyCode.CONTROL)) {
-	// parent.closeOthers(this);
-	//// textManager.showInput();
-	// }
-	// } else {
-	// setHidden();
-	// }
-	// }
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
 		if (isSelected) {
@@ -283,13 +258,6 @@ public class MoveFrame implements MoveController {
 	public RectangleEntity getRectangle() {
 		return rectangle.getRectangle();
 	}
-
-	// @Override
-	// public MoveFrame clone() {
-	// MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-	// frame.ID = ID;
-	// return frame;
-	// }
 
 	@Override
 	public boolean equals(Object obj) {

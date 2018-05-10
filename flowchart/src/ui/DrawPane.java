@@ -153,6 +153,13 @@ public class DrawPane extends Pane {
 				reDo();
 			}
 		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.A) {
+
+			@Override
+			public void run() {
+				DrawPane.this.setAllSelected();
+			}
+		});
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -283,6 +290,9 @@ public class DrawPane extends Pane {
 		DrawableState[] newStates = entry.getValue();
 		for (int i = 0; i < ids.length; i++) {
 			oldControllers[i] = map.get(ids[i]);
+			if(oldControllers[i] != null){
+				oldStates[i] = oldControllers[i].getState();
+			}
 			if(oldControllers[i] != null && newStates[i] != null){//¸Ä±ä
 				oldControllers[i].setState(newStates[i]);
 				oldMap.put(ids[i], newStates[i]);
@@ -296,22 +306,7 @@ public class DrawPane extends Pane {
 				map.put(ids[i], mc);
 				oldMap.put(ids[i], newStates[i]);
 			}
-			if(oldControllers[i] != null){
-				oldStates[i] = oldControllers[i].getState();
-			}
-//			if (nowControllers[i] != null) {
-//				if(oldStates[i] != null){
-//					nowControllers[i].setState(oldStates[i]);
-//				}else{
-//					delete(nowControllers[i].getNodes());
-//					map.remove(ids[i]);
-//				}
-//			}else{
-//				Main.test(nowControllers[i], oldStates[i]);
-//				MoveController mc = MoveControllerFactory.create(oldStates[i]);
-//				this.add(MoveControllerFactory.create(oldStates[i]));
-//				map.put(ids[i], mc);
-//			}
+
 		}
 		reDoS.push(ids, oldStates);
 	}
@@ -329,11 +324,13 @@ public class DrawPane extends Pane {
 		}
 	}
 
-//	public int getControllerID() {
-//		return controllerID++;
-//	}
 
 	public void setShapeCreationType(Type shapeCreationType) {
 		this.shapeCreationType = shapeCreationType;
+	}
+	private void setAllSelected(){
+		for(Entry<Integer, MoveController> entry:map.entrySet()){
+			entry.getValue().setSelected(true);
+		}
 	}
 }
