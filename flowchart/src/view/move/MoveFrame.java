@@ -2,6 +2,7 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.DrawableState;
 import entities.PointEntity;
 import entities.RectangleEntity;
@@ -63,6 +64,7 @@ public class MoveFrame implements MoveController {
 
 	private boolean isInputIng;
 
+	private SyncMoveController syncMoveController = SyncMoveController.getInstance();
 	/**
 	 *
 	 * @param parent
@@ -85,30 +87,44 @@ public class MoveFrame implements MoveController {
 
 			@Override
 			protected void deal(double xDelta, double yDelta) {
-				this.move(xDelta, yDelta);
-				MoveFrame.this.fixPosition();
+//				this.move(xDelta, yDelta);
+//				MoveFrame.this.fixPosition();
+				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
 			}
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
+				MoveFrame.this.closeInput();
 				lastRect = this.getRectangle();
 				if (!isSelected) {
 					parent.informSelected(MoveFrame.this);
 				}
 				setSelected(true);
-				if (mouse.getClickCount() >= 2) {
-					isInputIng = true;
-					inputController.getTextArea().setText(textManager.getText());
-					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
-					parent.add(inputController.getTextArea());
-				}
+//				if (mouse.getClickCount() >= 2) {
+//					isInputIng = true;
+//					inputController.getTextArea().setText(textManager.getText());
+//					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
+//					parent.add(inputController.getTextArea());
+//				}
+				syncMoveController.initialMoving();
+				// setSelected(true, true);
+
 			}
 
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
-					informChange();
+					syncMoveController.movingFinished();
+//					informChange();
+				}else{
+					if (mouse.getClickCount() >= 2) {
+						isInputIng = true;
+						inputController.getTextArea().setText(textManager.getText());
+						inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
+						parent.add(inputController.getTextArea());
+						// textManager.showInput();
+					}
 				}
 			}
 
@@ -148,21 +164,13 @@ public class MoveFrame implements MoveController {
 	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
-		// Main.test("fix");
-		// for (int i = 0; i < points.length; i++) {
-		// points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() *
-		// offset[i][0],
-		// rectangle.getY() + rectangle.getHeight() * offset[i][1]);
-		// }
-		// RectangleEntity rect = rectangle.getRectangle();
-		// shapeItem.setRectangle(rect);
-		// textManager.setRectangle(shapeItem.getTextRectangle());
 		fixPosition(true);
 	}
 
 	private void fixPosition(boolean needFixPoints) {
 		if (needFixPoints) {
 			for (int i = 0; i < points.length; i++) {
+//				Main.test(233);
 				points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
 						rectangle.getY() + rectangle.getHeight() * offset[i][1]);
 			}
@@ -237,13 +245,6 @@ public class MoveFrame implements MoveController {
 		return rectangle.getRectangle();
 	}
 
-	// @Override
-	// public MoveFrame clone() {
-	// MoveFrame frame = new MoveFrame(parent, shapeItem.clone(), true);
-	// frame.ID = ID;
-	// return frame;
-	// }
-
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof MoveFrame) {
@@ -252,7 +253,7 @@ public class MoveFrame implements MoveController {
 		return false;
 	}
 
-	public void informChange() {
+	void informChange() {
 		parent.change(getID(), this);
 	}
 
@@ -320,15 +321,12 @@ public class MoveFrame implements MoveController {
 		}
 	}
 
-
-//	public MovePoint[] getLinkPoints() {
-//		MovePoint[] linkPoints = new MovePoint[4];
-//		int index = 0;
-//		for (int i = 0; i < 8; i++) {
-//			if (Util.isEquals(offset[i][0], 0.5) || Util.isEquals(offset[i][1], 0.5)) {
-//				linkPoints[index++] = points[i];
-//			}
-//		}
-//		return linkPoints;
-//	}
+	@Override
+	public void setChange(MoveMsg changeMsg) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setX(rectangle.getX() + changeMsg.getDeltaX());
+		rectangle.setY(rectangle.getY() + changeMsg.getDeltaY());
+		this.rectangle.setRectangle(rectangle);
+		fixPosition();
+	}
 }

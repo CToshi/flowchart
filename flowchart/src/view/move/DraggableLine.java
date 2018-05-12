@@ -57,7 +57,7 @@ public class DraggableLine implements Drawable {
 		}
 	}
 
-	private void deal(double xDelta, double yDelta) {
+	public void deal(double xDelta, double yDelta) {
 		this.move(xDelta, yDelta);
 		moveController.update();
 	};

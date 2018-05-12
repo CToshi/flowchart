@@ -53,12 +53,12 @@ public class DrawPane extends Pane {
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
 	private int selectedCount;
-//	private int controllerID;
+	// private int controllerID;
 	private Type shapeCreationType;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
-//		this.controllerID = 0;
+		// this.controllerID = 0;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
 
@@ -160,6 +160,13 @@ public class DrawPane extends Pane {
 				reDo();
 			}
 		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.A) {
+
+			@Override
+			public void run() {
+				DrawPane.this.setAllSelected();
+			}
+		});
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -247,9 +254,22 @@ public class DrawPane extends Pane {
 	}
 
 	public void change(int id, MoveController newController) {
-		Integer[] ids = { id };
-		MoveController[] newControllers = { newController };
-		change(ids, newControllers);
+//		if (newController == null || oldMap.get(id) == null || !(newController instanceof MoveFrame)) {
+		change(new Integer[] { id }, new MoveController[] { newController });
+//		} else {
+//			LinkedList<Integer> ids = new LinkedList<>();
+//			LinkedList<MoveController> controllers = new LinkedList<>();
+//			MoveMsg changeMsg = newController.getRectangle()
+//					.getChangeMsgFrom(((ShapeState) oldMap.get(id)).getRectangle());
+//			for (Entry<Integer, MoveController> entry : map.entrySet()) {
+//				if (entry.getValue().isSelected()) {
+//					entry.getValue().setChange(changeMsg);
+//					ids.add(entry.getKey());
+//					controllers.add(entry.getValue());
+//				}
+//			}
+//			change(ids.toArray(new Integer[0]), controllers.toArray(new MoveController[0]));
+//		}
 	}
 
 	public void change(Integer[] ids, MoveController[] newControllers) {
@@ -277,8 +297,7 @@ public class DrawPane extends Pane {
 		unDo(this.unDoStack, this.reDoStack);
 	}
 
-	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS,
-			LimitedStack<Integer[], DrawableState[]> reDoS) {
+	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS, LimitedStack<Integer[], DrawableState[]> reDoS) {
 		if (unDoS.size() == 0) {
 			return;
 		}
@@ -292,35 +311,23 @@ public class DrawPane extends Pane {
 		DrawableState[] newStates = entry.getValue();
 		for (int i = 0; i < ids.length; i++) {
 			oldControllers[i] = map.get(ids[i]);
-			if(oldControllers[i] != null && newStates[i] != null){//改变
+			if (oldControllers[i] != null) {
+				oldStates[i] = oldControllers[i].getState();
+			}
+			if (oldControllers[i] != null && newStates[i] != null) {// 改变
 				oldControllers[i].setState(newStates[i]);
 				oldMap.put(ids[i], newStates[i]);
-			}else if (newStates[i] == null){//旧状态为空，需要删除
+			} else if (newStates[i] == null) {// 旧状态为空，需要删除
 				delete(oldControllers[i].getNodes());
 				map.remove(ids[i]);
 				oldMap.remove(ids[i]);
-			}else if(oldControllers[i] == null){//当前不存在屏幕上，则需要新建
+			} else if (oldControllers[i] == null) {// 当前不存在屏幕上，则需要新建
 				MoveController mc = MoveControllerFactory.create(newStates[i]);
 				this.add(mc.getNodes());
 				map.put(ids[i], mc);
 				oldMap.put(ids[i], newStates[i]);
 			}
-			if(oldControllers[i] != null){
-				oldStates[i] = oldControllers[i].getState();
-			}
-//			if (nowControllers[i] != null) {
-//				if(oldStates[i] != null){
-//					nowControllers[i].setState(oldStates[i]);
-//				}else{
-//					delete(nowControllers[i].getNodes());
-//					map.remove(ids[i]);
-//				}
-//			}else{
-//				Main.test(nowControllers[i], oldStates[i]);
-//				MoveController mc = MoveControllerFactory.create(oldStates[i]);
-//				this.add(MoveControllerFactory.create(oldStates[i]));
-//				map.put(ids[i], mc);
-//			}
+
 		}
 		reDoS.push(ids, oldStates);
 	}
@@ -338,11 +345,31 @@ public class DrawPane extends Pane {
 		}
 	}
 
-//	public int getControllerID() {
-//		return controllerID++;
-//	}
-
 	public void setShapeCreationType(Type shapeCreationType) {
 		this.shapeCreationType = shapeCreationType;
+	}
+
+	private void setAllSelected() {
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			entry.getValue().setSelected(true);
+		}
+	}
+
+	public LinkedList<DrawableState> getAllState() {
+		LinkedList<DrawableState> list = new LinkedList<>();
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			list.add(entry.getValue().getState());
+		}
+		return list;
+	}
+
+	public LinkedList<Entry<Integer, MoveController>> getAllSeleted() {
+		LinkedList<Entry<Integer, MoveController>> result = new LinkedList<>();
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			if (entry.getValue().isSelected()) {
+				result.add(entry);
+			}
+		}
+		return result;
 	}
 }

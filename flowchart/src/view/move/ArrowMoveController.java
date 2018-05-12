@@ -168,4 +168,7 @@ public class ArrowMoveController implements Cloneable, MoveController {
 		}
 	}
 
+	public void setChange(MoveMsg changeMsg) {
+		draggableLine.deal(changeMsg.getDeltaX(), changeMsg.getDeltaY());
+	}
 }

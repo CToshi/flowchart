@@ -61,6 +61,8 @@ public class MovePoint extends DraggableRectangle{
 //		parent.setHasSelected(false);
 		parent.fixPosition();
 		parent.setHidden(false);
+		parent.informChange();
+//		parent.changeFinished();
 	}
 
 	/**

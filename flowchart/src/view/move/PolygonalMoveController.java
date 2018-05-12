@@ -217,4 +217,12 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 		}
 	}
 
+	@Override
+	public void setChange(MoveMsg changeMsg) {
+		polygonalArrowShape.move(changeMsg.getDeltaX(),changeMsg.getDeltaY());
+		startDraggablePoint.updateCircle(polygonalArrowShape.getStartPoint());
+		centerDraggablePoint.updateCircle(polygonalArrowShape.getCenterPoint());
+		endDraggablePoint.updateCircle(polygonalArrowShape.getEndPoint());
+	}
+
 }

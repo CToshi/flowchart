@@ -1,24 +1,27 @@
 package entities;
 
 import javafx.scene.shape.Rectangle;
+import view.move.MoveMsg;
 
-public class RectangleEntity implements Cloneable{
+public class RectangleEntity implements Cloneable {
+	private double x;
+	private double y;
 	private double width;
 	private double height;
-	private PointEntity leftTop;
-
-	public RectangleEntity(double x, double y, double width, double height) {
-		this(new PointEntity(x, y), width, height);
-	}
 
 	public RectangleEntity(PointEntity leftTop, double width, double height) {
-		this.leftTop = leftTop;
-		this.width = width;
-		this.height = height;
+		this(leftTop.getX(), leftTop.getY(), width, height);
 	}
 
 	public RectangleEntity(Rectangle rect) {
 		this(rect.getX(), rect.getY(), rect.getWidth(), rect.getHeight());
+	}
+
+	public RectangleEntity(double x, double y, double width, double height) {
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
 	}
 
 	public double getWidth() {
@@ -38,27 +41,27 @@ public class RectangleEntity implements Cloneable{
 	}
 
 	public PointEntity getLeftTop() {
-		return leftTop;
+		return new PointEntity(getX(), getY());
 	}
 
-	public void setLeftTop(PointEntity leftTop) {
-		this.leftTop = leftTop;
-	}
+	// public void setLeftTop(PointEntity leftTop) {
+	// this.leftTop = leftTop;
+	// }
 
 	public void setX(double value) {
-		leftTop.setX(value);
+		this.x = value;
 	}
 
 	public void setY(double value) {
-		leftTop.setY(value);
+		this.y = value;
 	}
 
 	public double getX() {
-		return leftTop.getX();
+		return x;
 	}
 
 	public double getY() {
-		return leftTop.getY();
+		return y;
 	}
 
 	/**
@@ -93,7 +96,7 @@ public class RectangleEntity implements Cloneable{
 	public boolean contains(RectangleEntity rect, double eps) {
 		PointEntity rectRB = rect.getRightBottom();
 		PointEntity rB = this.getRightBottom();
-		return lessOrEquals(leftTop, rect.getLeftTop(), eps) && lessOrEquals(rectRB, rB, eps);
+		return lessOrEquals(this.getLeftTop(), rect.getLeftTop(), eps) && lessOrEquals(rectRB, rB, eps);
 	}
 
 	/**
@@ -133,12 +136,14 @@ public class RectangleEntity implements Cloneable{
 		}
 		return false;
 	}
+
 	@Override
 	public String toString() {
 		return String.format("[x=%.2f, y=%.2f][width=%.2f, height=%.2f]", getX(), getY(), getWidth(), getHeight());
 	}
+
 	@Override
-	public RectangleEntity clone(){
+	public RectangleEntity clone() {
 		try {
 			return (RectangleEntity) super.clone();
 		} catch (CloneNotSupportedException e) {
@@ -146,4 +151,26 @@ public class RectangleEntity implements Cloneable{
 		}
 		return null;
 	}
+	public MoveMsg getMoveMsgFrom(RectangleEntity oldRectangle){
+		double deltaX = getX() - oldRectangle.getX();
+		double deltaY = getY() - oldRectangle.getY();
+		return new MoveMsg(deltaX, deltaY);
+	}
+//	public RectangleEntity subtract(RectangleEntity other) {
+//		return add(other, -1);
+//	}
+//
+//	public RectangleEntity add(RectangleEntity other) {
+//		return add(other, 1);
+//	}
+//
+//	private RectangleEntity add(RectangleEntity other, int d) {
+//		RectangleEntity result = clone();
+//		result.setX(this.getX() + d * other.getX());
+//		result.setY(this.getY() + d * other.getY());
+//		result.setWidth(this.getWidth() + d * other.getWidth());
+//		result.setHeight(this.getHeight() + d * other.getHeight());
+//		return result;
+//	}
+
 }

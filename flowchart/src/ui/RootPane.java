@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import view.move.ArrowMoveController;
 import view.move.MoveController;
 import view.move.MoveFrame;
+import view.move.SyncMoveController;
 
 /**
  * ×î´óµÄPane
@@ -53,6 +54,7 @@ public class RootPane extends Pane {
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
 		MoveControllerFactory.setDrawPane(drawPane);
+		SyncMoveController.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveController moveController) {
