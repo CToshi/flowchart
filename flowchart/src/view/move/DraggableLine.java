@@ -63,7 +63,7 @@ public class DraggableLine implements Drawable {
 	};
 
 	private void whenPressed(MouseEvent mouse) {
-
+		moveController.setSelected(true);
 	};
 
 	private void whenReleased(MouseEvent mouse) {

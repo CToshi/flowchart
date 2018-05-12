@@ -53,7 +53,9 @@ public class MoveControllerFactory {
 		case ARROW:
 			return new ArrowMoveController(MoveControllerFactory.drawPane,
 					(ArrowShape) ShapeFactory.create(x, y, isCenter, shapeType), ID);
-		case POLYGONAL_ARROW:
+		case ARROW_HORIZONTAL:
+			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
+		case ARROW_ERECT:
 			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
 		default:
 			return new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);

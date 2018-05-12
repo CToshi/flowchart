@@ -17,6 +17,7 @@ public class ArrowMoveController implements Cloneable, MoveController {
 	private LinkedList<Node> linkedList;
 	private DraggablePoint startDraggablePoint;
 	private DraggablePoint endDraggablePoint;
+	private PointEntity hiddenPoint;
 	private DrawPane parent;
 	private boolean isSelected;
 	private int id;
@@ -33,18 +34,20 @@ public class ArrowMoveController implements Cloneable, MoveController {
 		this.arrowShape = arrowShape;
 		this.isSelected = false;
 		this.draggableLine = new DraggableLine(arrowShape.getLine(),this);
-		PointEntity startPoint = arrowShape.getStartPoint();
-		PointEntity endPoint = arrowShape.getEndPoint();
-		this.startDraggablePoint = new DraggablePoint(startPoint) {
+		this.hiddenPoint = new PointEntity(-100,-100);
+		this.startDraggablePoint = new DraggablePoint(hiddenPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
+				updateCircle(pointEntity);
 				arrowShape.setStartPoint(pointEntity);
 			}
 			@Override
 			public void released(PointEntity pointEntity) {
 				ConnectionController.getInstance().separate(connections[0],ArrowMoveController.this);
 				removeConnection(null);
-				arrowShape.setStartPoint(ConnectionController.getInstance().connnect(ArrowMoveController.this, pointEntity));
+				PointEntity point = ConnectionController.getInstance().connnect(ArrowMoveController.this, pointEntity);
+				arrowShape.setStartPoint(point);
+				updateCircle(point);
 				index = 1;
 			}
 
@@ -52,9 +55,10 @@ public class ArrowMoveController implements Cloneable, MoveController {
 			public void pressed(PointEntity pointEntity) {
 				index = 0;
 			}};
-		this.endDraggablePoint = new DraggablePoint(endPoint) {
+		this.endDraggablePoint = new DraggablePoint(hiddenPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
+				updateCircle(pointEntity);
 				arrowShape.setEndPoint(pointEntity);
 			}
 
@@ -62,7 +66,9 @@ public class ArrowMoveController implements Cloneable, MoveController {
 			public void released(PointEntity pointEntity) {
 				ConnectionController.getInstance().separate(connections[2],ArrowMoveController.this);
 				removeConnection(null);
-				arrowShape.setEndPoint(ConnectionController.getInstance().connnect(ArrowMoveController.this, pointEntity));;
+				PointEntity point = ConnectionController.getInstance().connnect(ArrowMoveController.this, pointEntity);
+				arrowShape.setEndPoint(point);
+				updateCircle(point);
 				index = 1;
 			}
 
@@ -96,6 +102,11 @@ public class ArrowMoveController implements Cloneable, MoveController {
 	@Override
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+		if(isSelected){
+			setHidden(false);
+		}else{
+			setHidden(true);
+		}
 	}
 
 	@Override
@@ -131,10 +142,10 @@ public class ArrowMoveController implements Cloneable, MoveController {
 
 	@Override
 	public LinkedList<PointEntity> getConnectionPoints() {
-		if(connections[2] != null)
+		if(connections[1] != null)
 			return null;
 		return Util.getList(new PointEntity((arrowShape.getLine().getStartX()+arrowShape.getLine().getEndX())/2,
-				(arrowShape.getLine().getStartX()+arrowShape.getLine().getEndY())/2));
+				(arrowShape.getLine().getStartY()+arrowShape.getLine().getEndY())/2));
 	}
 
 	@Override
@@ -145,6 +156,16 @@ public class ArrowMoveController implements Cloneable, MoveController {
 	@Override
 	public void removeConnection(MoveController moveController) {
 		connections[index] = null;
+	}
+
+	public void setHidden(boolean isHidden){
+		if(isHidden){
+			startDraggablePoint.updateCircle(hiddenPoint);
+			endDraggablePoint.updateCircle(hiddenPoint);
+		}else{
+			startDraggablePoint.updateCircle(arrowShape.getStartPoint());
+			endDraggablePoint.updateCircle(arrowShape.getEndPoint());
+		}
 	}
 
 }

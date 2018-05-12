@@ -18,12 +18,13 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 	private Draggable draggable;
 	private PolygonalArrowShape polygonalArrowShape;
 	private LinkedList<Node> linkedList;
-	private DraggablePoint startdDraggablePoint;
+	private DraggablePoint startDraggablePoint;
 	private DraggablePoint centerDraggablePoint;
 	private DraggablePoint endDraggablePoint;
 	private DrawPane parent;
 	private Cursor cursor;
 	private boolean isSelected;
+	private PointEntity hiddenPoint;
 	private int id;
 
 	private MoveController[] connections;
@@ -38,9 +39,11 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 		this.connections = new MoveController[3];
 		this.index = 1;
 		this.isSelected = false;
-		this.startdDraggablePoint = new DraggablePoint(polygonalArrowShape.getStartPoint()) {
+		this.hiddenPoint = new PointEntity(-100,-100);
+		this.startDraggablePoint = new DraggablePoint(hiddenPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
+				updateCircle(pointEntity);
 				polygonalArrowShape.setStartPoint(pointEntity);
 				centerDraggablePoint.updateCircle(polygonalArrowShape.getCenterPoint());
 			}
@@ -49,8 +52,10 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 			public void released(PointEntity pointEntity) {
 				ConnectionController.getInstance().separate(connections[0],PolygonalMoveController.this);
 				removeConnection(null);
-				polygonalArrowShape.setStartPoint(ConnectionController.getInstance().connnect(PolygonalMoveController.this, pointEntity));
+				PointEntity point = ConnectionController.getInstance().connnect(PolygonalMoveController.this, pointEntity);
+				polygonalArrowShape.setStartPoint(point);
 				index = 1;
+				updateCircle(point);
 			}
 
 			@Override
@@ -58,14 +63,15 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 				index = 0;
 			}
 		};
-		this.centerDraggablePoint = new DraggablePoint(polygonalArrowShape.getCenterPoint()) {
+		this.centerDraggablePoint = new DraggablePoint(hiddenPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
-				if (polygonalArrowShape.getInit()) {
-					polygonalArrowShape.setCenterPoint(new PointEntity(pointEntity.getX(),polygonalArrowShape.getCenterPoint().getY()));
+				if(polygonalArrowShape.getIsHorizontal()){
+					updateCircle(new PointEntity(polygonalArrowShape.getCenterPoint().getX(),pointEntity.getY()));
 				}else {
-					polygonalArrowShape.setCenterPoint(new PointEntity(polygonalArrowShape.getCenterPoint().getX(),pointEntity.getY()));
+					updateCircle(new PointEntity(pointEntity.getX(),polygonalArrowShape.getCenterPoint().getY()));
 				}
+				polygonalArrowShape.setCenterPoint(pointEntity);
 			}
 			@Override
 			public void released(PointEntity pointEntity) {
@@ -78,9 +84,10 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 			}
 
 		};
-		this.endDraggablePoint = new DraggablePoint(polygonalArrowShape.getEndPoint()) {
+		this.endDraggablePoint = new DraggablePoint(hiddenPoint) {
 			@Override
 			public void update(PointEntity pointEntity) {
+				updateCircle(pointEntity);
 				polygonalArrowShape.setEndPoint(pointEntity);
 				centerDraggablePoint.updateCircle(polygonalArrowShape.getCenterPoint());
 			}
@@ -89,8 +96,10 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 			public void released(PointEntity pointEntity) {
 				ConnectionController.getInstance().separate(connections[2],PolygonalMoveController.this);
 				removeConnection(null);
-				polygonalArrowShape.setEndPoint(ConnectionController.getInstance().connnect(PolygonalMoveController.this, pointEntity));
+				PointEntity point = ConnectionController.getInstance().connnect(PolygonalMoveController.this, pointEntity);
+				polygonalArrowShape.setEndPoint(point);
 				index = 1;
+				updateCircle(point);
 			}
 			@Override
 			public void pressed(PointEntity pointEntity) {
@@ -106,13 +115,13 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
-
+				setSelected(true);
 			}
 
 			@Override
 			protected void whenDragged(double xDelta, double yDelta) {
 				polygonalArrowShape.move(xDelta,yDelta);
-				startdDraggablePoint.updateCircle(polygonalArrowShape.getStartPoint());
+				startDraggablePoint.updateCircle(polygonalArrowShape.getStartPoint());
 				centerDraggablePoint.updateCircle(polygonalArrowShape.getCenterPoint());
 				endDraggablePoint.updateCircle(polygonalArrowShape.getEndPoint());
 			}
@@ -129,7 +138,7 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 
 		};
 		this.linkedList.addAll(polygonalArrowShape.getNodes());
-		this.linkedList.addAll(startdDraggablePoint.getNodes());
+		this.linkedList.addAll(startDraggablePoint.getNodes());
 		this.linkedList.addAll(centerDraggablePoint.getNodes());
 		this.linkedList.addAll(endDraggablePoint.getNodes());
 	}
@@ -147,6 +156,11 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 	@Override
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
+		if(isSelected){
+			setHidden(false);
+		}else {
+			setHidden(true);
+		}
 	}
 
 	@Override
@@ -156,7 +170,6 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 
 	@Override
 	public MoveController clone() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
@@ -172,11 +185,12 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 
 	@Override
 	public void setState(DrawableState state) {
+
 	}
 
 	@Override
 	public LinkedList<PointEntity> getConnectionPoints() {
-		if(connections[1]==null)
+		if(connections[1]!=null)
 			return null;
 		return Util.getList(polygonalArrowShape.getCenterPoint());
 	}
@@ -189,6 +203,18 @@ public class PolygonalMoveController implements Cloneable, MoveController {
 	@Override
 	public void removeConnection(MoveController moveController) {
 		connections[index] = null;
+	}
+
+	public void setHidden(boolean isHidden){
+		if(isHidden){
+			startDraggablePoint.updateCircle(hiddenPoint);
+			centerDraggablePoint.updateCircle(hiddenPoint);
+			endDraggablePoint.updateCircle(hiddenPoint);
+		}else{
+			startDraggablePoint.updateCircle(polygonalArrowShape.getStartPoint());
+			centerDraggablePoint.updateCircle(polygonalArrowShape.getCenterPoint());
+			endDraggablePoint.updateCircle(polygonalArrowShape.getEndPoint());
+		}
 	}
 
 }

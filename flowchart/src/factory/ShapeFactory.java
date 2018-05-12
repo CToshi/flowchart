@@ -58,8 +58,10 @@ public class ShapeFactory {
 			return new Parallelogram(x, y, width, height);
 		case ARROW:
 			return new ArrowShape(new PointEntity(x,y),DEFAULT_ARROW_LENGTH);
-		case POLYGONAL_ARROW:
-			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height));
+		case ARROW_HORIZONTAL:
+			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height),true);
+		case ARROW_ERECT:
+			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height),false);
 		default:
 			Main.test("»¹Ã»×ö");
 			return null;

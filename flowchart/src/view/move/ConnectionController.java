@@ -7,7 +7,7 @@ import javafx.concurrent.Worker;
 
 public class ConnectionController {
 
-	private double minDistance = 50;
+	private double minDistance = 10;
 	private LinkedList<MoveController> moveControllers;
 	private static ConnectionController connectionController = new ConnectionController();
 
@@ -16,7 +16,7 @@ public class ConnectionController {
 	}
 
 	private ConnectionController(){
-
+		moveControllers = new LinkedList<MoveController>();
 	}
 
 	public void setMoveControllers(LinkedList<MoveController> moveControllers) {
@@ -24,27 +24,39 @@ public class ConnectionController {
 	}
 
 	public PointEntity connnect(MoveController controller,PointEntity pointEntity){
-		PointEntity nearPoint = null;
+		PointEntity nearPoint = pointEntity;
 		MoveController nearController = null;
-		double mindistance = Double.MAX_VALUE;
+		double minDistance = this.minDistance;
 		for (MoveController moveController : moveControllers) {
-			if(moveController.getConnectionPoints()==null)
+			if(moveController.getConnectionPoints()==null||moveController==controller)
 				continue;
 			for (PointEntity point: moveController.getConnectionPoints()) {
-				if(mindistance>pointEntity.getDistanceFrom(point)){
-					mindistance = pointEntity.getDistanceFrom(point);
+				if(minDistance>pointEntity.getDistanceFrom(point)){
+					minDistance = pointEntity.getDistanceFrom(point);
 					nearPoint = point;
 					nearController = moveController;
 				}
 			}
 		}
-		nearController.addConnection(controller);
-		controller.addConnection(nearController);
+		if(nearController != null){
+			nearController.addConnection(controller);
+			controller.addConnection(nearController);
+		}
 		return nearPoint;
 	}
 
+	public void addController(MoveController moveController){
+		moveControllers.add(moveController);
+	}
+
+	public void removeController(MoveController moveController){
+		moveControllers.remove(moveController);
+	}
+
 	public void separate(MoveController source,MoveController isRemoved){
-		source.removeConnection(isRemoved);
+		if(source != null){
+			source.removeConnection(isRemoved);
+		}
 	}
 
 }

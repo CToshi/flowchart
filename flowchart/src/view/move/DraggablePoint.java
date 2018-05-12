@@ -23,17 +23,17 @@ public abstract class DraggablePoint implements Drawable{
 		new Draggable() {
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-				released(this.getMousePosition());
+				released(new PointEntity(mouse.getX(),mouse.getY()));
 			}
 
 			@Override
 			protected void whenPressed(MouseEvent mouse) {
-				pressed(this.getMousePosition());
+				pressed(new PointEntity(mouse.getX(),mouse.getY()));
 			}
 
 			@Override
 			protected void whenDragged(double xDelta, double yDelta) {
-				updateCircle(this.getMousePosition());
+//				updateCircle(this.getMousePosition());
 				update(this.getMousePosition());
 			}
 

@@ -27,6 +27,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
 import view.inter.Draggable;
+import view.move.ConnectionController;
 import view.move.MoveController;
 
 /**
@@ -179,10 +180,12 @@ public class DrawPane extends Pane {
 	 */
 	public void add(MoveController controller) {
 		change(controller.getID(), controller);
+		ConnectionController.getInstance().addController(controller);
 	}
 
 	public void delete(MoveController controller) {
 		change(controller.getID(), null);
+		ConnectionController.getInstance().removeController(controller);
 	}
 
 	/**

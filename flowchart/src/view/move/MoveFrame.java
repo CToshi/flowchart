@@ -11,6 +11,7 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.DrawPane;
+import utility.Util;
 import view.shape.ShapeItem;
 import view.text_input.InputController;
 import view.text_input.TextManager;
@@ -147,14 +148,15 @@ public class MoveFrame implements MoveController {
 	 * 纠正8个拖动点、shapeItem, textManager的坐标
 	 */
 	void fixPosition() {
-//		Main.test("fix");
-//		for (int i = 0; i < points.length; i++) {
-//			points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
-//					rectangle.getY() + rectangle.getHeight() * offset[i][1]);
-//		}
-//		RectangleEntity rect = rectangle.getRectangle();
-//		shapeItem.setRectangle(rect);
-//		textManager.setRectangle(shapeItem.getTextRectangle());
+		// Main.test("fix");
+		// for (int i = 0; i < points.length; i++) {
+		// points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() *
+		// offset[i][0],
+		// rectangle.getY() + rectangle.getHeight() * offset[i][1]);
+		// }
+		// RectangleEntity rect = rectangle.getRectangle();
+		// shapeItem.setRectangle(rect);
+		// textManager.setRectangle(shapeItem.getTextRectangle());
 		fixPosition(true);
 	}
 
@@ -295,8 +297,13 @@ public class MoveFrame implements MoveController {
 
 	@Override
 	public LinkedList<PointEntity> getConnectionPoints() {
-		// TODO Auto-generated method stub
-		return null;
+		LinkedList<PointEntity> linkPoints = new LinkedList<PointEntity>();
+		for (int i = 0; i < 8; i++) {
+			if (Util.isEquals(offset[i][0], 0.5) || Util.isEquals(offset[i][1], 0.5)) {
+				linkPoints.add(new PointEntity(points[i].getX(),points[i].getY()));
+			}
+		}
+		return linkPoints;
 	}
 
 
@@ -308,8 +315,20 @@ public class MoveFrame implements MoveController {
 
 	@Override
 	public void removeConnection(MoveController moveController) {
-		connections.remove(moveController);
+		if(connections.contains(moveController)){
+			connections.remove(moveController);
+		}
 	}
 
 
+//	public MovePoint[] getLinkPoints() {
+//		MovePoint[] linkPoints = new MovePoint[4];
+//		int index = 0;
+//		for (int i = 0; i < 8; i++) {
+//			if (Util.isEquals(offset[i][0], 0.5) || Util.isEquals(offset[i][1], 0.5)) {
+//				linkPoints[index++] = points[i];
+//			}
+//		}
+//		return linkPoints;
+//	}
 }
