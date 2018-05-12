@@ -82,4 +82,8 @@ public class PolygonalMoveController implements Cloneable,MoveController{
 	public void setState(DrawableState state) {
 	}
 
+	@Override
+	public void setChange(MoveMsg changeMsg) {
+	}
+
 }

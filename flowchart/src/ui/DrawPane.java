@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import datastructure.LimitedStack;
 import entities.DrawableState;
 import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
+import entities.ShapeState;
 import factory.MoveControllerFactory;
 import javafx.beans.binding.DoubleExpression;
 import javafx.scene.Node;
@@ -25,8 +27,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
+import utility.Util;
 import view.inter.Draggable;
+import view.move.MoveMsg;
 import view.move.MoveController;
+import view.move.MoveFrame;
 
 /**
  * 图形的绘制区域
@@ -51,12 +56,12 @@ public class DrawPane extends Pane {
 	private Rectangle selectRect;
 	private static final int MAX_UNDO_TIMES = 100;
 	private int selectedCount;
-//	private int controllerID;
+	// private int controllerID;
 	private Type shapeCreationType;
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
-//		this.controllerID = 0;
+		// this.controllerID = 0;
 		this.prefWidthProperty().bind(width);
 		this.prefHeightProperty().bind(height);
 
@@ -102,8 +107,9 @@ public class DrawPane extends Pane {
 					return;
 				}
 				if (shapeCreationType != null) {
-//					add(new MoveFrame(DrawPane.this,
-//							(ShapeItem) ShapeFactory.create(mouse.getX(), mouse.getY(), true, shapeCreationType)));
+					// add(new MoveFrame(DrawPane.this,
+					// (ShapeItem) ShapeFactory.create(mouse.getX(),
+					// mouse.getY(), true, shapeCreationType)));
 					add(MoveControllerFactory.create(mouse.getX(), mouse.getY(), true, shapeCreationType));
 					shapeCreationType = null;
 					return;
@@ -245,9 +251,22 @@ public class DrawPane extends Pane {
 	}
 
 	public void change(int id, MoveController newController) {
-		Integer[] ids = { id };
-		MoveController[] newControllers = { newController };
-		change(ids, newControllers);
+//		if (newController == null || oldMap.get(id) == null || !(newController instanceof MoveFrame)) {
+		change(new Integer[] { id }, new MoveController[] { newController });
+//		} else {
+//			LinkedList<Integer> ids = new LinkedList<>();
+//			LinkedList<MoveController> controllers = new LinkedList<>();
+//			MoveMsg changeMsg = newController.getRectangle()
+//					.getChangeMsgFrom(((ShapeState) oldMap.get(id)).getRectangle());
+//			for (Entry<Integer, MoveController> entry : map.entrySet()) {
+//				if (entry.getValue().isSelected()) {
+//					entry.getValue().setChange(changeMsg);
+//					ids.add(entry.getKey());
+//					controllers.add(entry.getValue());
+//				}
+//			}
+//			change(ids.toArray(new Integer[0]), controllers.toArray(new MoveController[0]));
+//		}
 	}
 
 	public void change(Integer[] ids, MoveController[] newControllers) {
@@ -275,8 +294,7 @@ public class DrawPane extends Pane {
 		unDo(this.unDoStack, this.reDoStack);
 	}
 
-	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS,
-			LimitedStack<Integer[], DrawableState[]> reDoS) {
+	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS, LimitedStack<Integer[], DrawableState[]> reDoS) {
 		if (unDoS.size() == 0) {
 			return;
 		}
@@ -290,17 +308,17 @@ public class DrawPane extends Pane {
 		DrawableState[] newStates = entry.getValue();
 		for (int i = 0; i < ids.length; i++) {
 			oldControllers[i] = map.get(ids[i]);
-			if(oldControllers[i] != null){
+			if (oldControllers[i] != null) {
 				oldStates[i] = oldControllers[i].getState();
 			}
-			if(oldControllers[i] != null && newStates[i] != null){//改变
+			if (oldControllers[i] != null && newStates[i] != null) {// 改变
 				oldControllers[i].setState(newStates[i]);
 				oldMap.put(ids[i], newStates[i]);
-			}else if (newStates[i] == null){//旧状态为空，需要删除
+			} else if (newStates[i] == null) {// 旧状态为空，需要删除
 				delete(oldControllers[i].getNodes());
 				map.remove(ids[i]);
 				oldMap.remove(ids[i]);
-			}else if(oldControllers[i] == null){//当前不存在屏幕上，则需要新建
+			} else if (oldControllers[i] == null) {// 当前不存在屏幕上，则需要新建
 				MoveController mc = MoveControllerFactory.create(newStates[i]);
 				this.add(mc.getNodes());
 				map.put(ids[i], mc);
@@ -324,13 +342,31 @@ public class DrawPane extends Pane {
 		}
 	}
 
-
 	public void setShapeCreationType(Type shapeCreationType) {
 		this.shapeCreationType = shapeCreationType;
 	}
-	private void setAllSelected(){
-		for(Entry<Integer, MoveController> entry:map.entrySet()){
+
+	private void setAllSelected() {
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
 			entry.getValue().setSelected(true);
 		}
+	}
+
+	public LinkedList<DrawableState> getAllState() {
+		LinkedList<DrawableState> list = new LinkedList<>();
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			list.add(entry.getValue().getState());
+		}
+		return list;
+	}
+
+	public LinkedList<Entry<Integer, MoveController>> getAllSeleted() {
+		LinkedList<Entry<Integer, MoveController>> result = new LinkedList<>();
+		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+			if (entry.getValue().isSelected()) {
+				result.add(entry);
+			}
+		}
+		return result;
 	}
 }

@@ -93,4 +93,8 @@ public class ArrowMoveController implements Cloneable, MoveController {
 	@Override
 	public void setState(DrawableState state) {
 	}
+
+	@Override
+	public void setChange(MoveMsg changeMsg) {
+	}
 }

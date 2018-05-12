@@ -12,4 +12,5 @@ public interface MoveController extends Drawable{
 	public RectangleEntity getRectangle();
 	public DrawableState getState();
 	public void setState(DrawableState state);
+	public void setChange(MoveMsg changeMsg);
 }

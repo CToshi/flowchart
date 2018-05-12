@@ -62,6 +62,7 @@ public class MoveFrame implements MoveController {
 
 	private boolean isInputIng;
 
+	private SyncMoveController syncMoveController = SyncMoveController.getInstance();
 	/**
 	 *
 	 * @param parent
@@ -83,8 +84,9 @@ public class MoveFrame implements MoveController {
 
 			@Override
 			protected void deal(double xDelta, double yDelta) {
-				this.move(xDelta, yDelta);
-				MoveFrame.this.fixPosition();
+//				this.move(xDelta, yDelta);
+//				MoveFrame.this.fixPosition();
+				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
 			}
 
 			@Override
@@ -96,8 +98,9 @@ public class MoveFrame implements MoveController {
 					parent.informSelected(MoveFrame.this);
 				}
 				setSelected(true);
+				syncMoveController.initialMoving();
 				// setSelected(true, true);
-				
+
 			}
 
 			@Override
@@ -106,7 +109,8 @@ public class MoveFrame implements MoveController {
 				// parent.informSelected(null, false);
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
-					informChange();
+					syncMoveController.movingFinished();
+//					informChange();
 				}else{
 					if (mouse.getClickCount() >= 2) {
 						isInputIng = true;
@@ -267,7 +271,7 @@ public class MoveFrame implements MoveController {
 		return false;
 	}
 
-	public void informChange() {
+	void informChange() {
 		parent.change(getID(), this);
 	}
 
@@ -318,5 +322,14 @@ public class MoveFrame implements MoveController {
 			}
 		}
 		return linkPoints;
+	}
+
+	@Override
+	public void setChange(MoveMsg changeMsg) {
+		RectangleEntity rectangle = getRectangle();
+		rectangle.setX(rectangle.getX() + changeMsg.getDeltaX());
+		rectangle.setY(rectangle.getY() + changeMsg.getDeltaY());
+		this.rectangle.setRectangle(rectangle);
+		fixPosition();
 	}
 }

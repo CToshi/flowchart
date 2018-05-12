@@ -13,6 +13,7 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import view.move.MoveFrame;
+import view.move.SyncMoveController;
 
 /**
  * ×î´óµÄPane
@@ -50,6 +51,7 @@ public class RootPane extends Pane {
 		keyList = new LinkedList<>();
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		MoveControllerFactory.setDrawPane(drawPane);
+		SyncMoveController.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveFrame frame) {
