@@ -61,7 +61,6 @@ public class DrawPane extends Pane {
 
 	private CopyManager copyManager;
 
-
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
 		// this.controllerID = 0;
@@ -206,10 +205,10 @@ public class DrawPane extends Pane {
 		ConnectionController.getInstance().addController(controller);
 	}
 
-//	public void delete(MoveController controller) {
-//		change(controller.getID(), null);
-//		ConnectionController.getInstance().removeController(controller);
-//	}
+	// public void delete(MoveController controller) {
+	// change(controller.getID(), null);
+	// ConnectionController.getInstance().removeController(controller);
+	// }
 
 	/**
 	 * 将nodes加到DrawPane中显示出来
@@ -228,17 +227,17 @@ public class DrawPane extends Pane {
 	}
 
 	public void deleteAllSelected() {
-//		LinkedList<MoveController> list = new LinkedList<>();
-//		for (Entry<Integer, MoveController> entry : map.entrySet()) {
-//			MoveController controller = entry.getValue();
-//			if (controller.isSelected()) {
-//				list.add(controller);
-//				// delete(controller);
-//			}
-//		}
-//		for (MoveController controller : list) {
-//			delete(controller);
-//		}
+		// LinkedList<MoveController> list = new LinkedList<>();
+		// for (Entry<Integer, MoveController> entry : map.entrySet()) {
+		// MoveController controller = entry.getValue();
+		// if (controller.isSelected()) {
+		// list.add(controller);
+		// // delete(controller);
+		// }
+		// }
+		// for (MoveController controller : list) {
+		// delete(controller);
+		// }
 		LinkedList<Pair<Integer, MoveController>> list = new LinkedList<>();
 		for (Entry<Integer, MoveController> entry : map.entrySet()) {
 			if (entry.getValue().isSelected()) {
@@ -407,8 +406,33 @@ public class DrawPane extends Pane {
 		}
 		return result;
 	}
-	private void whenMapChanged(){
+
+	private void whenMapChanged() {
 
 	}
 
+	public void importStates(LinkedList<DrawableState> list) {
+		initial();
+		if (list != null) {
+			for (DrawableState state : list) {
+				MoveController controller = MoveControllerFactory.create(state);
+				map.put(state.getID(), controller);
+				oldMap.put(state.getID(), state);
+				add(controller.getNodes());
+			}
+		}
+		whenMapChanged();
+	}
+
+	private void initial() {
+		map.clear();
+		oldMap.clear();
+		unDoStack.clear();
+		reDoStack.clear();
+		copyManager.clear();
+		this.getChildren().clear();
+		selectedCount = 0;
+		shapeCreationType = null;
+		add(selectRect);
+	}
 }

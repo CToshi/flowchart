@@ -1,6 +1,6 @@
 package entities;
 
-public abstract class DrawableState {
+public abstract class DrawableState implements java.io.Serializable{
 	private boolean isSelected;
 
 	public static enum Type {

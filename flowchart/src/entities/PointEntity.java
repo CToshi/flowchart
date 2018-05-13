@@ -1,6 +1,6 @@
 package entities;
 
-public class PointEntity {
+public class PointEntity implements java.io.Serializable{
 	private double x;
 	private double y;
 

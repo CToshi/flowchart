@@ -73,8 +73,12 @@ public class MoveControllerFactory {
 		if (drawableState instanceof ShapeState) {
 			ShapeState shapeState = (ShapeState) drawableState;
 			MoveController mc = create(shapeState.getType(), isNeedID);
+			int id = mc.getID();
+			if(!isNeedID){
+				id = shapeState.getID();
+			}
 			mc.setState(new ShapeState(shapeState.getRectangle(), shapeState.getText(), shapeState.getType(),
-					shapeState.isSelected(), mc.getID()));
+					shapeState.isSelected(), id));
 			return mc;
 		}
 		new Exception("»¹Ã»Ð´").printStackTrace();

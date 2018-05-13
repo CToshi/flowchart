@@ -34,13 +34,4 @@ public class Util {
 		return Math.abs(a - b) < eps;
 	}
 
-	public static void saveToImage(Node node, String fullPath) {
-		WritableImage image = node.snapshot(new SnapshotParameters(), null);
-		try {
-			File file = new File(fullPath);
-			ImageIO.write(SwingFXUtils.fromFXImage(image, null), fullPath.substring(fullPath.indexOf(".")), file);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

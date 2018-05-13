@@ -2,7 +2,6 @@ package ui;
 
 import java.util.LinkedList;
 
-import application.Main;
 import factory.MoveControllerFactory;
 import javafx.util.Pair;
 import view.move.MoveController;
@@ -64,5 +63,10 @@ public class CopyManager {
 			controller.setSelected(true);
 			clipBoard.add(new Pair<Integer, MoveController>(controller.getID(), controller));
 		}
+	}
+	public void clear(){
+		copyTimes = 0;
+		maxCopyTimes = 0;
+		clipBoard = null;
 	}
 }

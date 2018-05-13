@@ -3,7 +3,7 @@ package entities;
 import javafx.scene.shape.Rectangle;
 import view.move.MoveMsg;
 
-public class RectangleEntity implements Cloneable {
+public class RectangleEntity implements Cloneable, java.io.Serializable{
 	private double x;
 	private double y;
 	private double width;

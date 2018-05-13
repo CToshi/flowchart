@@ -55,6 +55,7 @@ public class RootPane extends Pane {
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
 		MoveControllerFactory.setDrawPane(drawPane);
 		SyncMoveController.setDrawPane(drawPane);
+		QzyFileManager.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveController moveController) {
