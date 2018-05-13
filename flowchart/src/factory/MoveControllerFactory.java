@@ -54,23 +54,30 @@ public class MoveControllerFactory {
 			return new ArrowMoveController(MoveControllerFactory.drawPane,
 					(ArrowShape) ShapeFactory.create(x, y, isCenter, shapeType), ID);
 		case ARROW_HORIZONTAL:
-			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
+			return new PolygonalMoveController(MoveControllerFactory.drawPane,
+					(PolygonalArrowShape) ShapeFactory.create(x, y, shapeType), Cursor.MOVE, ID);
 		case ARROW_ERECT:
-			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
+			return new PolygonalMoveController(MoveControllerFactory.drawPane,
+					(PolygonalArrowShape) ShapeFactory.create(x, y, shapeType), Cursor.MOVE, ID);
 		default:
-			return new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
+			MoveFrame frame = new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
+			return frame;
 		}
 	}
 
 	public static MoveController create(DrawableState drawableState) {
-		if (drawableState instanceof ShapeState) {
-			ShapeState shapeState = (ShapeState) drawableState;
-			MoveController mc = create(shapeState.getType(), false);
-			mc.setState(shapeState);
-			return mc;
-		}
-		Main.test("还没写");
-		return null;
+		return create(drawableState, false);
 	}
 
+	public static MoveController create(DrawableState drawableState, boolean isNeedID) {
+		if (drawableState instanceof ShapeState) {
+			ShapeState shapeState = (ShapeState) drawableState;
+			MoveController mc = create(shapeState.getType(), isNeedID);
+			mc.setState(new ShapeState(shapeState.getRectangle(), shapeState.getText(), shapeState.getType(),
+					shapeState.isSelected(), mc.getID()));
+			return mc;
+		}
+		new Exception("还没写").printStackTrace();
+		return null;
+	}
 }

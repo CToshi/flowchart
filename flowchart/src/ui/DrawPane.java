@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import controller.ShapeCreationController;
 import datastructure.LimitedStack;
 import entities.DrawableState;
@@ -26,9 +27,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Pair;
+import utility.Util;
 import view.inter.Draggable;
 import view.move.ConnectionController;
 import view.move.MoveController;
+import view.move.MoveMsg;
 
 /**
  * 图形的绘制区域
@@ -55,6 +58,9 @@ public class DrawPane extends Pane {
 	private int selectedCount;
 	// private int controllerID;
 	private Type shapeCreationType;
+
+	private CopyManager copyManager;
+
 
 	public DrawPane(RootPane parent, DoubleExpression width, DoubleExpression height) {
 		this.parent = parent;
@@ -142,6 +148,7 @@ public class DrawPane extends Pane {
 		};
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
+		copyManager = new CopyManager(this);
 		parent.add(new KeyListener(KeyCode.DELETE) {
 			@Override
 			public void run() {
@@ -152,19 +159,32 @@ public class DrawPane extends Pane {
 			@Override
 			public void run() {
 				unDo();
+				copyManager.getBack();
 			}
 		});
 		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Y) {
 			@Override
 			public void run() {
 				reDo();
+				copyManager.forward();
 			}
 		});
 		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.A) {
-
 			@Override
 			public void run() {
 				DrawPane.this.setAllSelected();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.C) {
+			@Override
+			public void run() {
+				DrawPane.this.copyManager.copy();
+			}
+		});
+		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.V) {
+			@Override
+			public void run() {
+				DrawPane.this.copyManager.paste();
 			}
 		});
 	}
@@ -181,19 +201,15 @@ public class DrawPane extends Pane {
 		}
 	}
 
-	/**
-	 *
-	 * @param controller
-	 */
 	public void add(MoveController controller) {
 		change(controller.getID(), controller);
 		ConnectionController.getInstance().addController(controller);
 	}
 
-	public void delete(MoveController controller) {
-		change(controller.getID(), null);
-		ConnectionController.getInstance().removeController(controller);
-	}
+//	public void delete(MoveController controller) {
+//		change(controller.getID(), null);
+//		ConnectionController.getInstance().removeController(controller);
+//	}
 
 	/**
 	 * 将nodes加到DrawPane中显示出来
@@ -212,17 +228,24 @@ public class DrawPane extends Pane {
 	}
 
 	public void deleteAllSelected() {
-		LinkedList<MoveController> list = new LinkedList<>();
+//		LinkedList<MoveController> list = new LinkedList<>();
+//		for (Entry<Integer, MoveController> entry : map.entrySet()) {
+//			MoveController controller = entry.getValue();
+//			if (controller.isSelected()) {
+//				list.add(controller);
+//				// delete(controller);
+//			}
+//		}
+//		for (MoveController controller : list) {
+//			delete(controller);
+//		}
+		LinkedList<Pair<Integer, MoveController>> list = new LinkedList<>();
 		for (Entry<Integer, MoveController> entry : map.entrySet()) {
-			MoveController controller = entry.getValue();
-			if (controller.isSelected()) {
-				list.add(controller);
-				// delete(controller);
+			if (entry.getValue().isSelected()) {
+				list.add(new Pair<Integer, MoveController>(entry.getKey(), null));
 			}
 		}
-		for (MoveController controller : list) {
-			delete(controller);
-		}
+		change(list);
 	}
 
 	private void delete(LinkedList<Node> nodes) {
@@ -254,43 +277,54 @@ public class DrawPane extends Pane {
 	}
 
 	public void change(int id, MoveController newController) {
-//		if (newController == null || oldMap.get(id) == null || !(newController instanceof MoveFrame)) {
-		change(new Integer[] { id }, new MoveController[] { newController });
-//		} else {
-//			LinkedList<Integer> ids = new LinkedList<>();
-//			LinkedList<MoveController> controllers = new LinkedList<>();
-//			MoveMsg changeMsg = newController.getRectangle()
-//					.getChangeMsgFrom(((ShapeState) oldMap.get(id)).getRectangle());
-//			for (Entry<Integer, MoveController> entry : map.entrySet()) {
-//				if (entry.getValue().isSelected()) {
-//					entry.getValue().setChange(changeMsg);
-//					ids.add(entry.getKey());
-//					controllers.add(entry.getValue());
-//				}
-//			}
-//			change(ids.toArray(new Integer[0]), controllers.toArray(new MoveController[0]));
-//		}
+		change(Util.getList(new Pair<Integer, MoveController>(id, newController)));
 	}
 
-	public void change(Integer[] ids, MoveController[] newControllers) {
-		DrawableState[] oldStates = new DrawableState[ids.length];
-		for (int i = 0; i < ids.length; i++) {
-			oldStates[i] = oldMap.get(ids[i]);
-			if (!map.containsKey(ids[i])) {// 新建
-				map.put(ids[i], newControllers[i]);
-				add(newControllers[i].getNodes());
-			} else if (newControllers[i] == null) {// 删除
-				oldMap.remove(ids[i]);
-				MoveController controller = map.get(ids[i]);
-				map.remove(ids[i]);
-				delete(controller.getNodes());
+	// public void change(Integer[] ids, MoveController[] newControllers) {
+	// DrawableState[] oldStates = new DrawableState[ids.length];
+	// for (int i = 0; i < ids.length; i++) {
+	// oldStates[i] = oldMap.get(ids[i]);
+	// if (!map.containsKey(ids[i])) {// 新建
+	// map.put(ids[i], newControllers[i]);
+	// add(newControllers[i].getNodes());
+	// } else if (newControllers[i] == null) {// 删除
+	// oldMap.remove(ids[i]);
+	// MoveController controller = map.get(ids[i]);
+	// map.remove(ids[i]);
+	// delete(controller.getNodes());
+	// }
+	// if (newControllers[i] != null) {
+	// oldMap.put(ids[i], newControllers[i].getState());
+	// }
+	// }
+	// unDoStack.push(ids, oldStates);
+	// reDoStack.clear();
+	// }
+	public void change(LinkedList<Pair<Integer, MoveController>> changeList) {
+		Integer[] ids = new Integer[changeList.size()];
+		DrawableState[] oldStates = new DrawableState[changeList.size()];
+		int index = 0;
+		for (Pair<Integer, MoveController> entry : changeList) {
+			ids[index] = entry.getKey();
+			MoveController controller = entry.getValue();
+			oldStates[index] = oldMap.get(ids[index]);
+			if (controller != null) {
+				oldMap.put(ids[index], controller.getState());
 			}
-			if (newControllers[i] != null) {
-				oldMap.put(ids[i], newControllers[i].getState());
+			if (!map.containsKey(ids[index])) {// 新建
+				map.put(ids[index], controller);
+				add(controller.getNodes());
+			} else if (controller == null) {// 删除
+				oldMap.remove(ids[index]);
+				MoveController oldController = map.get(ids[index]);
+				map.remove(ids[index]);
+				delete(oldController.getNodes());
 			}
+			index++;
 		}
 		unDoStack.push(ids, oldStates);
 		reDoStack.clear();
+		whenMapChanged();
 	}
 
 	public void unDo() {
@@ -330,6 +364,7 @@ public class DrawPane extends Pane {
 
 		}
 		reDoS.push(ids, oldStates);
+		whenMapChanged();
 	}
 
 	public void reDo() {
@@ -363,13 +398,17 @@ public class DrawPane extends Pane {
 		return list;
 	}
 
-	public LinkedList<Entry<Integer, MoveController>> getAllSeleted() {
-		LinkedList<Entry<Integer, MoveController>> result = new LinkedList<>();
+	public LinkedList<Pair<Integer, MoveController>> getAllSeleted() {
+		LinkedList<Pair<Integer, MoveController>> result = new LinkedList<>();
 		for (Entry<Integer, MoveController> entry : map.entrySet()) {
 			if (entry.getValue().isSelected()) {
-				result.add(entry);
+				result.add(new Pair<Integer, MoveController>(entry.getKey(), entry.getValue()));
 			}
 		}
 		return result;
 	}
+	private void whenMapChanged(){
+
+	}
+
 }

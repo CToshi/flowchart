@@ -2,7 +2,6 @@ package view.move;
 
 import java.util.LinkedList;
 
-import application.Main;
 import entities.DrawableState;
 import entities.PointEntity;
 import entities.RectangleEntity;
@@ -65,6 +64,7 @@ public class MoveFrame implements MoveController {
 	private boolean isInputIng;
 
 	private SyncMoveController syncMoveController = SyncMoveController.getInstance();
+
 	/**
 	 *
 	 * @param parent
@@ -87,8 +87,8 @@ public class MoveFrame implements MoveController {
 
 			@Override
 			protected void deal(double xDelta, double yDelta) {
-//				this.move(xDelta, yDelta);
-//				MoveFrame.this.fixPosition();
+				// this.move(xDelta, yDelta);
+				// MoveFrame.this.fixPosition();
 				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
 			}
 
@@ -100,12 +100,13 @@ public class MoveFrame implements MoveController {
 					parent.informSelected(MoveFrame.this);
 				}
 				setSelected(true);
-//				if (mouse.getClickCount() >= 2) {
-//					isInputIng = true;
-//					inputController.getTextArea().setText(textManager.getText());
-//					inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
-//					parent.add(inputController.getTextArea());
-//				}
+				// if (mouse.getClickCount() >= 2) {
+				// isInputIng = true;
+				// inputController.getTextArea().setText(textManager.getText());
+				// inputController.setInformation(shapeItem.getTextRectangle(),
+				// textManager.getText());
+				// parent.add(inputController.getTextArea());
+				// }
 				syncMoveController.initialMoving();
 				// setSelected(true, true);
 
@@ -116,8 +117,8 @@ public class MoveFrame implements MoveController {
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
 					syncMoveController.movingFinished();
-//					informChange();
-				}else{
+					// informChange();
+				} else {
 					if (mouse.getClickCount() >= 2) {
 						isInputIng = true;
 						inputController.getTextArea().setText(textManager.getText());
@@ -154,7 +155,6 @@ public class MoveFrame implements MoveController {
 		this.fixPosition();
 	}
 
-
 	@Override
 	public LinkedList<Node> getNodes() {
 		return nodeList;
@@ -170,7 +170,7 @@ public class MoveFrame implements MoveController {
 	private void fixPosition(boolean needFixPoints) {
 		if (needFixPoints) {
 			for (int i = 0; i < points.length; i++) {
-//				Main.test(233);
+				// Main.test(233);
 				points[i].setCenterXY(rectangle.getX() + rectangle.getWidth() * offset[i][0],
 						rectangle.getY() + rectangle.getHeight() * offset[i][1]);
 			}
@@ -180,15 +180,16 @@ public class MoveFrame implements MoveController {
 		textManager.setRectangle(shapeItem.getTextRectangle());
 	}
 
-	public void setHidden(boolean isHidden){
-//		rectangle.setHidden(isHidden);
+	public void setHidden(boolean isHidden) {
+		// rectangle.setHidden(isHidden);
 		for (int i = 0; i < points.length; i++) {
 			points[i].setHidden(isHidden);
 		}
-		if(isHidden){
+		if (isHidden) {
 			this.closeInput();
 		}
 	}
+
 	public void setX(double value) {
 		rectangle.setX(value);
 		shapeItem.setX(value);
@@ -275,7 +276,7 @@ public class MoveFrame implements MoveController {
 
 	@Override
 	public DrawableState getState() {
-		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType(), getID());
+		return new ShapeState(getRectangle(), textManager.getText(), shapeItem.getType(), isSelected(), getID());
 	}
 
 	@Override
@@ -285,6 +286,7 @@ public class MoveFrame implements MoveController {
 		textManager.setText(shapeState.getText());
 		fixPosition();
 		this.ID = state.getID();
+		setSelected(shapeState.isSelected());
 	}
 
 	public void whenChanging() {
@@ -295,28 +297,25 @@ public class MoveFrame implements MoveController {
 		textManager.setHidden(false);
 	}
 
-
 	@Override
 	public LinkedList<PointEntity> getConnectionPoints() {
 		LinkedList<PointEntity> linkPoints = new LinkedList<PointEntity>();
 		for (int i = 0; i < 8; i++) {
 			if (Util.isEquals(offset[i][0], 0.5) || Util.isEquals(offset[i][1], 0.5)) {
-				linkPoints.add(new PointEntity(points[i].getX(),points[i].getY()));
+				linkPoints.add(new PointEntity(points[i].getX(), points[i].getY()));
 			}
 		}
 		return linkPoints;
 	}
-
 
 	@Override
 	public void addConnection(MoveController moveController) {
 		connections.add(moveController);
 	}
 
-
 	@Override
 	public void removeConnection(MoveController moveController) {
-		if(connections.contains(moveController)){
+		if (connections.contains(moveController)) {
 			connections.remove(moveController);
 		}
 	}

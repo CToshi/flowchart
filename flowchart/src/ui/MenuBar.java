@@ -33,7 +33,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
 		saveAsMenuItem.setOnAction(e->{
 			DirectoryChooser directoryChooser = new DirectoryChooser();
-			directoryChooser.setInitialDirectory(new File("C:/Users/ASUS/Desktop"));
+			directoryChooser.setInitialDirectory(new File(System.getProperty("user.dir")));
 			File file = directoryChooser.showDialog(new Stage());
 			if(file!=null){
 				System.out.println(file.getPath());
