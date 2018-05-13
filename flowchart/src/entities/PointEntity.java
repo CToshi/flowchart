@@ -1,6 +1,8 @@
 package entities;
 
-public class PointEntity {
+import utility.Util;
+
+public class PointEntity implements java.io.Serializable,Cloneable{
 	private double x;
 	private double y;
 
@@ -36,6 +38,27 @@ public class PointEntity {
 
 	public double getDistanceFrom(PointEntity other) {
 		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
+	}
+
+	public boolean equals(PointEntity pointEntity){
+		return (Util.isEquals(getX(), pointEntity.getX())&&Util.isEquals(getY(), pointEntity.getY()));
+	}
+
+	@Override
+	public String toString() {
+		return "PointEntity [x=" + x + ", y=" + y + "]";
+	}
+
+	@Override
+	public PointEntity clone(){
+		// TODO Auto-generated method stub
+		try {
+			return (PointEntity) super.clone();
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	// public PointEntity subtract(PointEntity other) {

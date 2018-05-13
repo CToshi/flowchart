@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.File;
+import java.io.IOException;
 
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -15,6 +16,7 @@ import javafx.stage.Stage;
  */
 public class MenuBar extends javafx.scene.control.MenuBar {
 	private Menu fileMenu;
+	private File target;
 
 	public MenuBar() {
 		fileMenu = new Menu("文件");
@@ -22,6 +24,21 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 		MenuItem openMenuItem = new MenuItem("打开文件");
 		MenuItem saveMenuItem = new MenuItem("保存");
 		MenuItem saveAsMenuItem = new MenuItem("另存为");
+
+		newMenuItem.setOnAction(e->{
+			File file = getCatalog();
+			if(file != null){
+				target = new File(file.getAbsolutePath(),"haha.txt");
+				if(!target.exists()){
+					try {
+						target.createNewFile();
+					} catch (IOException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 
 		openMenuItem.setOnAction(e->{
 			FileChooser fileChooser = new FileChooser();
@@ -40,8 +57,33 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 			}
 		});
 
+		saveMenuItem.setOnAction(e->{
+			if(target == null || !target.exists()){
+				File file = getCatalog();
+				if(file != null){
+					target = new File(file.getAbsolutePath(),"haha.txt");
+					if(!target.exists()){
+						try {
+							target.createNewFile();
+						} catch (IOException e1) {
+							e1.printStackTrace();
+						}
+					}
+				}
+			}
+			QzySaver.getInstance().saveTo(target);
+		});
+
 		fileMenu.getItems().addAll(newMenuItem, openMenuItem,saveMenuItem,saveAsMenuItem);
 
 		this.getMenus().addAll(fileMenu);
 	}
+
+	public File getCatalog(){
+		DirectoryChooser directoryChooser = new DirectoryChooser();
+		directoryChooser.setInitialDirectory(new File("C:/Users/ASUS/Desktop"));
+		File file = directoryChooser.showDialog(new Stage());
+		return file;
+	}
+
 }

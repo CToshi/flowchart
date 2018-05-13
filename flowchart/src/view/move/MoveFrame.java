@@ -2,7 +2,6 @@ package view.move;
 
 import java.util.LinkedList;
 
-import application.Main;
 import entities.DrawableState;
 import entities.PointEntity;
 import entities.RectangleEntity;
@@ -25,7 +24,6 @@ import view.text_input.TextManager;
  */
 public class MoveFrame implements MoveController {
 
-	private LinkedList<MoveController> connections;
 	private DraggableRectangle rectangle;
 	/**
 	 * 移动框的8个点
@@ -63,6 +61,8 @@ public class MoveFrame implements MoveController {
 	private boolean isSelected;
 
 	private boolean isInputIng;
+
+	private LinkedList<MoveController> connections;
 
 	private SyncMoveController syncMoveController = SyncMoveController.getInstance();
 	/**
@@ -301,7 +301,7 @@ public class MoveFrame implements MoveController {
 		LinkedList<PointEntity> linkPoints = new LinkedList<PointEntity>();
 		for (int i = 0; i < 8; i++) {
 			if (Util.isEquals(offset[i][0], 0.5) || Util.isEquals(offset[i][1], 0.5)) {
-				linkPoints.add(new PointEntity(points[i].getX(),points[i].getY()));
+				linkPoints.add(new PointEntity(points[i].getCenterX(),points[i].getCenterY()));
 			}
 		}
 		return linkPoints;

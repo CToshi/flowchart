@@ -3,13 +3,11 @@ package entities;
 public class ShapeState extends DrawableState{
 	private RectangleEntity rectangle;
 	private String text;
-	private Type type;
 
 	public ShapeState(RectangleEntity rectangle, String text, Type type, int ID) {
-		super(ID);
+		super(type,ID);
 		this.rectangle = rectangle;
 		this.text = text;
-		this.type = type;
 	}
 
 	public RectangleEntity getRectangle() {
@@ -26,9 +24,6 @@ public class ShapeState extends DrawableState{
 	public void setText(String text) {
 		this.text = text;
 	}
-	@Override
-	public Type getType() {
-		return type;
-	}
+
 
 }

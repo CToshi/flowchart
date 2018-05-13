@@ -6,6 +6,8 @@ import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
 
 public class PolygonalArrowShape extends ShapeItem {
@@ -16,6 +18,7 @@ public class PolygonalArrowShape extends ShapeItem {
 	private Polyline polyline;
 	private PointEntity[] points;
 	private boolean isHorizontal;
+	private Polygon surround;
 
 	private static final double[] OFFSET_HORIZONTAL = { 8f, 8f, 8f, 2f, 4f / 3f, 2f, 4f / 3f, 4f / 3f };
 	private static final double[] OFFSET_ERECT = { 8f, 8f, 2f, 8f, 2f, 4f / 3f, 4f / 3f, 4f / 3f };
@@ -26,21 +29,26 @@ public class PolygonalArrowShape extends ShapeItem {
 		this.isHorizontal = isHorizontal;
 		if (isHorizontal) {
 			this.points = new PointEntity[] { startPoint,
-					new PointEntity(startPoint.getX(), (startPoint.getY()+endPoint.getY())/2),
-					new PointEntity(endPoint.getX(), (startPoint.getY()+endPoint.getY())/2),
-					endPoint };
-		}else{
-			this.points= new PointEntity[]{ startPoint,
-					new PointEntity((startPoint.getX()+endPoint.getX())/2,startPoint.getY()),
-					new PointEntity((startPoint.getX()+endPoint.getX())/2,endPoint.getY()),
-					endPoint
-			};
+					new PointEntity(startPoint.getX(), (startPoint.getY() + endPoint.getY()) / 2),
+					new PointEntity(endPoint.getX(), (startPoint.getY() + endPoint.getY()) / 2), endPoint };
+		} else {
+			this.points = new PointEntity[] { startPoint,
+					new PointEntity((startPoint.getX() + endPoint.getX()) / 2, startPoint.getY()),
+					new PointEntity((startPoint.getX() + endPoint.getX()) / 2, endPoint.getY()), endPoint };
 		}
 		this.polyline.getPoints().addAll(getPoints());
+		this.surround = new Polygon();
+		this.surround.setFill(Color.WHITE);
+		this.surround.getPoints().addAll(getSurround());
 		this.triangleShape = new TriangleShape(points[2], points[3]);
 		this.linkedList = new LinkedList<Node>();
+		this.linkedList.add(surround);
 		this.linkedList.add(polyline);
 		this.linkedList.addAll(triangleShape.getNodes());
+	}
+
+	public Polygon getPolygon(){
+		return surround;
 	}
 
 	public Polyline getPolyline() {
@@ -55,7 +63,6 @@ public class PolygonalArrowShape extends ShapeItem {
 			points[1].setY(pointEntity.getY());
 		}
 		update();
-//		 adjust();
 	}
 
 	public void setCenterPoint(PointEntity pointEntity) {
@@ -77,7 +84,6 @@ public class PolygonalArrowShape extends ShapeItem {
 			points[2].setY(pointEntity.getY());
 		}
 		update();
-		// adjust();
 	}
 
 	public PointEntity getCenterPoint() {
@@ -85,11 +91,11 @@ public class PolygonalArrowShape extends ShapeItem {
 	}
 
 	public PointEntity getStartPoint() {
-		return points[0];
+		return points[0].clone();
 	}
 
 	public PointEntity getEndPoint() {
-		return points[3];
+		return points[3].clone();
 	}
 
 	@Override
@@ -140,7 +146,6 @@ public class PolygonalArrowShape extends ShapeItem {
 			}
 		}
 		update();
-		// adjust();
 	}
 
 	public void update() {
@@ -148,6 +153,8 @@ public class PolygonalArrowShape extends ShapeItem {
 		polyline.getPoints().addAll(getPoints());
 		triangleShape.setDirectPoint(points[2]);
 		triangleShape.setVertex(points[3]);
+		surround.getPoints().clear();
+		surround.getPoints().addAll(getSurround());
 	}
 
 	public Double[] getPoints() {
@@ -159,29 +166,12 @@ public class PolygonalArrowShape extends ShapeItem {
 		return points;
 	}
 
-//	private void adjust() {
-//		if (Math.abs(points[3].getX() - points[0].getX()) > Math.abs(points[3].getY() - points[0].getY())) {
-//			isHorizontal = false;
-//			points[1].setX((points[3].getX() + points[0].getX()) / 2);
-//			points[1].setY(points[0].getY());
-//			points[2].setX((points[3].getX() + points[0].getX()) / 2);
-//			points[2].setY(points[3].getY());
-//		} else {
-//			isHorizontal = true;
-//			points[1].setX(points[0].getX());
-//			points[1].setY((points[3].getY() + points[0].getY()) / 2);
-//			points[2].setX(points[3].getX());
-//			points[2].setY((points[3].getY() + points[0].getY()) / 2);
-//		}
-//	}
-
 	public void move(double xDelta, double yDelta) {
 		for (int i = 0; i < points.length; i++) {
 			points[i].setX(points[i].getX() + xDelta);
 			points[i].setY(points[i].getY() + yDelta);
 		}
 		update();
-		// adjust();
 	}
 
 	@Override
@@ -193,8 +183,50 @@ public class PolygonalArrowShape extends ShapeItem {
 		}
 	}
 
-	public boolean getIsHorizontal() {
+	public boolean isHorizontal() {
 		return isHorizontal;
+	}
+
+	public Double[] getSurround() {
+		double width = 5;
+		if (isHorizontal) {
+			double ySign2;
+			double xSign2;
+			double ySign3;
+			ySign2 = (points[1].getY() - points[0].getY()) / Math.abs(points[1].getY() - points[0].getY());
+			xSign2 = (points[2].getX() - points[1].getX()) / Math.abs(points[2].getX() - points[1].getX());
+			ySign3 = (points[3].getY() - points[2].getY()) / Math.abs(points[3].getY() - points[2].getY());
+			if(Math.abs(points[1].getY() - points[0].getY())<0.001)ySign2 = 1;
+			if(Math.abs(points[2].getX() - points[1].getX())<0.001)xSign2 = 1;
+			if(Math.abs(points[3].getY() - points[2].getY())<0.001)ySign3 = 1;
+			return new Double[] { points[0].getX() - width, points[0].getY(), points[0].getX() + width,
+					points[0].getY(), points[0].getX() + width, points[1].getY() - width * ySign2 * xSign2,
+					points[2].getX() + width * ySign2 * ySign3, points[1].getY() - width * ySign2 * xSign2,
+					points[2].getX() + width * ySign2 * ySign3, points[3].getY(),
+					points[2].getX() - width * ySign2 * ySign3, points[3].getY(),
+					points[3].getX() - width * ySign2 * ySign3, points[1].getY() + width * ySign2 * xSign2,
+					points[0].getX() - width, points[1].getY() + width * ySign2 * xSign2 };
+		} else {
+			double xSign2;
+			double ySign2;
+			double xSign3;
+			xSign2 = (points[1].getX() - points[0].getX()) / Math.abs(points[1].getX() - points[0].getX());
+			ySign2 = (points[2].getY() - points[1].getY()) / Math.abs(points[2].getY() - points[1].getY());
+			xSign3 = (points[3].getX() - points[2].getX()) / Math.abs(points[3].getX() - points[2].getX());
+			if(Math.abs(points[1].getX() - points[0].getX())<0.001)xSign2 = 1;
+			if(Math.abs(points[2].getY() - points[1].getY())<0.001)ySign2 = 1;
+			if(Math.abs(points[3].getX() - points[2].getX())<0.001)xSign3 = 1;
+			return new Double[] {
+					points[0].getX(), points[0].getY() - width,
+					points[0].getX(),points[0].getY() + width,
+					points[1].getX() - width * xSign2 * ySign2, points[0].getY() + width,
+					points[1].getX() - width * xSign2 * ySign2, points[2].getY() + width * xSign2 * xSign3,
+					points[3].getX(), points[2].getY() + width * xSign2 * xSign3,
+					points[3].getX(),points[2].getY() - width * xSign2 * xSign3,
+					points[1].getX() + width * ySign2 * xSign2,points[2].getY() - width * xSign2 * xSign3,
+					points[1].getX() + width * ySign2 * xSign2,points[0].getY() - width
+			};
+		}
 	}
 
 }

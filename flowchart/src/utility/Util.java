@@ -2,6 +2,10 @@ package utility;
 
 import java.util.LinkedList;
 
+import entities.PointEntity;
+import javafx.scene.shape.Polygon;
+import view.shape.ArrowShape;
+
 public class Util {
 	public static <T> LinkedList<T> getList(T t) {
 		LinkedList<T> list = new LinkedList<>();
@@ -24,4 +28,5 @@ public class Util {
 	public static boolean isEquals(double a, double b, double eps) {
 		return Math.abs(a - b) < eps;
 	}
+
 }

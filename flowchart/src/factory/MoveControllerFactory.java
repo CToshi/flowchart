@@ -1,6 +1,7 @@
 package factory;
 
 import application.Main;
+import entities.ArrowState;
 import entities.DrawableState;
 import entities.DrawableState.Type;
 import javafx.scene.Cursor;
@@ -54,9 +55,11 @@ public class MoveControllerFactory {
 			return new ArrowMoveController(MoveControllerFactory.drawPane,
 					(ArrowShape) ShapeFactory.create(x, y, isCenter, shapeType), ID);
 		case ARROW_HORIZONTAL:
-			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
+			return new PolygonalMoveController(MoveControllerFactory.drawPane,
+					(PolygonalArrowShape) ShapeFactory.create(x, y, shapeType), Cursor.MOVE, ID);
 		case ARROW_ERECT:
-			return new PolygonalMoveController(MoveControllerFactory.drawPane, (PolygonalArrowShape)ShapeFactory.create(x,y,shapeType),Cursor.MOVE,ID);
+			return new PolygonalMoveController(MoveControllerFactory.drawPane,
+					(PolygonalArrowShape) ShapeFactory.create(x, y, shapeType), Cursor.MOVE, ID);
 		default:
 			return new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
 		}
@@ -68,8 +71,17 @@ public class MoveControllerFactory {
 			MoveController mc = create(shapeState.getType(), false);
 			mc.setState(shapeState);
 			return mc;
+		} else if (drawableState instanceof ArrowState) {
+			ArrowState arrowState = (ArrowState) drawableState;
+			MoveController mc = create(arrowState.getType(), false);
+			mc.setState(arrowState);
+			return mc;
 		}
-		Main.test("还没写");
+		try {
+			throw new Exception("还没做");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
 

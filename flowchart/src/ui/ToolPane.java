@@ -48,6 +48,7 @@ public class ToolPane extends Pane {
 		toolItems[index] = new ToolItem(Type.ARROW, "箭头类,连接两个框",index++);
 		toolItems[index] = new ToolItem(Type.ARROW_HORIZONTAL, "水平折线箭头", index++);
 		toolItems[index] = new ToolItem(Type.ARROW_ERECT, "竖直折线箭头", index++);
+		toolItems[index] = new ToolItem(Type.CurveRectangle, "曲边矩形", index++);
 		for (int i = 0; i < index; i++) {
 			toolItems[i].setRectangle(new RectangleEntity(0, i * width / 1.5f, width, width / 1.5f));
 			this.add(toolItems[i].getNodes());

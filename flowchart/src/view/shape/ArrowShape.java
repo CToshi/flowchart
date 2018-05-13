@@ -6,7 +6,9 @@ import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 
 public class ArrowShape extends ShapeItem{
 
@@ -14,6 +16,7 @@ public class ArrowShape extends ShapeItem{
 	private TriangleShape triangleShape;
 	private Line line;
 	private LinkedList<Node> linkedList;
+	private Polygon surround;
 
 	public ArrowShape(PointEntity startPoint,double length){
 		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));
@@ -24,12 +27,21 @@ public class ArrowShape extends ShapeItem{
 		line = new Line(startPoint.getX(),startPoint.getY(),endPoint.getX(),endPoint.getY());
 		triangleShape = new TriangleShape(startPoint, endPoint);
 		this.linkedList = new LinkedList<Node>();
+		this.surround = new Polygon();
+		surround.setFill(Color.WHITE);
+//		surround.setStroke(Color.BLACK);
+		surround.getPoints().addAll(getSurround());
+		linkedList.add(surround);
 		linkedList.add(line);
 		linkedList.addAll(triangleShape.getNodes());
 	}
 
 	public Line getLine() {
 		return line;
+	}
+
+	public Polygon getPolygon(){
+		return surround;
 	}
 
 	public PointEntity getStartPoint() {
@@ -98,9 +110,32 @@ public class ArrowShape extends ShapeItem{
 	public void update(){
 		triangleShape.setDirectPoint(this.getStartPoint());
 		triangleShape.setVertex(this.getEndPoint());
+		surround.getPoints().clear();
+		surround.getPoints().addAll(getSurround());
 	}
 	@Override
 	public Type getType() {
 		return Type.ARROW;
+	}
+
+	public Double[] getSurround(){
+		double width = 5;
+		double distance =getStartPoint().getDistanceFrom(getEndPoint());
+		double k = width/distance;
+		double xDelta = getLine().getEndX()-getLine().getStartX();
+		double yDelta = getLine().getEndY()-getLine().getStartY();
+		double sign;
+		if(xDelta==0||yDelta==0){
+			sign = 1;
+		}else {
+			sign = xDelta/Math.abs(xDelta)*yDelta/Math.abs(yDelta);
+		}
+		Double[] points = new Double[]{
+				getStartPoint().getX()+Math.abs(yDelta)*k*sign,getStartPoint().getY()-Math.abs(xDelta)*k,
+				getStartPoint().getX()-Math.abs(yDelta)*k*sign,getStartPoint().getY()+Math.abs(xDelta)*k,
+				getStartPoint().getX()-Math.abs(yDelta)*k*sign+xDelta,getStartPoint().getY()+Math.abs(xDelta)*k+yDelta,
+				getStartPoint().getX()+Math.abs(yDelta)*k*sign+xDelta,getStartPoint().getY()-Math.abs(xDelta)*k+yDelta,
+			};
+		return points;
 	}
 }

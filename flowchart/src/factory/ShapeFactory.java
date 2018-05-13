@@ -1,9 +1,9 @@
 package factory;
 
-import application.Main;
 import entities.DrawableState.Type;
 import entities.PointEntity;
 import view.shape.ArrowShape;
+import view.shape.CurveRectangle;
 import view.shape.Diamond;
 import view.shape.Parallelogram;
 import view.shape.PolygonalArrowShape;
@@ -62,8 +62,14 @@ public class ShapeFactory {
 			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height),true);
 		case ARROW_ERECT:
 			return new PolygonalArrowShape(new PointEntity(x,y),new PointEntity(x+width,y+height),false);
+		case CurveRectangle:
+			return new CurveRectangle(x, y, width, height);
 		default:
-			Main.test("还没做");
+			try {
+				throw new Exception("还没做");
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 			return null;
 		}
 	}

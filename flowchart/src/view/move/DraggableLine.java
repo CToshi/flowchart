@@ -60,15 +60,15 @@ public class DraggableLine implements Drawable {
 	public void deal(double xDelta, double yDelta) {
 		this.move(xDelta, yDelta);
 		moveController.update();
-	};
+	}
 
 	private void whenPressed(MouseEvent mouse) {
-		moveController.setSelected(true);
-	};
+
+	}
 
 	private void whenReleased(MouseEvent mouse) {
 
-	};
+	}
 
 	public PointEntity getMouse() {
 		return mousePosition;

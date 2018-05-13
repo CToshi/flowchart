@@ -12,9 +12,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import view.move.ArrowMoveController;
 import view.move.MoveController;
-import view.move.MoveFrame;
 import view.move.SyncMoveController;
 
 /**
@@ -51,10 +49,12 @@ public class RootPane extends Pane {
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
+
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
 		MoveControllerFactory.setDrawPane(drawPane);
 		SyncMoveController.setDrawPane(drawPane);
+		QzySaver.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveController moveController) {

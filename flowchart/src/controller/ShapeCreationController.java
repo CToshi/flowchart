@@ -9,7 +9,7 @@ import ui.ToolPane;
 public class ShapeCreationController {
 	private static ShapeCreationController scc = new ShapeCreationController();
 	private DrawPane drawPane;
-	private static ToolPane toolPane;
+	private ToolPane toolPane;
 
 	private ShapeCreationController() {
 	}
@@ -17,13 +17,11 @@ public class ShapeCreationController {
 	public static ShapeCreationController getInstance() {
 		return scc;
 	}
-
-	public void setDrawPane(DrawPane drawPane) {
-		this.drawPane = drawPane;
-	}
-
 	public void setToolPane(ToolPane toolPane){
 		this.toolPane = toolPane;
+	}
+	public void setDrawPane(DrawPane drawPane) {
+		this.drawPane = drawPane;
 	}
 
 	public void inform(MouseEvent mouse, Type shapeType,int ID) {
@@ -37,6 +35,6 @@ public class ShapeCreationController {
 	}
 
 	public static void createFinished(){
-		toolPane.setItemStroke(null);
+		getInstance().toolPane.setItemStroke(null);
 	}
 }
