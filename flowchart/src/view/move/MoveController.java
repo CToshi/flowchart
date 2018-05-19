@@ -15,8 +15,7 @@ public interface MoveController extends Drawable{
 	public RectangleEntity getRectangle();
 	public DrawableState getState();
 	public void setState(DrawableState state);
-	public LinkedList<PointEntity> getConnectionPoints();
-	public void addConnection(MoveController moveController);
-	public void removeConnection(MoveController moveController);
-	public void setChange(MoveMsg changeMsg);
+	public LinkedList<LinkedPoint> getConnectionPoints();
+	public void setChange(MoveMsg moveMsg);
+	public void setLinkedPointsHidden(boolean isHidden);
 }

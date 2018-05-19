@@ -1,6 +1,7 @@
 package ui;
 
 import javafx.scene.Scene;
+import javafx.scene.paint.Color;
 
 public class MainScene extends Scene{
 

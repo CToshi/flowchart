@@ -1,5 +1,7 @@
 package view.move;
 
+import java.util.LinkedList;
+
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -19,7 +21,6 @@ public class MovePoint extends DraggableRectangle{
 		this.parent = target;
 		this.xChangable = xChangable;
 		this.yChangable = yChangable;
-
 	}
 
 	/**
@@ -51,6 +52,12 @@ public class MovePoint extends DraggableRectangle{
 	}
 
 	@Override
+	public void setCenterXY(double x, double y) {
+		this.setCenterX(x);
+		this.setCenterY(y);
+	}
+
+	@Override
 	protected void whenPressed(MouseEvent mouse) {
 //		parent.setHasSelected(true);
 		parent.setHidden(true);
@@ -72,9 +79,9 @@ public class MovePoint extends DraggableRectangle{
 	/**
 	 * 移动点的越界不处理
 	 */
-	@Override
-	protected boolean isOutBound(double x, double y) {
-		return false;
-	}
+//	@Override
+//	protected boolean isOutBound(double x, double y) {
+//		return false;
+//	}
 
 }

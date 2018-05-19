@@ -19,6 +19,7 @@ public class RectangleShape extends ShapeItem {
 		this(x, y, width, height, Color.WHITE);
 	}
 	public RectangleShape(double x, double y, double width, double height, Paint color) {
+		super();
 		self = new Rectangle(x, y, width, height);
 		self.setFill(color);
 		self.setStroke(Color.BLACK);

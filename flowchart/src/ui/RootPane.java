@@ -49,12 +49,11 @@ public class RootPane extends Pane {
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane);
 		keyList = new LinkedList<>();
-
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
 		MoveControllerFactory.setDrawPane(drawPane);
 		SyncMoveController.setDrawPane(drawPane);
-		QzySaver.setDrawPane(drawPane);
+		QzyFileManager.setDrawPane(drawPane);
 	}
 
 	public void addToDrawPane(MoveController moveController) {

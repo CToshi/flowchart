@@ -1,6 +1,5 @@
 package factory;
 
-import application.Main;
 import entities.ArrowState;
 import entities.DrawableState;
 import entities.DrawableState.Type;
@@ -61,15 +60,25 @@ public class MoveControllerFactory {
 			return new PolygonalMoveController(MoveControllerFactory.drawPane,
 					(PolygonalArrowShape) ShapeFactory.create(x, y, shapeType), Cursor.MOVE, ID);
 		default:
-			return new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
+			MoveFrame frame = new MoveFrame(MoveControllerFactory.drawPane, ShapeFactory.create(x, y, isCenter, shapeType), ID);
+			return frame;
 		}
 	}
 
 	public static MoveController create(DrawableState drawableState) {
+		return create(drawableState, false);
+	}
+
+	public static MoveController create(DrawableState drawableState, boolean isNeedID) {
 		if (drawableState instanceof ShapeState) {
 			ShapeState shapeState = (ShapeState) drawableState;
-			MoveController mc = create(shapeState.getType(), false);
-			mc.setState(shapeState);
+			MoveController mc = create(shapeState.getType(), isNeedID);
+			int id = mc.getID();
+			if(!isNeedID){
+				id = shapeState.getID();
+			}
+			mc.setState(new ShapeState(shapeState.getRectangle(), shapeState.getText(), shapeState.getType(),
+					shapeState.isSelected(), id));
 			return mc;
 		} else if (drawableState instanceof ArrowState) {
 			ArrowState arrowState = (ArrowState) drawableState;
@@ -84,5 +93,4 @@ public class MoveControllerFactory {
 		}
 		return null;
 	}
-
 }

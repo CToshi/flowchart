@@ -60,9 +60,9 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 			whenPressed(e);
 		});
 		self.setOnMouseDragged(e -> {
-			if (isOutBound(e.getX(), e.getY())) {
-				return;
-			}
+//			if (isOutBound(e.getX(), e.getY())) {
+//				return;
+//			}
 			mousePosition.setXY(e.getX(), e.getY());
 			double xDelta = e.getX() - lastPosition.getX();
 			double yDelta = e.getY() - lastPosition.getY();
@@ -70,10 +70,10 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 			lastPosition.setXY(e.getX(), e.getY());
 		});
 		self.setOnMouseReleased(e -> {
-			if (isOutBound(e.getX(), e.getY())) {
-				this.setX(startPosition.getX());
-				this.setY(startPosition.getY());
-			}
+//			if (isOutBound(e.getX(), e.getY())) {
+//				this.setX(startPosition.getX());
+//				this.setY(startPosition.getY());
+//			}
 			whenReleased(e);
 		});
 		if (this.cursor != Cursor.DEFAULT) {
@@ -108,7 +108,7 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	 *            Êó±êµÄy×ø±ê
 	 * @return
 	 */
-	protected abstract boolean isOutBound(double x, double y);
+//	protected abstract boolean isOutBound(double x, double y);
 
 	protected void move(double xDelta, double yDelta) {
 		this.setX(this.getX() + xDelta);
@@ -171,7 +171,7 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 		if (isHidden) {
 			// rectangle = getRectangle();
 			saveState();
-			setRectangle(new RectangleEntity(-100, -100, 0, 0), false);
+			setRectangle(new RectangleEntity(10, 10, 0, 0), false);
 		} else {
 			getBack();
 			setRectangle(rectangle);
@@ -249,4 +249,5 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 	public void setStroke(Paint value) {
 		self.setStroke(value);
 	}
+
 }

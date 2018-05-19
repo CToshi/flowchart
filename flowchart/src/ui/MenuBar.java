@@ -3,20 +3,26 @@ package ui;
 import java.io.File;
 import java.io.IOException;
 
+import javax.swing.filechooser.FileSystemView;
+
+import application.Main;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 
 /**
  * 菜单栏
+ *
  * @author Toshi
  *
  */
 public class MenuBar extends javafx.scene.control.MenuBar {
 	private Menu fileMenu;
 	private File target;
+	private QzyFileManager manager = QzyFileManager.getInstance();
 
 	public MenuBar() {
 		fileMenu = new Menu("文件");
@@ -24,66 +30,65 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 		MenuItem openMenuItem = new MenuItem("打开文件");
 		MenuItem saveMenuItem = new MenuItem("保存");
 		MenuItem saveAsMenuItem = new MenuItem("另存为");
-
-		newMenuItem.setOnAction(e->{
-			File file = getCatalog();
-			if(file != null){
-				target = new File(file.getAbsolutePath(),"haha.txt");
-				if(!target.exists()){
-					try {
-						target.createNewFile();
-					} catch (IOException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
+//		saveAsMenuItem.setDisable(true);
+		newMenuItem.setOnAction(event -> {
+			FileChooser fileChooser = getFileChooser();
+			target = fileChooser.showSaveDialog(new Stage());
+			if(target != null) {
+				try {
+					target.delete();
+					target.createNewFile();
+					manager.importFile(null);
+					saveAsMenuItem.setDisable(false);
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		});
 
-		openMenuItem.setOnAction(e->{
-			FileChooser fileChooser = new FileChooser();
-			File file = fileChooser.showOpenDialog(new Stage());
-			if(file!=null){
-				System.out.println(file.getPath());
+		openMenuItem.setOnAction(event -> {
+			FileChooser fileChooser = getFileChooser();
+			target = fileChooser.showOpenDialog(new Stage());
+			if(target != null){
+				manager.importFile(target);
+				saveAsMenuItem.setDisable(false);
 			}
 		});
 
-		saveAsMenuItem.setOnAction(e->{
-			DirectoryChooser directoryChooser = new DirectoryChooser();
-			directoryChooser.setInitialDirectory(new File("C:/Users/ASUS/Desktop"));
-			File file = directoryChooser.showDialog(new Stage());
-			if(file!=null){
-				System.out.println(file.getPath());
+		saveMenuItem.setOnAction(event -> {
+			if (target == null || !target.exists()) {
+				target = getFileChooser().showSaveDialog(new Stage());
+			}
+			if(target != null){
+				manager.saveTo(target);
+			}
+		});
+		saveAsMenuItem.setOnAction(event -> {
+			FileChooser fileChooser = getFileChooser();
+			fileChooser.getExtensionFilters().addAll(new ExtensionFilter("图片", "*.png"), new ExtensionFilter("图片", "*.jpg"));
+			target = fileChooser.showSaveDialog(new Stage());
+			if(target != null){
+				manager.saveTo(target);
 			}
 		});
 
-		saveMenuItem.setOnAction(e->{
-			if(target == null || !target.exists()){
-				File file = getCatalog();
-				if(file != null){
-					target = new File(file.getAbsolutePath(),"haha.txt");
-					if(!target.exists()){
-						try {
-							target.createNewFile();
-						} catch (IOException e1) {
-							e1.printStackTrace();
-						}
-					}
-				}
-			}
-			QzySaver.getInstance().saveTo(target);
-		});
 
-		fileMenu.getItems().addAll(newMenuItem, openMenuItem,saveMenuItem,saveAsMenuItem);
+		fileMenu.getItems().addAll(newMenuItem, openMenuItem, saveMenuItem, saveAsMenuItem);
 
 		this.getMenus().addAll(fileMenu);
 	}
 
-	public File getCatalog(){
-		DirectoryChooser directoryChooser = new DirectoryChooser();
-		directoryChooser.setInitialDirectory(new File("C:/Users/ASUS/Desktop"));
-		File file = directoryChooser.showDialog(new Stage());
-		return file;
+//	private File chooseDirectory() {
+//		DirectoryChooser directoryChooser = new DirectoryChooser();
+//		directoryChooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+//		File file = directoryChooser.showDialog(new Stage());
+//		return file;
+//	}
+	private FileChooser getFileChooser(){
+		FileChooser fileChooser = new FileChooser();
+		fileChooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
+		fileChooser.getExtensionFilters().add(new ExtensionFilter("流程图", "*.qzy"));
+		return fileChooser;
 	}
 
 }

@@ -6,8 +6,8 @@ public class ArrowState extends DrawableState{
 	private PointEntity centerPoint;
 	private PointEntity endPoint;
 
-	public ArrowState(PointEntity startPoint,PointEntity centerPoint,PointEntity endPoint,int ID,Type type){
-		super(type, ID);
+	public ArrowState(PointEntity startPoint,PointEntity centerPoint,PointEntity endPoint,int ID,Type type,boolean isSelected){
+		super(type,isSelected, ID);
 		this.startPoint = startPoint;
 		this.endPoint = endPoint;
 		this.centerPoint = centerPoint;

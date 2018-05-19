@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
+import view.move.LinkedPoint;
 
 public class ArrowShape extends ShapeItem{
 
@@ -17,6 +18,7 @@ public class ArrowShape extends ShapeItem{
 	private Line line;
 	private LinkedList<Node> linkedList;
 	private Polygon surround;
+	private LinkedList<LinkedPoint> linkedPoints;
 
 	public ArrowShape(PointEntity startPoint,double length){
 		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));
@@ -34,6 +36,9 @@ public class ArrowShape extends ShapeItem{
 		linkedList.add(surround);
 		linkedList.add(line);
 		linkedList.addAll(triangleShape.getNodes());
+		LinkedPoint linkedPoint = new LinkedPoint((startPoint.getX()+endPoint.getX())/2, (startPoint.getY()+endPoint.getY()/2),1,1);
+		this.linkedPoints = new LinkedList<LinkedPoint>();
+		linkedPoints.add(linkedPoint);
 	}
 
 	public Line getLine() {

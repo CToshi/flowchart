@@ -1,6 +1,8 @@
 package entities;
 
 public abstract class DrawableState implements java.io.Serializable{
+	private boolean isSelected;
+
 	public static enum Type {
 		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW, ARROW_HORIZONTAL, ARROW_ERECT,CurveRectangle
 	}
@@ -8,9 +10,10 @@ public abstract class DrawableState implements java.io.Serializable{
 	private int ID;
 	private Type type;
 
-	public DrawableState(Type type, int ID) {
+	public DrawableState(Type type,boolean isSelected, int ID) {
 		this.ID = ID;
 		this.type = type;
+		this.isSelected = isSelected;
 	}
 
 	public final Type getType(){
@@ -20,4 +23,9 @@ public abstract class DrawableState implements java.io.Serializable{
 	public final int getID() {
 		return ID;
 	}
+
+	public boolean isSelected() {
+		return isSelected;
+	}
+
 }

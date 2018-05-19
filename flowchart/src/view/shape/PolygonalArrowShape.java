@@ -9,6 +9,7 @@ import javafx.scene.Node;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
+import view.move.LinkedPoint;
 
 public class PolygonalArrowShape extends ShapeItem {
 
@@ -22,6 +23,8 @@ public class PolygonalArrowShape extends ShapeItem {
 
 	private static final double[] OFFSET_HORIZONTAL = { 8f, 8f, 8f, 2f, 4f / 3f, 2f, 4f / 3f, 4f / 3f };
 	private static final double[] OFFSET_ERECT = { 8f, 8f, 2f, 8f, 2f, 4f / 3f, 4f / 3f, 4f / 3f };
+
+	private LinkedList<LinkedPoint> linkedPoints;
 
 	public PolygonalArrowShape(PointEntity startPoint, PointEntity endPoint, boolean isHorizontal) {
 		this.rectangle = new RectangleEntity(0, 0, 0, 0);
@@ -45,6 +48,9 @@ public class PolygonalArrowShape extends ShapeItem {
 		this.linkedList.add(surround);
 		this.linkedList.add(polyline);
 		this.linkedList.addAll(triangleShape.getNodes());
+		LinkedPoint linkedPoint = new LinkedPoint(getCenterPoint(),1,1);
+		this.linkedPoints = new LinkedList<LinkedPoint>();
+		linkedPoints.add(linkedPoint);
 	}
 
 	public Polygon getPolygon(){
