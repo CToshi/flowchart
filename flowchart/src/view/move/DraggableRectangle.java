@@ -11,10 +11,10 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import utility.Util;
-import view.inter.Changable;
+import view.inter.Changeable;
 import view.inter.Drawable;
 
-public abstract class DraggableRectangle implements Changable, Drawable {
+public abstract class DraggableRectangle implements Changeable, Drawable {
 	private Rectangle self;
 
 	private PointEntity lastPosition;
@@ -46,8 +46,6 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 		startPosition = new PointEntity(this.getX(), this.getY());
 		mousePosition = new PointEntity(0, 0);
 		self.setFill(fill);
-//		self.setStroke(Color.BLACK);
-		// setAppearence(Color.BLACK, Color.BLACK, 0);
 	}
 
 	/**
@@ -60,9 +58,6 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 			whenPressed(e);
 		});
 		self.setOnMouseDragged(e -> {
-//			if (isOutBound(e.getX(), e.getY())) {
-//				return;
-//			}
 			mousePosition.setXY(e.getX(), e.getY());
 			double xDelta = e.getX() - lastPosition.getX();
 			double yDelta = e.getY() - lastPosition.getY();
@@ -70,10 +65,6 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 			lastPosition.setXY(e.getX(), e.getY());
 		});
 		self.setOnMouseReleased(e -> {
-//			if (isOutBound(e.getX(), e.getY())) {
-//				this.setX(startPosition.getX());
-//				this.setY(startPosition.getY());
-//			}
 			whenReleased(e);
 		});
 		if (this.cursor != Cursor.DEFAULT) {
@@ -176,13 +167,6 @@ public abstract class DraggableRectangle implements Changable, Drawable {
 			getBack();
 			setRectangle(rectangle);
 		}
-		// if(isHidden){
-		// self.setStroke(Color.TRANSPARENT);
-		// self.setFill(Color.TRANSPARENT);
-		// } else {
-		// self.setStroke(stroke);
-		// self.setFill(fill);
-		// }
 	}
 
 	/**

@@ -4,31 +4,26 @@ import java.util.LinkedList;
 
 import entities.ArrowState;
 import entities.DrawableState;
+import entities.DrawableState.Type;
 import entities.PointEntity;
 import entities.RectangleEntity;
-import entities.DrawableState.Type;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import ui.DrawPane;
-import utility.Util;
 import view.inter.Draggable;
 import view.shape.ArrowShape;
 import view.shape.DraggableArrow;
-import view.shape.Parallelogram;
 
-public class ArrowMoveController implements Cloneable, MoveController,DraggableArrow {
+public class ArrowMoveController implements Cloneable, MoveController, DraggableArrow {
 
 	private ArrowMovePoint startMovePoint;
 	private ArrowMovePoint endMovePoint;
 	private ArrowShape arrowShape;
-//	private DraggableLine draggableLine;
-	private Draggable draggable;
 	private LinkedList<Node> linkedList;
 	private DraggablePoint startDraggablePoint;
 	private DraggablePoint endDraggablePoint;
 	private PointEntity hiddenPoint;
-	private DrawPane parent;
 	private boolean isSelected;
 	private Cursor cursor;
 	private int id;
@@ -36,25 +31,22 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 
 	private ConnectionController connectionController = ConnectionController.getInstance();
 
-	public ArrowMoveController(DrawPane parent,ArrowShape arrowShape,int id) {
-		this.parent = parent;
+	public ArrowMoveController(DrawPane parent, ArrowShape arrowShape, int id) {
 		this.id = id;
 		this.linkedList = new LinkedList<Node>();
 		this.arrowShape = arrowShape;
 		this.isSelected = false;
 		this.startMovePoint = new ArrowMovePoint(true, this);
 		this.endMovePoint = new ArrowMovePoint(false, this);
-//		this.draggableLine = new DraggableLine(arrowShape.getLine(),this);
-		this.hiddenPoint = new PointEntity(-100,-100);
+		this.hiddenPoint = new PointEntity(-100, -100);
 		this.cursor = Cursor.MOVE;
-		this.draggable = new Draggable() {
+		new Draggable() {
 			private PointEntity startPoint;
 			private PointEntity endPoint;
 
 			@Override
 			protected void whenReleased(MouseEvent mouse) {
-				if(!startPoint.equals(arrowShape.getStartPoint())||!endPoint.equals(arrowShape.getEndPoint())){
-//					parent.change(getID(), ArrowMoveController.this);
+				if (!startPoint.equals(arrowShape.getStartPoint()) || !endPoint.equals(arrowShape.getEndPoint())) {
 					syncMoveController.movingFinished();
 				}
 			}
@@ -81,8 +73,6 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 
 			@Override
 			protected void whenDragged(double xDelta, double yDelta) {
-//				ArrowMoveController.this.move(xDelta, yDelta);
-//				update();
 				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
 			}
 
@@ -98,14 +88,16 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 			public void update(PointEntity pointEntity) {
 				updateCircle(pointEntity);
 				arrowShape.setStartPoint(pointEntity);
-				connectionController.separate(startMovePoint.getLinkedPoint(),startMovePoint);
-				PointEntity point = connectionController.connnect(ArrowMoveController.this,pointEntity,startMovePoint);
+				connectionController.separate(startMovePoint.getLinkedPoint(), startMovePoint);
+				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity,
+						startMovePoint);
 				arrowShape.setStartPoint(point);
 				updateCircle(point);
 			}
+
 			@Override
 			public void released(PointEntity pointEntity) {
-				if(!startPoint.equals(arrowShape.getStartPoint())){
+				if (!startPoint.equals(arrowShape.getStartPoint())) {
 					parent.change(getID(), ArrowMoveController.this);
 				}
 				connectionController.whenMovingFinish();
@@ -114,7 +106,8 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 			@Override
 			public void pressed(PointEntity pointEntity) {
 				this.startPoint = arrowShape.getStartPoint();
-			}};
+			}
+		};
 		this.endDraggablePoint = new DraggablePoint(hiddenPoint) {
 			private PointEntity endPoint;
 
@@ -122,15 +115,15 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 			public void update(PointEntity pointEntity) {
 				updateCircle(pointEntity);
 				arrowShape.setEndPoint(pointEntity);
-				connectionController.separate(endMovePoint.getLinkedPoint(),endMovePoint);
-				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity,endMovePoint);
+				connectionController.separate(endMovePoint.getLinkedPoint(), endMovePoint);
+				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity, endMovePoint);
 				arrowShape.setEndPoint(point);
 				updateCircle(point);
 			}
 
 			@Override
 			public void released(PointEntity pointEntity) {
-				if(!endPoint.equals(arrowShape.getEndPoint())){
+				if (!endPoint.equals(arrowShape.getEndPoint())) {
 					parent.change(getID(), ArrowMoveController.this);
 				}
 				connectionController.whenMovingFinish();
@@ -139,15 +132,15 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 			@Override
 			public void pressed(PointEntity pointEntity) {
 				this.endPoint = arrowShape.getEndPoint();
-			}};
-//		this.parallelogram = new Parallelogram()
+			}
+		};
 
 		this.linkedList.addAll(arrowShape.getNodes());
 		this.linkedList.addAll(this.startDraggablePoint.getNodes());
 		this.linkedList.addAll(this.endDraggablePoint.getNodes());
 	}
 
-	public void hide(){
+	public void hide() {
 
 	}
 
@@ -168,9 +161,9 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 	@Override
 	public void setSelected(boolean isSelected) {
 		this.isSelected = isSelected;
-		if(isSelected){
+		if (isSelected) {
 			setHidden(false);
-		}else{
+		} else {
 			setHidden(true);
 		}
 	}
@@ -191,19 +184,21 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 		return arrowShape.getRectangle();
 	}
 
-	public void update(){
+	public void update() {
 		startDraggablePoint.updateCircle(arrowShape.getStartPoint());
 		endDraggablePoint.updateCircle(arrowShape.getEndPoint());
 		arrowShape.update();
 	}
+
 	@Override
 	public DrawableState getState() {
-		return new ArrowState(arrowShape.getStartPoint(),null,arrowShape.getEndPoint(), this.id, Type.ARROW,isSelected);
+		return new ArrowState(arrowShape.getStartPoint(), null, arrowShape.getEndPoint(), this.id, Type.ARROW,
+				isSelected);
 	}
 
 	@Override
 	public void setState(DrawableState state) {
-		ArrowState arrowState = (ArrowState)state;
+		ArrowState arrowState = (ArrowState) state;
 		arrowShape.setStartPoint(arrowState.getStartPoint());
 		arrowShape.setEndPoint(arrowState.getEndPoint());
 		update();
@@ -214,21 +209,21 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 		return arrowShape.getLinkedPoints();
 	}
 
-	public void setHidden(boolean isHidden){
-		if(isHidden){
+	public void setHidden(boolean isHidden) {
+		if (isHidden) {
 			startDraggablePoint.updateCircle(hiddenPoint);
 			endDraggablePoint.updateCircle(hiddenPoint);
-		}else{
+		} else {
 			startDraggablePoint.updateCircle(arrowShape.getStartPoint());
 			endDraggablePoint.updateCircle(arrowShape.getEndPoint());
 		}
 	}
 
-	public void move(double xDelta,double yDelta){
-		arrowShape.setStartPoint(new PointEntity(arrowShape.getStartPoint().getX()+xDelta
-				,arrowShape.getStartPoint().getY()+yDelta));
-		arrowShape.setEndPoint(new PointEntity(arrowShape.getEndPoint().getX()+xDelta
-				,arrowShape.getEndPoint().getY()+yDelta));
+	public void move(double xDelta, double yDelta) {
+		arrowShape.setStartPoint(new PointEntity(arrowShape.getStartPoint().getX() + xDelta,
+				arrowShape.getStartPoint().getY() + yDelta));
+		arrowShape.setEndPoint(
+				new PointEntity(arrowShape.getEndPoint().getX() + xDelta, arrowShape.getEndPoint().getY() + yDelta));
 		update();
 	}
 
@@ -261,6 +256,5 @@ public class ArrowMoveController implements Cloneable, MoveController,DraggableA
 	public void setLinkedPointsHidden(boolean isHidden) {
 		arrowShape.setLinkedPointsHidden(isHidden);
 	}
-
 
 }

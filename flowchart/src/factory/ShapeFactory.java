@@ -3,6 +3,7 @@ package factory;
 import entities.DrawableState.Type;
 import entities.PointEntity;
 import view.shape.ArrowShape;
+import view.shape.CircleShape;
 import view.shape.CurveRectangle;
 import view.shape.Diamond;
 import view.shape.Parallelogram;
@@ -42,6 +43,8 @@ public class ShapeFactory {
 		if(type == Type.ARROW){
 			width = DEFAULT_ARROW_LENGTH;
 			height = 0;
+		}else if (type == type.CIRCLE){
+			width = height = Math.min(width, height)/2f;
 		}
 		if (isCenter) {
 			x -= width / 2f;
@@ -56,6 +59,8 @@ public class ShapeFactory {
 			return new Diamond(x, y, width, height);
 		case PARALLELOGRAM:
 			return new Parallelogram(x, y, width, height);
+		case CIRCLE:
+			return new CircleShape(x, y, Math.min(DEFAULT_WIDTH, DEFAULT_HEIGHT)/2f);
 		case ARROW:
 			return new ArrowShape(new PointEntity(x,y),DEFAULT_ARROW_LENGTH);
 		case ARROW_HORIZONTAL:

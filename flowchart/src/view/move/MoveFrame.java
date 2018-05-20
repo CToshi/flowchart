@@ -2,8 +2,8 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.DrawableState;
-import entities.PointEntity;
 import entities.RectangleEntity;
 import entities.ShapeState;
 import javafx.scene.Cursor;
@@ -11,7 +11,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.DrawPane;
-import utility.Util;
 import view.shape.ShapeItem;
 import view.text_input.InputController;
 import view.text_input.TextManager;
@@ -56,7 +55,6 @@ public class MoveFrame implements MoveController {
 	 * 唯一ID，用于撤销操作
 	 */
 	private int ID;
-	// private static int MOVE_FRAME_ID;
 
 	private boolean isSelected;
 
@@ -85,8 +83,6 @@ public class MoveFrame implements MoveController {
 
 			@Override
 			protected void deal(double xDelta, double yDelta) {
-				// this.move(xDelta, yDelta);
-				// MoveFrame.this.fixPosition();
 				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
 			}
 
@@ -98,15 +94,7 @@ public class MoveFrame implements MoveController {
 					parent.informSelected(MoveFrame.this);
 				}
 				setSelected(true);
-				// if (mouse.getClickCount() >= 2) {
-				// isInputIng = true;
-				// inputController.getTextArea().setText(textManager.getText());
-				// inputController.setInformation(shapeItem.getTextRectangle(),
-				// textManager.getText());
-				// parent.add(inputController.getTextArea());
-				// }
 				syncMoveController.initialMoving();
-				// setSelected(true, true);
 
 			}
 
@@ -115,25 +103,17 @@ public class MoveFrame implements MoveController {
 				if (!getRectangle().equals(lastRect)) {
 					fixPosition();
 					syncMoveController.movingFinished();
-					// informChange();
 				} else {
 					if (mouse.getClickCount() >= 2) {
 						isInputIng = true;
 						inputController.getTextArea().setText(textManager.getText());
 						inputController.setInformation(shapeItem.getTextRectangle(), textManager.getText());
 						parent.add(inputController.getTextArea());
-						// textManager.showInput();
 					}
 				}
 			}
 
-//			@Override
-//			protected boolean isOutBound(double x, double y) {
-//				return parent.isOutBound(x, y);
-//			}
-
 		};
-		// rectangle.setAppearence(Color.TRANSPARENT, Color.BLACK, 1);
 		points = new MovePoint[8];
 		/**
 		 * offset的值为0.5时，该项不可改变，因为处于中间, 因为怕double有精度问题故用abs(x - 0.5) > eps 代替 x
@@ -235,7 +215,7 @@ public class MoveFrame implements MoveController {
 		}
 		nodeList.addAll(textManager.getNodes());
 		nodeList.addAll(rectangle.getNodes());
-		for(LinkedPoint linkedPoint:shapeItem.getLinkedPoints()){
+		for (LinkedPoint linkedPoint : shapeItem.getLinkedPoints()) {
 			nodeList.add(linkedPoint.getNode());
 		}
 	}
@@ -273,6 +253,7 @@ public class MoveFrame implements MoveController {
 			textManager.setText(inputController.getTextArea().getText());
 			parent.remove(inputController.getTextArea());
 			isInputIng = false;
+			informChange();
 		}
 	}
 
@@ -303,7 +284,6 @@ public class MoveFrame implements MoveController {
 	public LinkedList<LinkedPoint> getConnectionPoints() {
 		return shapeItem.getLinkedPoints();
 	}
-
 
 	@Override
 	public void setChange(MoveMsg changeMsg) {

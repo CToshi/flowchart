@@ -4,7 +4,7 @@ public abstract class DrawableState implements java.io.Serializable{
 	private boolean isSelected;
 
 	public static enum Type {
-		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, ARROW, ARROW_HORIZONTAL, ARROW_ERECT,CurveRectangle
+		RECTANGLE, ROUNDED_RECTANGLE, DIAMOND, PARALLELOGRAM, CIRCLE, ARROW, ARROW_HORIZONTAL, ARROW_ERECT,CurveRectangle
 	}
 
 	private int ID;

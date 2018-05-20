@@ -2,10 +2,8 @@ package ui;
 
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.Map;
 import java.util.Map.Entry;
 
-import application.Main;
 import controller.ShapeCreationController;
 import datastructure.LimitedStack;
 import entities.DrawableState;
@@ -32,7 +30,6 @@ import utility.Util;
 import view.inter.Draggable;
 import view.move.ConnectionController;
 import view.move.MoveController;
-import view.move.MoveMsg;
 
 /**
  * 图形的绘制区域
@@ -91,7 +88,7 @@ public class DrawPane extends Pane {
 				 */
 				selectRect.setStroke(Color.TRANSPARENT);
 				RectangleEntity rectE = new RectangleEntity(selectRect);
-				if(selectedCount == 0){
+				if (selectedCount == 0) {
 					for (Entry<Integer, MoveController> entry : map.entrySet()) {
 						MoveController controller = entry.getValue();
 						if (rectE.contains(controller.getRectangle())) {
@@ -211,7 +208,6 @@ public class DrawPane extends Pane {
 		change(controller.getID(), controller);
 		ConnectionController.getInstance().addController(controller);
 	}
-
 
 	/**
 	 * 将nodes加到DrawPane中显示出来
@@ -383,7 +379,7 @@ public class DrawPane extends Pane {
 		ConnectionController connectionController = ConnectionController.getInstance();
 		connectionController.clearConnections();
 		for (Entry<Integer, MoveController> entry : map.entrySet()) {
-			 connectionController.addController(entry.getValue());
+			connectionController.addController(entry.getValue());
 		}
 	}
 

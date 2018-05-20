@@ -18,7 +18,7 @@ public class ArrowShape extends ShapeItem{
 	private Line line;
 	private LinkedList<Node> linkedList;
 	private Polygon surround;
-	private LinkedList<LinkedPoint> linkedPoints;
+	private LinkedList<LinkedPoint> linkedPoints; 
 
 	public ArrowShape(PointEntity startPoint,double length){
 		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));

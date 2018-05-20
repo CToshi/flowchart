@@ -4,11 +4,11 @@ import java.util.LinkedList;
 
 import entities.DrawableState.Type;
 import entities.RectangleEntity;
-import view.inter.Changable;
+import view.inter.Changeable;
 import view.inter.Drawable;
 import view.move.LinkedPoint;
 
-public abstract class ShapeItem implements Changable, Cloneable, Drawable {
+public abstract class ShapeItem implements Changeable, Cloneable, Drawable {
 	private static final double DEFAULT_OFFSET[][] = { { 0, 0.5 }, { 1, 0.5 }, { 0.5, 0 }, { 0.5, 1 }, };
 	private LinkedList<LinkedPoint> linkedPonts;
 

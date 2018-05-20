@@ -3,7 +3,6 @@ package view.move;
 import java.util.LinkedList;
 
 import entities.DrawableState;
-import entities.PointEntity;
 import entities.RectangleEntity;
 import view.inter.Drawable;
 

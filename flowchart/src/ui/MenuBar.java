@@ -5,10 +5,8 @@ import java.io.IOException;
 
 import javax.swing.filechooser.FileSystemView;
 
-import application.Main;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -77,13 +75,6 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 
 		this.getMenus().addAll(fileMenu);
 	}
-
-//	private File chooseDirectory() {
-//		DirectoryChooser directoryChooser = new DirectoryChooser();
-//		directoryChooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());
-//		File file = directoryChooser.showDialog(new Stage());
-//		return file;
-//	}
 	private FileChooser getFileChooser(){
 		FileChooser fileChooser = new FileChooser();
 		fileChooser.setInitialDirectory(FileSystemView.getFileSystemView().getHomeDirectory());

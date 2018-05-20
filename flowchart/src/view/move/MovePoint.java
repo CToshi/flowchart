@@ -1,7 +1,5 @@
 package view.move;
 
-import java.util.LinkedList;
-
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
@@ -59,29 +57,14 @@ public class MovePoint extends DraggableRectangle{
 
 	@Override
 	protected void whenPressed(MouseEvent mouse) {
-//		parent.setHasSelected(true);
 		parent.setHidden(true);
 	}
 
 	@Override
 	protected void whenReleased(MouseEvent mouse) {
-//		parent.setHasSelected(false);
 		parent.fixPosition();
 		parent.setHidden(false);
 		parent.informChange();
-//		parent.changeFinished();
 	}
-
-	/**
-	 * 设置为隐藏，做法是将Fill设置为Color.TRANSPARENT，简单理解为颜色跟随父亲
-	 */
-
-	/**
-	 * 移动点的越界不处理
-	 */
-//	@Override
-//	protected boolean isOutBound(double x, double y) {
-//		return false;
-//	}
 
 }

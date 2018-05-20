@@ -1,6 +1,5 @@
 package ui;
 
-import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -12,14 +11,11 @@ import java.util.LinkedList;
 
 import javax.imageio.ImageIO;
 
-import application.Main;
 import entities.DrawableState;
 import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Border;
-import javafx.scene.paint.Color;
 
 public class QzyFileManager {
 
@@ -50,15 +46,15 @@ public class QzyFileManager {
 			saveToImage(file);
 		}
 	}
+
 	private void saveToImage(File file) {
 		SnapshotParameters parameters = new SnapshotParameters();
-//		parameters.setFill(Color.BLACK);
+		// parameters.setFill(Color.BLACK);
 		Border border = drawPane.getBorder();
 		drawPane.setBorder(null);
 		WritableImage image = drawPane.snapshot(parameters, null);
 		try {
-			ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png",
-					file);
+			ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

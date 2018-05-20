@@ -13,10 +13,10 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.text.TextFlow;
 import utility.Util;
-import view.inter.Changable;
+import view.inter.Changeable;
 import view.inter.Drawable;
 
-public class TextManager implements Drawable, Changable {
+public class TextManager implements Drawable, Changeable {
 	private TextFlow textFlow;
 	private RectangleEntity rect;
 	private Text text;

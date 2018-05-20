@@ -11,11 +11,11 @@ public class QzySaver {
 	private DrawPane drawPane;
 	private static QzySaver qzySaver = new QzySaver();
 
-	private QzySaver(){
+	private QzySaver() {
 
 	}
 
-	public static QzySaver getInstance(){
+	public static QzySaver getInstance() {
 		return qzySaver;
 	}
 
@@ -23,8 +23,8 @@ public class QzySaver {
 		getInstance().drawPane = drawPane;
 	}
 
-	public void saveTo(File file){
-		try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))){
+	public void saveTo(File file) {
+		try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
 			oos.writeObject(drawPane.getAllState());
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

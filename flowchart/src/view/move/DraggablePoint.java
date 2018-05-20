@@ -33,13 +33,11 @@ public abstract class DraggablePoint implements Drawable{
 
 			@Override
 			protected void whenDragged(double xDelta, double yDelta) {
-//				updateCircle(this.getMousePosition());
 				update(this.getMousePosition());
 			}
 
 			@Override
 			protected void whenMoved(MouseEvent mouse) {
-				// TODO Auto-generated method stub
 
 			}
 
@@ -57,11 +55,6 @@ public abstract class DraggablePoint implements Drawable{
 	@Override
 	public LinkedList<Node> getNodes() {
 		return Util.getList(circle);
-	}
-	public void setHidden(boolean isHidden){
-		if (isHidden) {
-//			circle.setStroke();
-		}
 	}
 	public abstract void update(PointEntity pointEntity);
 	public abstract void released(PointEntity pointEntity);

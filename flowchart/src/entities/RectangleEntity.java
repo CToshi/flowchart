@@ -3,7 +3,7 @@ package entities;
 import javafx.scene.shape.Rectangle;
 import view.move.MoveMsg;
 
-public class RectangleEntity implements Cloneable,java.io.Serializable {
+public class RectangleEntity implements Cloneable, java.io.Serializable {
 	private double x;
 	private double y;
 	private double width;
@@ -151,26 +151,11 @@ public class RectangleEntity implements Cloneable,java.io.Serializable {
 		}
 		return null;
 	}
-	public MoveMsg getMoveMsgFrom(RectangleEntity oldRectangle){
+
+	public MoveMsg getMoveMsgFrom(RectangleEntity oldRectangle) {
 		double deltaX = getX() - oldRectangle.getX();
 		double deltaY = getY() - oldRectangle.getY();
 		return new MoveMsg(deltaX, deltaY);
 	}
-//	public RectangleEntity subtract(RectangleEntity other) {
-//		return add(other, -1);
-//	}
-//
-//	public RectangleEntity add(RectangleEntity other) {
-//		return add(other, 1);
-//	}
-//
-//	private RectangleEntity add(RectangleEntity other, int d) {
-//		RectangleEntity result = clone();
-//		result.setX(this.getX() + d * other.getX());
-//		result.setY(this.getY() + d * other.getY());
-//		result.setWidth(this.getWidth() + d * other.getWidth());
-//		result.setHeight(this.getHeight() + d * other.getHeight());
-//		return result;
-//	}
 
 }

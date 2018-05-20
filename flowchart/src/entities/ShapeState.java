@@ -5,7 +5,7 @@ public class ShapeState extends DrawableState {
 	private String text;
 
 	public ShapeState(RectangleEntity rectangle, String text, Type type, boolean isSelected, int ID) {
-		super(type,isSelected, ID);
+		super(type, isSelected, ID);
 		this.rectangle = rectangle;
 		this.text = text;
 	}

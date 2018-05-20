@@ -2,7 +2,7 @@ package view.inter;
 
 import entities.RectangleEntity;
 
-public interface Changable {
+public interface Changeable {
 
 	/**
 	 *
