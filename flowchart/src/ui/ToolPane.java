@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import entities.DrawableState.Type;
 import entities.RectangleEntity;
 import javafx.beans.binding.DoubleExpression;
+import javafx.beans.property.ReadOnlyDoubleProperty;
 import javafx.scene.Node;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
@@ -22,22 +23,23 @@ import javafx.scene.paint.Color;
  * @author Toshi
  *
  */
-public class ToolPane extends Pane {
+public class ToolPane {
 
 	private int iDSelected;
 	private ToolItem[] toolItems = new ToolItem[Type.values().length];
+	private Pane toolPane;
 
 	public ToolPane(RootPane parent, double width, DoubleExpression height) {
-		this.prefHeightProperty().bind(height);
-		this.setPrefWidth(width);
-		// this.prefWidthProperty().bind(width);
+		toolPane = new Pane();
+		toolPane.prefHeightProperty().bind(height);
+		toolPane.setPrefWidth(width);
 
-		this.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
+		toolPane.setBackground(new Background(new BackgroundFill(Color.WHITE, null, null)));
 
 		BorderStroke borderStroke = new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID, new CornerRadii(10),
 				new BorderWidths(1));
 		Border border = new Border(borderStroke);
-		this.setBorder(border);
+		toolPane.setBorder(border);
 		this.iDSelected = -1;
 
 		int index = 0;
@@ -63,7 +65,7 @@ public class ToolPane extends Pane {
 
 	private void add(Node... nodes) {
 		for (Node e : nodes) {
-			this.getChildren().add(e);
+			toolPane.getChildren().add(e);
 		}
 	}
 
@@ -79,5 +81,20 @@ public class ToolPane extends Pane {
 			toolItems[iDSelected].setStroke(border);
 			iDSelected = -1;
 		}
+	}
+
+//	public double getPrefWidth() {
+//		return prefWidth;
+//	}
+//
+//	public double getPrefHeight() {
+//		return prefHeight;
+//	}
+
+	public ReadOnlyDoubleProperty widthProperty() {
+		return toolPane.widthProperty();
+	}
+	public Pane getPane(){
+		return toolPane;
 	}
 }

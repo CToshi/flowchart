@@ -43,7 +43,7 @@ public class ShapeFactory {
 		if(type == Type.ARROW){
 			width = DEFAULT_ARROW_LENGTH;
 			height = 0;
-		}else if (type == type.CIRCLE){
+		}else if (type == Type.CIRCLE){
 			width = height = Math.min(width, height)/2f;
 		}
 		if (isCenter) {

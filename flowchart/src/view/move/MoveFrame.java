@@ -2,7 +2,6 @@ package view.move;
 
 import java.util.LinkedList;
 
-import application.Main;
 import entities.DrawableState;
 import entities.RectangleEntity;
 import entities.ShapeState;
@@ -210,11 +209,11 @@ public class MoveFrame implements MoveController {
 	private void initNodeList() {
 		nodeList.clear();
 		nodeList.addAll(shapeItem.getNodes());
+		nodeList.addAll(textManager.getNodes());
+		nodeList.addAll(rectangle.getNodes());
 		for (int i = 0; i < points.length; i++) {
 			nodeList.addAll(points[i].getNodes());
 		}
-		nodeList.addAll(textManager.getNodes());
-		nodeList.addAll(rectangle.getNodes());
 		for (LinkedPoint linkedPoint : shapeItem.getLinkedPoints()) {
 			nodeList.add(linkedPoint.getNode());
 		}
