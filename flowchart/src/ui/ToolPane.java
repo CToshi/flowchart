@@ -45,7 +45,7 @@ public class ToolPane extends Pane {
 		toolItems[index] = new ToolItem(Type.ROUNDED_RECTANGLE, "圆角矩形，起止框，表示算法的开始和结束", index++);
 		toolItems[index] = new ToolItem(Type.DIAMOND, "菱形，判断框，表示算法的一个判断、一个条件", index++);
 		toolItems[index] = new ToolItem(Type.PARALLELOGRAM, "平行四边形，输入输出框，表示算法的一个输入或输出", index++);
-		toolItems[index] = new ToolItem(Type.ARROW, "箭头类,连接两个框", index++);
+		toolItems[index] = new ToolItem(Type.ARROW, "箭头类,连接两个框,当前", index++);
 		toolItems[index] = new ToolItem(Type.ARROW_HORIZONTAL, "水平折线箭头", index++);
 		toolItems[index] = new ToolItem(Type.ARROW_ERECT, "竖直折线箭头", index++);
 		toolItems[index] = new ToolItem(Type.CIRCLE,

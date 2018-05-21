@@ -15,8 +15,6 @@ public class SyncMoveController {
 	private static SyncMoveController syncMoveController = new SyncMoveController();
 	private MoveMsg moveMsg;
 	private DrawPane drawPane;
-//	private LinkedList<Integer> ids;
-//	private LinkedList<MoveController> controllers;
 	private LinkedList<Pair<Integer, MoveController>> list;
 	public static void setDrawPane(DrawPane drawPane) {
 		syncMoveController.drawPane = drawPane;
@@ -24,8 +22,6 @@ public class SyncMoveController {
 
 	private SyncMoveController() {
 		moveMsg = new MoveMsg(0, 0);
-//		ids = new LinkedList<>();
-//		controllers = new LinkedList<>();
 	}
 
 	public static SyncMoveController getInstance() {
@@ -36,33 +32,16 @@ public class SyncMoveController {
 		moveMsg.setDeltaX(0);
 		moveMsg.setDeltaY(0);
 		list = drawPane.getAllSeleted();
-//		for(int i = 0;i<list.size();){
-//			if(!(list.get(i).getValue() instanceof MoveFrame)){
-//				list.remove(i);
-//			}else{
-//				i++;
-//			}
-//		}
-//		ids.clear();
-//		controllers.clear();
-//		for(Entry<Integer, MoveController> entry:list){
-//			ids.add(entry.getKey());
-//			controllers.add(entry.getValue());
-//		}
 	}
 
 	public void informMoving(MoveMsg moveMsg) {
 		for(Pair<Integer, MoveController> entry:list){
 			entry.getValue().setChange(moveMsg);
 		}
-//		for(MoveController controller:controllers){
-//			controller.setChange(moveMsg);
-//		}
 		this.moveMsg.add(moveMsg);
 	}
 
 	public void movingFinished() {
-//		drawPane.change(ids.toArray(new Integer[0]), controllers.toArray(new MoveController[0]));
 		drawPane.change(list);
 	}
 }

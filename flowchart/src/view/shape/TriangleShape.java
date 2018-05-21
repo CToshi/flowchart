@@ -15,12 +15,14 @@ public class TriangleShape implements Drawable{
 	private Polygon polygon;
 	private PointEntity directPoint;
 	private PointEntity vertex;
+	private boolean isHidden;
 
 	public TriangleShape(PointEntity directPoint,PointEntity vertex){
 		this.directPoint = directPoint;
 		this.vertex = vertex;
 		polygon = new Polygon();
 		polygon.getPoints().addAll(this.getTriangle());
+		this.isHidden = false;
 	}
 
 	private Double[] getTriangle() {
@@ -29,7 +31,9 @@ public class TriangleShape implements Drawable{
 
 	private void update(){
 		this.polygon.getPoints().clear();
-		this.polygon.getPoints().addAll(getTriangle());
+		if (!isHidden) {
+			this.polygon.getPoints().addAll(getTriangle());
+		}
 	}
 
 	public void setDirectPoint(PointEntity directPoint) {
@@ -48,8 +52,6 @@ public class TriangleShape implements Drawable{
 	}
 
 	private Double[] getTriangle(PointEntity A, PointEntity B) {
-		// Point A = new Point(2, 30), B = new Point(30, 30); // Line's two
-		// points
 		double t = 10, x1, x2, y1, y2; // Triangle's length of sides
 		Vector alpha = new Vector(B, A);
 		if (alpha.getY() == 0) {
@@ -74,5 +76,8 @@ public class TriangleShape implements Drawable{
 		return new Double[] { B.getX(), B.getY(), x1, y1, x2, y2 };
 	}
 
-
+	public void setHidden(boolean isHidden) {
+		this.isHidden = isHidden;
+		update();
+	}
 }

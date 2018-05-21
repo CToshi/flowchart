@@ -89,6 +89,10 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 				updateCircle(pointEntity);
 				arrowShape.setStartPoint(pointEntity);
 				connectionController.separate(startMovePoint.getLinkedPoint(), startMovePoint);
+				if(startMovePoint.isCurve()){
+					arrowShape.decCurveCount();
+					startMovePoint.setCurve(false);
+				}
 				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity,
 						startMovePoint);
 				arrowShape.setStartPoint(point);
@@ -116,6 +120,10 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 				updateCircle(pointEntity);
 				arrowShape.setEndPoint(pointEntity);
 				connectionController.separate(endMovePoint.getLinkedPoint(), endMovePoint);
+				if(endMovePoint.isCurve()){
+					arrowShape.decCurveCount();
+					endMovePoint.setCurve(false);
+				}
 				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity, endMovePoint);
 				arrowShape.setEndPoint(point);
 				updateCircle(point);
@@ -257,4 +265,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 		arrowShape.setLinkedPointsHidden(isHidden);
 	}
 
+	public void changeToDashed(){
+		this.arrowShape.changeToDashed();
+	}
 }

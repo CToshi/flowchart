@@ -19,6 +19,7 @@ public class ArrowShape extends ShapeItem{
 	private LinkedList<Node> linkedList;
 	private Polygon surround;
 	private LinkedList<LinkedPoint> linkedPoints;
+	private int curveCount;
 
 	public ArrowShape(PointEntity startPoint,double length){
 		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));
@@ -38,6 +39,7 @@ public class ArrowShape extends ShapeItem{
 		LinkedPoint linkedPoint = new LinkedPoint((startPoint.getX()+endPoint.getX())/2, (startPoint.getY()+endPoint.getY()/2),1,1);
 		this.linkedPoints = new LinkedList<LinkedPoint>();
 		linkedPoints.add(linkedPoint);
+		this.curveCount = 0;
 	}
 
 	public Line getLine() {
@@ -112,6 +114,11 @@ public class ArrowShape extends ShapeItem{
 	}
 
 	public void update(){
+		triangleShape.setHidden(true);
+		if(curveCount == 0){
+			triangleShape.setHidden(false);
+			line.getStrokeDashArray().clear();
+		}
 		triangleShape.setDirectPoint(this.getStartPoint());
 		triangleShape.setVertex(this.getEndPoint());
 		surround.getPoints().clear();
@@ -142,4 +149,18 @@ public class ArrowShape extends ShapeItem{
 			};
 		return points;
 	}
+
+	public void changeToDashed() {
+		this.line.getStrokeDashArray().addAll(20d, 20d, 20d, 20d);
+		this.triangleShape.setHidden(true);
+	}
+
+	public void incCurveCount(){
+		curveCount++;
+	}
+
+	public void decCurveCount(){
+		curveCount--;
+	}
+
 }

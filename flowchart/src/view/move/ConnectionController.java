@@ -2,7 +2,10 @@ package view.move;
 
 import java.util.LinkedList;
 
+import entities.DrawableState.Type;
 import entities.PointEntity;
+import view.shape.ArrowShape;
+import view.shape.CurveRectangle;
 
 public class ConnectionController {
 
@@ -48,6 +51,12 @@ public class ConnectionController {
 			result.setX(nearPoint.getX());
 			result.setY(nearPoint.getY());
 			showingController = nearController;
+			if(nearController.getState().getType().equals(Type.CurveRectangle)&&controller.getState().getType().equals(Type.ARROW)){
+				ArrowMoveController arrowMoveController = (ArrowMoveController)controller;
+				arrowMoveController.getArrowShape().incCurveCount();
+				arrowMoveController.changeToDashed();
+				arrowMovePoint.setCurve(true);
+			}
 		}
 		if(showingController != null){
 			showingController.setLinkedPointsHidden(false);
