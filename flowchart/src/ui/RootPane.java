@@ -5,14 +5,12 @@ import java.util.LinkedList;
 import controller.ShapeCreationController;
 import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.scene.Node;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
-import view.move.MoveController;
 import view.move.SyncMoveController;
 
 /**
@@ -47,7 +45,7 @@ public class RootPane extends Pane {
 				this.heightProperty().subtract(menuBar.heightProperty()));
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
-		bottomPane.getChildren().addAll(drawPane, toolPane);
+		bottomPane.getChildren().addAll(drawPane, toolPane.getPane());
 		keyList = new LinkedList<>();
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
@@ -56,13 +54,13 @@ public class RootPane extends Pane {
 		QzyFileManager.setDrawPane(drawPane);
 	}
 
-	public void addToDrawPane(MoveController moveController) {
-		drawPane.add(moveController);
-	}
-
-	public void addToDrawPane(Node... nodes) {
-		drawPane.add(nodes);
-	}
+//	public void addToDrawPane(MoveController moveController) {
+//		drawPane.add(moveController);
+//	}
+//
+//	public void addToDrawPane(Node... nodes) {
+//		drawPane.add(nodes);
+//	}
 
 	public DrawPane getDrawPane() {
 		return drawPane;
