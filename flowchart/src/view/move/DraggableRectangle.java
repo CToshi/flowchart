@@ -2,7 +2,6 @@ package view.move;
 
 import java.util.LinkedList;
 
-import entities.PointEntity;
 import entities.RectangleEntity;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
@@ -12,15 +11,12 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import utility.Util;
 import view.inter.Changeable;
+import view.inter.Draggable;
 import view.inter.Drawable;
 
 public abstract class DraggableRectangle implements Changeable, Drawable {
 	private Rectangle self;
 
-	private PointEntity lastPosition;
-	private PointEntity startPosition;
-	private PointEntity mousePosition;
-	private Cursor cursor;
 	private boolean isHidden;
 	private RectangleEntity rectangle;
 
@@ -40,39 +36,37 @@ public abstract class DraggableRectangle implements Changeable, Drawable {
 	public DraggableRectangle(double x, double y, double width, double height, Cursor cursor, Color fill) {
 		self = new Rectangle(x, y, width, height);
 		rectangle = new RectangleEntity(self);
-		this.cursor = cursor;
-		initListener();
-		lastPosition = new PointEntity(0, 0);
-		startPosition = new PointEntity(this.getX(), this.getY());
-		mousePosition = new PointEntity(0, 0);
 		self.setFill(fill);
+		new Draggable() {
+
+			@Override
+			protected void whenReleased(MouseEvent mouse) {
+				DraggableRectangle.this.whenReleased(mouse);
+			}
+
+			@Override
+			protected void whenPressed(MouseEvent mouse) {
+				DraggableRectangle.this.whenPressed(mouse);
+			}
+
+			@Override
+			protected void whenMoved(MouseEvent mouse) {
+				self.setCursor(cursor);
+			}
+
+			@Override
+			protected void whenDragged(double xDelta, double yDelta) {
+				DraggableRectangle.this.deal(xDelta, yDelta);
+			}
+
+			@Override
+			protected Node getNode() {
+				return self;
+			}
+		};
+
 	}
 
-	/**
-	 * 鼠标按下、鼠标拖动、鼠标释放的监听器初始化
-	 */
-	private void initListener() {
-		self.setOnMousePressed(e -> {
-			lastPosition.setXY(e.getX(), e.getY());
-			startPosition.setXY(this.getX(), this.getY());
-			whenPressed(e);
-		});
-		self.setOnMouseDragged(e -> {
-			mousePosition.setXY(e.getX(), e.getY());
-			double xDelta = e.getX() - lastPosition.getX();
-			double yDelta = e.getY() - lastPosition.getY();
-			this.deal(xDelta, yDelta);
-			lastPosition.setXY(e.getX(), e.getY());
-		});
-		self.setOnMouseReleased(e -> {
-			whenReleased(e);
-		});
-		if (this.cursor != Cursor.DEFAULT) {
-			self.setOnMouseMoved(e -> {
-				self.setCursor(this.cursor);
-			});
-		}
-	}
 
 	/**
 	 * 鼠标按下后会执行该函数
@@ -147,13 +141,13 @@ public abstract class DraggableRectangle implements Changeable, Drawable {
 		return this.getY() + this.getHeight() / 2f;
 	}
 
-	public PointEntity getMouse() {
-		return mousePosition;
-	}
-
-	public PointEntity getLastMouses() {
-		return lastPosition;
-	}
+//	public PointEntity getMouse() {
+//		return mousePosition;
+//	}
+//
+//	public PointEntity getLastMouses() {
+//		return lastPosition;
+//	}
 
 	public void setHidden(boolean isHidden) {
 		if (this.isHidden == isHidden)
