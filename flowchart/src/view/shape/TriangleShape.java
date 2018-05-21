@@ -16,7 +16,7 @@ public class TriangleShape implements Drawable{
 	private PointEntity directPoint;
 	private PointEntity vertex;
 	private boolean isHidden;
-
+	
 	public TriangleShape(PointEntity directPoint,PointEntity vertex){
 		this.directPoint = directPoint;
 		this.vertex = vertex;

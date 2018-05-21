@@ -36,7 +36,7 @@ public class ShapeFactory {
 	 * @return
 	 */
 
-
+	
 	public static ShapeItem create(double x, double y, boolean isCenter, Type type) {
 		double width = DEFAULT_WIDTH;
 		double height = DEFAULT_HEIGHT;

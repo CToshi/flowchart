@@ -8,9 +8,6 @@ public abstract class KeyListener {
 	public KeyListener(KeyCode... codes) {
 		this.codes = codes;
 	}
-//	public void setKeyCodes(KeyCode...codes){
-//		this.codes = codes;
-//	}
 
 	public boolean equals(KeyCode[] codes) {
 		if (codes.length != this.codes.length) {
