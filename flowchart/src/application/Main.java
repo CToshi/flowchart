@@ -1,8 +1,8 @@
 package application;
 
 import javafx.application.Application;
+import javafx.scene.Scene;
 import javafx.stage.Stage;
-import ui.MainScene;
 import ui.RootPane;
 
 public class Main extends Application {
@@ -32,7 +32,7 @@ public class Main extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		RootPane root = new RootPane(primaryStage.widthProperty(), primaryStage.heightProperty());
-		MainScene scene = new MainScene(root, 960, 720);
+		Scene scene = new Scene(root, 960, 720);
 
 		primaryStage.setScene(scene);
 		primaryStage.show();

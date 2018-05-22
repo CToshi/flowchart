@@ -146,7 +146,7 @@ public class PolygonalMoveController implements Cloneable, MoveController, Dragg
 				this.centerPoint = polygonalArrowShape.getCenterPoint();
 				this.endPoint = polygonalArrowShape.getEndPoint();
 				if (!isSelected) {
-					parent.informSelected(PolygonalMoveController.this);
+					parent.informSelected(PolygonalMoveController.this, mouse.isControlDown());
 				}
 				setSelected(true);
 				syncMoveController.initialMoving();

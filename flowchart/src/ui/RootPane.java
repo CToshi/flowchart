@@ -1,15 +1,8 @@
 package ui;
 
-import java.util.LinkedList;
-
-import application.Main;
 import controller.ShapeCreationController;
 import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
@@ -27,14 +20,11 @@ public class RootPane extends Pane {
 	private DrawPane drawPane;
 	private MenuBar menuBar;
 	private Pane bottomPane;
-	private LinkedList<KeyCode> keyList;
-	private LinkedList<KeyListener> keyListeners;
 
 	public RootPane(ReadOnlyDoubleProperty stageWidth, ReadOnlyDoubleProperty stageHeight) {
 		this.prefHeightProperty().bind(stageWidth);
 
 		this.setBackground(new Background(new BackgroundFill(Color.BLACK, null, null)));
-		keyListeners = new LinkedList<>();
 
 		bottomPane = new Pane();
 
@@ -49,30 +39,13 @@ public class RootPane extends Pane {
 		bottomPane.layoutYProperty().bind(menuBar.heightProperty());
 		drawPane.layoutXProperty().bind(toolPane.widthProperty());
 		bottomPane.getChildren().addAll(drawPane, toolPane.getPane());
-		keyList = new LinkedList<>();
 		ShapeCreationController.getInstance().setDrawPane(drawPane);
 		ShapeCreationController.getInstance().setToolPane(toolPane);;
 		MoveControllerFactory.setDrawPane(drawPane);
 		SyncMoveController.setDrawPane(drawPane);
 		QzyFileManager.setDrawPane(drawPane);
-//		this.focusedProperty().addListener(new ChangeListener<Boolean>() {
-//
-//			@Override
-//			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-//				Main.test(oldValue, newValue);
-//				if(newValue.equals(Boolean.FALSE)){
-//					RootPane.this.requestFocus();
-//				}
-//			}
-//		});
-//		this.setOnKeyPressed(key -> {
-//			Main.test(233);
-//			RootPane.this.keyPressed(key);
-//		});
-//		this.setOnKeyReleased(key -> {
-//			RootPane.this.KeyReleased(key);
-//		});
-//		this.requestFocus();
+
+		menuBar.setDrawPane(drawPane);
 	}
 
 
@@ -84,41 +57,4 @@ public class RootPane extends Pane {
 		return toolPane;
 	}
 
-	/**
-	 * 检测当前是否有某个按键组合
-	 *
-	 * @param keyCodes
-	 * @return
-	 */
-	public boolean hasKey(KeyCode... keyCodes) {
-		if (keyList.size() != keyCodes.length) {
-			return false;
-		}
-		for (int i = 0; i < keyCodes.length; i++) {
-			if (keyCodes[i] != keyList.get(i)) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public void keyPressed(KeyEvent key) {
-		if (!keyList.contains(key.getCode())) {
-			keyList.add(key.getCode());
-		}
-		KeyCode[] codes = keyList.toArray(new KeyCode[0]);
-		for (KeyListener listener : keyListeners) {
-			if (listener.equals(codes)) {
-				listener.run();
-			}
-		}
-	}
-
-	public void KeyReleased(KeyEvent key) {
-		keyList.remove(key.getCode());
-	}
-
-	public void add(KeyListener listener) {
-		keyListeners.add(listener);
-	}
 }

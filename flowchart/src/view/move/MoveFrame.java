@@ -90,7 +90,7 @@ public class MoveFrame implements MoveController {
 				MoveFrame.this.closeInput();
 				lastRect = this.getRectangle();
 				if (!isSelected) {
-					parent.informSelected(MoveFrame.this);
+					parent.informSelected(MoveFrame.this, mouse.isControlDown());
 				}
 				setSelected(true);
 				syncMoveController.initialMoving();
