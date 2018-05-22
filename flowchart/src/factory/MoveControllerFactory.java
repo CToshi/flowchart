@@ -1,5 +1,6 @@
 package factory;
 
+import application.Main;
 import entities.ArrowState;
 import entities.DrawableState;
 import entities.DrawableState.Type;
@@ -82,15 +83,11 @@ public class MoveControllerFactory {
 			return mc;
 		} else if (drawableState instanceof ArrowState) {
 			ArrowState arrowState = (ArrowState) drawableState;
-			MoveController mc = create(arrowState.getType(), false);
+			MoveController mc = create(arrowState.getType(), isNeedID);
 			mc.setState(arrowState);
 			return mc;
 		}
-		try {
-			throw new Exception("还没做");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		new Exception("还没做").printStackTrace();
 		return null;
 	}
 }
