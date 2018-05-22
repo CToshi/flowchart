@@ -21,7 +21,7 @@ public class LimitedStack<K, V> {
 	public LimitedStack() {
 		this(10);
 	}
-
+	
 	public LimitedStack(int maxSize) {
 		this.maxSize = maxSize;
 		list = new LinkedList<>();

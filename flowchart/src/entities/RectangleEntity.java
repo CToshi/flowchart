@@ -44,9 +44,6 @@ public class RectangleEntity implements Cloneable, java.io.Serializable {
 		return new PointEntity(getX(), getY());
 	}
 
-	// public void setLeftTop(PointEntity leftTop) {
-	// this.leftTop = leftTop;
-	// }
 
 	public void setX(double value) {
 		this.x = value;

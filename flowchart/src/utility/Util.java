@@ -16,6 +16,7 @@ public class Util {
 		}
 		return list;
 	}
+	
 
 	public static boolean isEquals(double a, double b) {
 		return isEquals(a, b, 0.001);
@@ -24,5 +25,5 @@ public class Util {
 	public static boolean isEquals(double a, double b, double eps) {
 		return Math.abs(a - b) < eps;
 	}
-
+	
 }

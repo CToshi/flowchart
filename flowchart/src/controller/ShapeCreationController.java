@@ -13,7 +13,7 @@ public class ShapeCreationController {
 
 	private ShapeCreationController() {
 	}
-
+	
 	public static ShapeCreationController getInstance() {
 		return scc;
 	}

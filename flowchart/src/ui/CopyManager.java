@@ -32,12 +32,6 @@ public class CopyManager {
 			forward(moveMsg);
 			copyTimes++;
 			maxCopyTimes = Math.max(maxCopyTimes, copyTimes);
-//			LinkedList<Pair<Integer, MoveController>> selects = drawPane.getAllSeleted();
-//			for(Pair<Integer, MoveController> pair : selects){
-//				pair.getValue().setSelected(false);
-//			}
-//			clipBoard.addAll(selects);
-//			moveMsg.add(new MoveMsg(step, step));
 		}
 	}
 
