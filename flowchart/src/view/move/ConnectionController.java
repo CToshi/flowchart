@@ -4,8 +4,6 @@ import java.util.LinkedList;
 
 import entities.DrawableState.Type;
 import entities.PointEntity;
-import view.shape.ArrowShape;
-import view.shape.CurveRectangle;
 import view.shape.DraggableArrow;
 
 public class ConnectionController {

@@ -56,7 +56,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 				this.startPoint = arrowShape.getStartPoint();
 				this.endPoint = arrowShape.getEndPoint();
 				if (!isSelected) {
-					parent.informSelected(ArrowMoveController.this);
+					parent.informSelected(ArrowMoveController.this, mouse.isControlDown());
 				}
 				setSelected(true);
 				syncMoveController.initialMoving();
@@ -221,7 +221,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 		arrowShape.setEndPoint(arrowState.getEndPoint());
 		startMovePoint.setPosition(arrowState.getStartPoint());
 		endMovePoint.setPosition(arrowState.getEndPoint());
-		id = arrowState.getID();
+		this.id = state.getID();
 		update();
 	}
 

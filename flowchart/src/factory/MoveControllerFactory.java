@@ -1,12 +1,11 @@
 package factory;
 
-import application.Main;
 import entities.ArrowState;
 import entities.DrawableState;
 import entities.DrawableState.Type;
-import javafx.scene.Cursor;
 import entities.PointEntity;
 import entities.ShapeState;
+import javafx.scene.Cursor;
 import ui.DrawPane;
 import view.move.ArrowMoveController;
 import view.move.MoveController;

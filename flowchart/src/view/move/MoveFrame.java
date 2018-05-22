@@ -2,6 +2,7 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.DrawableState;
 import entities.RectangleEntity;
 import entities.ShapeState;
@@ -90,7 +91,7 @@ public class MoveFrame implements MoveController {
 				MoveFrame.this.closeInput();
 				lastRect = this.getRectangle();
 				if (!isSelected) {
-					parent.informSelected(MoveFrame.this);
+					parent.informSelected(MoveFrame.this, mouse.isControlDown());
 				}
 				setSelected(true);
 				syncMoveController.initialMoving();

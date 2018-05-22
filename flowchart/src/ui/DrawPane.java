@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import controller.ShapeCreationController;
 import datastructure.LimitedStack;
 import entities.DrawableState;
@@ -152,54 +153,16 @@ public class DrawPane extends Pane {
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		copyManager = new CopyManager(this);
-		parent.add(new KeyListener(KeyCode.DELETE) {
-			@Override
-			public void run() {
-				deleteAllSelected();
-			}
-		});
-		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Z) {
-			@Override
-			public void run() {
-				unDo();
-				copyManager.getBack();
-			}
-		});
-		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Y) {
-			@Override
-			public void run() {
-				reDo();
-				copyManager.forward();
-			}
-		});
-		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.A) {
-			@Override
-			public void run() {
-				DrawPane.this.setAllSelected();
-			}
-		});
-		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.C) {
-			@Override
-			public void run() {
-				DrawPane.this.copyManager.copy();
-			}
-		});
-		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.V) {
-			@Override
-			public void run() {
-				DrawPane.this.copyManager.paste();
-			}
-		});
 	}
 
 	public boolean isOutBound(double x, double y) {
 		return !(0 <= x && x <= this.getWidth() && 0 <= y && y <= this.getHeight());
 	}
 
-	public void informSelected(MoveController frame) {
-		if (selectedCount == 0 || hasKey(KeyCode.CONTROL)) {
+	public void informSelected(MoveController frame, boolean isControlDown) {
+		if (selectedCount == 0 || isControlDown) {
 			selectedCount++;
-		} else if (selectedCount == 1 && !hasKey(KeyCode.CONTROL)) {
+		} else if (selectedCount == 1 && !isControlDown) {
 			closeOthers(frame);
 		}
 	}
@@ -259,10 +222,6 @@ public class DrawPane extends Pane {
 		}
 	}
 
-	public boolean hasKey(KeyCode... keyCodes) {
-		return parent.hasKey(keyCodes);
-	}
-
 	public void change(int id, MoveController newController) {
 		change(Util.getList(new Pair<Integer, MoveController>(id, newController)));
 	}
@@ -296,6 +255,7 @@ public class DrawPane extends Pane {
 
 	public void unDo() {
 		unDo(this.unDoStack, this.reDoStack);
+		copyManager.getBack();
 	}
 
 	private void unDo(LimitedStack<Integer[], DrawableState[]> unDoS, LimitedStack<Integer[], DrawableState[]> reDoS) {
@@ -339,6 +299,7 @@ public class DrawPane extends Pane {
 		 * reDo和unDo是相反过程，只需要颠倒顺序即可
 		 */
 		unDo(this.reDoStack, this.unDoStack);
+		copyManager.forward();
 	}
 
 	public void remove(Node... nodes) {
@@ -351,7 +312,7 @@ public class DrawPane extends Pane {
 		this.shapeCreationType = shapeCreationType;
 	}
 
-	private void setAllSelected() {
+	public void setAllSelected() {
 		for (Entry<Integer, MoveController> entry : map.entrySet()) {
 			entry.getValue().setSelected(true);
 		}
@@ -393,6 +354,7 @@ public class DrawPane extends Pane {
 				add(controller.getNodes());
 			}
 		}
+		closeOthers(null);
 		whenMapChanged();
 	}
 
@@ -410,5 +372,13 @@ public class DrawPane extends Pane {
 
 	public Border getStroke() {
 		return stroke;
+	}
+
+	public void copy() {
+		copyManager.copy();
+	}
+
+	public void paste() {
+		copyManager.paste();
 	}
 }
