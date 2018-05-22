@@ -34,6 +34,7 @@ public class Main extends Application {
 		RootPane root = new RootPane(primaryStage.widthProperty(), primaryStage.heightProperty());
 //		Scene scene = new Scene(root, 800, 600);
 		MainScene scene = new MainScene(root, 960, 720);
+
 		primaryStage.setScene(scene);
 		primaryStage.show();
 	}

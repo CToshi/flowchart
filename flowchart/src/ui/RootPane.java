@@ -2,9 +2,12 @@ package ui;
 
 import java.util.LinkedList;
 
+import application.Main;
 import controller.ShapeCreationController;
 import factory.MoveControllerFactory;
 import javafx.beans.property.ReadOnlyDoubleProperty;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
@@ -52,6 +55,24 @@ public class RootPane extends Pane {
 		MoveControllerFactory.setDrawPane(drawPane);
 		SyncMoveController.setDrawPane(drawPane);
 		QzyFileManager.setDrawPane(drawPane);
+//		this.focusedProperty().addListener(new ChangeListener<Boolean>() {
+//
+//			@Override
+//			public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+//				Main.test(oldValue, newValue);
+//				if(newValue.equals(Boolean.FALSE)){
+//					RootPane.this.requestFocus();
+//				}
+//			}
+//		});
+//		this.setOnKeyPressed(key -> {
+//			Main.test(233);
+//			RootPane.this.keyPressed(key);
+//		});
+//		this.setOnKeyReleased(key -> {
+//			RootPane.this.KeyReleased(key);
+//		});
+//		this.requestFocus();
 	}
 
 //	public void addToDrawPane(MoveController moveController) {

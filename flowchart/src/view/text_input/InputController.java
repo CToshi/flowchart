@@ -20,6 +20,11 @@ public class InputController {
 		return textArea;
 	}
 
+	/**
+	 *
+	 * @param rectangle 输入框显示的位置和大小
+	 * @param text 初始信息
+	 */
 	public void setInformation(RectangleEntity rectangle,String text){
 		textArea.setText(text);
 		textArea.setLayoutX(rectangle.getX());

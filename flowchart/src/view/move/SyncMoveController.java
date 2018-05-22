@@ -28,7 +28,7 @@ public class SyncMoveController {
 		return syncMoveController;
 	}
 
-	public void initialMoving() {
+	public void initialMoving() { // 初始化
 		moveMsg.setDeltaX(0);
 		moveMsg.setDeltaY(0);
 		list = drawPane.getAllSeleted();
@@ -36,12 +36,12 @@ public class SyncMoveController {
 
 	public void informMoving(MoveMsg moveMsg) {
 		for(Pair<Integer, MoveController> entry:list){
-			entry.getValue().setChange(moveMsg);
+			entry.getValue().setChange(moveMsg); // 增加偏移量
 		}
 		this.moveMsg.add(moveMsg);
 	}
 
 	public void movingFinished() {
-		drawPane.change(list);
+		drawPane.change(list);// 反馈到DrawPane
 	}
 }
