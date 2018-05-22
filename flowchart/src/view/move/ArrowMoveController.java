@@ -219,6 +219,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 		ArrowState arrowState = (ArrowState) state;
 		arrowShape.setStartPoint(arrowState.getStartPoint());
 		arrowShape.setEndPoint(arrowState.getEndPoint());
+		this.id = state.getID();
 		update();
 	}
 

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
 
+import application.Main;
 import controller.ShapeCreationController;
 import datastructure.LimitedStack;
 import entities.DrawableState;
@@ -152,42 +153,6 @@ public class DrawPane extends Pane {
 		unDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		reDoStack = new LimitedStack<>(MAX_UNDO_TIMES);
 		copyManager = new CopyManager(this);
-//		parent.add(new KeyListener(KeyCode.DELETE) {
-//			@Override
-//			public void run() {
-//				deleteAllSelected();
-//			}
-//		});
-//		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Z) {
-//			@Override
-//			public void run() {
-//				unDo();
-//			}
-//		});
-//		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.Y) {
-//			@Override
-//			public void run() {
-//				reDo();
-//			}
-//		});
-//		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.A) {
-//			@Override
-//			public void run() {
-//				DrawPane.this.setAllSelected();
-//			}
-//		});
-//		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.C) {
-//			@Override
-//			public void run() {
-//
-//			}
-//		});
-//		parent.add(new KeyListener(KeyCode.CONTROL, KeyCode.V) {
-//			@Override
-//			public void run() {
-//				DrawPane.this.copyManager.paste();
-//			}
-//		});
 	}
 
 	public boolean isOutBound(double x, double y) {
@@ -256,10 +221,6 @@ public class DrawPane extends Pane {
 			}
 		}
 	}
-
-//	public boolean hasKey(KeyCode... keyCodes) {
-//		return parent.hasKey(keyCodes);
-//	}
 
 	public void change(int id, MoveController newController) {
 		change(Util.getList(new Pair<Integer, MoveController>(id, newController)));
@@ -393,6 +354,7 @@ public class DrawPane extends Pane {
 				add(controller.getNodes());
 			}
 		}
+		closeOthers(null);
 		whenMapChanged();
 	}
 

@@ -230,6 +230,7 @@ public class PolygonalMoveController implements Cloneable, MoveController, Dragg
 		polygonalArrowShape.setStartPoint(arrowState.getStartPoint());
 		polygonalArrowShape.setEndPoint(arrowState.getEndPoint());
 		polygonalArrowShape.setCenterPoint(arrowState.getCenterPoint());
+		this.id = state.getID();
 		updateDraggable();
 	}
 

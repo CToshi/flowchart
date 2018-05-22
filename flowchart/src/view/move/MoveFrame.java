@@ -2,6 +2,7 @@ package view.move;
 
 import java.util.LinkedList;
 
+import application.Main;
 import entities.DrawableState;
 import entities.RectangleEntity;
 import entities.ShapeState;
