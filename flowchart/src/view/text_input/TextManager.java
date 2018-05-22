@@ -20,7 +20,6 @@ public class TextManager implements Drawable, Changeable {
 	private TextFlow textFlow;
 	private RectangleEntity rect;
 	private Text text;
-//	private TextArea textArea;
 	private CharSizeCalculator calculator;
 	private String content;
 

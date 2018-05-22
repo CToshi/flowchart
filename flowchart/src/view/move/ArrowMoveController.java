@@ -74,6 +74,16 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 			@Override
 			protected void whenDragged(double xDelta, double yDelta) {
 				syncMoveController.informMoving(new MoveMsg(xDelta, yDelta));
+				connectionController.separate(startMovePoint.getLinkedPoint(), startMovePoint);
+				if(startMovePoint.isCurve()){
+					arrowShape.decCurveCount();
+					startMovePoint.setCurve(false);
+				}
+				connectionController.separate(endMovePoint.getLinkedPoint(), endMovePoint);
+				if(endMovePoint.isCurve()){
+					arrowShape.decCurveCount();
+					endMovePoint.setCurve(false);
+				}
 			}
 
 			@Override

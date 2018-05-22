@@ -54,13 +54,6 @@ public class RootPane extends Pane {
 		QzyFileManager.setDrawPane(drawPane);
 	}
 
-//	public void addToDrawPane(MoveController moveController) {
-//		drawPane.add(moveController);
-//	}
-//
-//	public void addToDrawPane(Node... nodes) {
-//		drawPane.add(nodes);
-//	}
 
 	public DrawPane getDrawPane() {
 		return drawPane;

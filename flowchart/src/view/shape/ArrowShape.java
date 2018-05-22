@@ -151,7 +151,7 @@ public class ArrowShape extends ShapeItem{
 	}
 
 	public void changeToDashed() {
-		this.line.getStrokeDashArray().addAll(20d, 20d, 20d, 20d);
+		this.line.getStrokeDashArray().addAll(5d);
 		this.triangleShape.setHidden(true);
 	}
 

@@ -60,7 +60,7 @@ public class ShapeFactory {
 		case PARALLELOGRAM:
 			return new Parallelogram(x, y, width, height);
 		case CIRCLE:
-			return new CircleShape(x, y, Math.min(DEFAULT_WIDTH, DEFAULT_HEIGHT)/2f);
+			return new CircleShape(x, y, Math.min(DEFAULT_WIDTH, DEFAULT_HEIGHT)/4f);
 		case ARROW:
 			return new ArrowShape(new PointEntity(x,y),DEFAULT_ARROW_LENGTH);
 		case ARROW_HORIZONTAL:
