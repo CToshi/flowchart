@@ -6,14 +6,17 @@ import entities.DrawableState.Type;
 import entities.PointEntity;
 import view.shape.ArrowShape;
 import view.shape.CurveRectangle;
+import view.shape.DraggableArrow;
 
 public class ConnectionController {
 
 	private static final double MIN_DISTANCE = 10;
 	private static final double DISTANCE_FOR_SHOW = 30;
+	private static final double EPS = 0.001;
 	private LinkedList<MoveController> moveControllers;
 	private static ConnectionController connectionController = new ConnectionController();
 	private MoveController showingController;
+	boolean isMinDistanceChange;
 
 	public static ConnectionController getInstance() {
 		return connectionController;
@@ -21,15 +24,19 @@ public class ConnectionController {
 
 	private ConnectionController() {
 		moveControllers = new LinkedList<MoveController>();
+		isMinDistanceChange = false;
 	}
 
-	public PointEntity connnect(MoveController controller, PointEntity pointEntity, ArrowMovePoint arrowMovePoint) {
+	public PointEntity connect(MoveController controller, PointEntity pointEntity, ArrowMovePoint arrowMovePoint) {
 		PointEntity result = pointEntity;
 		LinkedPoint nearPoint = null;
 		MoveController nearController = null;
 		whenMovingFinish();
 		showingController = null;
 		double minDistance = MIN_DISTANCE;
+		if(isMinDistanceChange){
+			minDistance = EPS;
+		}
 		double distanceForShow = DISTANCE_FOR_SHOW;
 		for (MoveController moveController : moveControllers) {
 			if (moveController.getConnectionPoints() == null || moveController == controller)
@@ -89,5 +96,23 @@ public class ConnectionController {
 			showingController.setLinkedPointsHidden(true);
 			showingController = null;
 		}
+	}
+
+	public void linkedStart(){
+		this.isMinDistanceChange = true;
+		for (MoveController moveController : moveControllers) {
+			if(moveController.getState().getType()==Type.ARROW||
+					moveController.getState().getType()==Type.ARROW_HORIZONTAL||
+					moveController.getState().getType()==Type.ARROW_ERECT){
+				DraggableArrow draggableArrow = (DraggableArrow) moveController;
+				this.connect(moveController, new PointEntity(draggableArrow.getStartMovePoint().getX(),
+						draggableArrow.getStartMovePoint().getY()), draggableArrow.getStartMovePoint());
+				whenMovingFinish();
+				this.connect(moveController, new PointEntity(draggableArrow.getEndMovePoint().getX(),
+						draggableArrow.getEndMovePoint().getY()), draggableArrow.getEndMovePoint());
+				whenMovingFinish();
+			}
+		}
+		this.isMinDistanceChange = false;
 	}
 }

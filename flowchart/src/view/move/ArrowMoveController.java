@@ -36,8 +36,8 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 		this.linkedList = new LinkedList<Node>();
 		this.arrowShape = arrowShape;
 		this.isSelected = false;
-		this.startMovePoint = new ArrowMovePoint(true, this);
-		this.endMovePoint = new ArrowMovePoint(false, this);
+		this.startMovePoint = new ArrowMovePoint(true, this,arrowShape.getStartPoint().getX(),arrowShape.getStartPoint().getY());
+		this.endMovePoint = new ArrowMovePoint(false, this,arrowShape.getEndPoint().getX(),arrowShape.getEndPoint().getY());
 		this.hiddenPoint = new PointEntity(-100, -100);
 		this.cursor = Cursor.MOVE;
 		new Draggable() {
@@ -103,7 +103,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 					arrowShape.decCurveCount();
 					startMovePoint.setCurve(false);
 				}
-				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity,
+				PointEntity point = connectionController.connect(ArrowMoveController.this, pointEntity,
 						startMovePoint);
 				arrowShape.setStartPoint(point);
 				updateCircle(point);
@@ -134,7 +134,7 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 					arrowShape.decCurveCount();
 					endMovePoint.setCurve(false);
 				}
-				PointEntity point = connectionController.connnect(ArrowMoveController.this, pointEntity, endMovePoint);
+				PointEntity point = connectionController.connect(ArrowMoveController.this, pointEntity, endMovePoint);
 				arrowShape.setEndPoint(point);
 				updateCircle(point);
 			}
@@ -219,6 +219,9 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 		ArrowState arrowState = (ArrowState) state;
 		arrowShape.setStartPoint(arrowState.getStartPoint());
 		arrowShape.setEndPoint(arrowState.getEndPoint());
+		startMovePoint.setPosition(arrowState.getStartPoint());
+		endMovePoint.setPosition(arrowState.getEndPoint());
+		id = arrowState.getID();
 		update();
 	}
 
@@ -252,11 +255,13 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 	@Override
 	public void setStartPoint(PointEntity pointEntity) {
 		arrowShape.setStartPoint(pointEntity);
+		startDraggablePoint.updateCircle(pointEntity);
 	}
 
 	@Override
 	public void setEndPoint(PointEntity pointEntity) {
 		arrowShape.setEndPoint(pointEntity);
+		endDraggablePoint.updateCircle(pointEntity);
 	}
 
 	@Override
@@ -277,5 +282,15 @@ public class ArrowMoveController implements Cloneable, MoveController, Draggable
 
 	public void changeToDashed(){
 		this.arrowShape.changeToDashed();
+	}
+
+	@Override
+	public ArrowMovePoint getStartMovePoint() {
+		return startMovePoint;
+	}
+
+	@Override
+	public ArrowMovePoint getEndMovePoint() {
+		return endMovePoint;
 	}
 }

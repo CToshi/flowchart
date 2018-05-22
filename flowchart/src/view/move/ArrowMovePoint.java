@@ -12,11 +12,13 @@ public class ArrowMovePoint {
 	private LinkedPoint linkedPoint;
 	private boolean isCurve;
 
-	public ArrowMovePoint(boolean isStart, DraggableArrow arrow) {
+	public ArrowMovePoint(boolean isStart, DraggableArrow arrow,double x,double y) {
 		this.isStart = isStart;
 		this.arrow = arrow;
 		this.linkedPoint = null;
 		this.isCurve = false;
+		this.x = x;
+		this.y = y;
 	}
 
 	public boolean isStart() {
@@ -69,4 +71,8 @@ public class ArrowMovePoint {
 		this.isCurve = isCurve;
 	}
 
+	public void setPosition(PointEntity pointEntity){
+		x = pointEntity.getX();
+		y = pointEntity.getY();
+	}
 }

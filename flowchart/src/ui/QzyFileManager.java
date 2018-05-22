@@ -16,11 +16,13 @@ import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Border;
+import view.move.ConnectionController;
 
 public class QzyFileManager {
 
 	private DrawPane drawPane;
 	private static QzyFileManager qzyFileManager = new QzyFileManager();
+	private static ConnectionController connection = ConnectionController.getInstance();
 
 	private QzyFileManager() {
 	}
@@ -69,6 +71,7 @@ public class QzyFileManager {
 			try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
 				LinkedList<DrawableState> list = (LinkedList<DrawableState>) ois.readObject();
 				drawPane.importStates(list);
+				connection.linkedStart();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

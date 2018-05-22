@@ -41,7 +41,7 @@ public class PolygonalArrowShape extends ShapeItem {
 		}
 		this.polyline.getPoints().addAll(getPoints());
 		this.surround = new Polygon();
-		this.surround.setFill(Color.WHITE);
+		this.surround.setFill(Color.TRANSPARENT);
 		this.surround.getPoints().addAll(getSurround());
 		this.triangleShape = new TriangleShape(points[2], points[3]);
 		this.linkedList = new LinkedList<Node>();

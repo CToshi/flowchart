@@ -50,6 +50,7 @@ public class MenuBar extends javafx.scene.control.MenuBar {
 			if(target != null){
 				manager.importFile(target);
 				saveAsMenuItem.setDisable(false);
+
 			}
 		});
 

@@ -31,7 +31,7 @@ public class ArrowShape extends ShapeItem{
 		triangleShape = new TriangleShape(startPoint, endPoint);
 		this.linkedList = new LinkedList<Node>();
 		this.surround = new Polygon();
-		surround.setFill(Color.WHITE);
+		surround.setFill(Color.TRANSPARENT);
 		surround.getPoints().addAll(getSurround());
 		linkedList.add(surround);
 		linkedList.add(line);

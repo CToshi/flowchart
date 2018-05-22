@@ -90,4 +90,12 @@ public class LinkedPoint {
 	public double getDistanceFrom(LinkedPoint other) {
 		return Math.sqrt((x - other.getX()) * (x - other.getX()) + (y - other.getY()) * (y - other.getY()));
 	}
+
+	@Override
+	public String toString() {
+		return "LinkedPoint [x=" + x + ", y=" + y + ", arrowMovePoints=" + arrowMovePoints + ", circle=" + circle
+				+ ", maxIn=" + maxIn + ", maxOut=" + maxOut + ", currentIn=" + currentIn + ", currentOut=" + currentOut
+				+ "]";
+	}
+	
 }
