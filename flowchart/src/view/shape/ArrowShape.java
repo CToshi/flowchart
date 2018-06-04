@@ -20,7 +20,8 @@ public class ArrowShape extends ShapeItem{
 	private Polygon surround;
 	private LinkedList<LinkedPoint> linkedPoints;
 	private int curveCount;
-
+	private static final double DEFAULT_OFFSET[][] = { { 0.5, 0.5 },};
+	
 	public ArrowShape(PointEntity startPoint,double length){
 		this(startPoint, new PointEntity(startPoint.getX()+length,startPoint.getY()));
 	}
@@ -163,4 +164,9 @@ public class ArrowShape extends ShapeItem{
 		curveCount--;
 	}
 
+	@Override
+	protected double[][] getLinkedPointsOffset() {
+		return DEFAULT_OFFSET;
+	}
+	
 }

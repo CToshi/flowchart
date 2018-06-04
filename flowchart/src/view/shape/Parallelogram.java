@@ -7,7 +7,7 @@ public class Parallelogram extends Polygonal {
 
 	private static final double TILT_RATE = 0.2;
 	private static final double OFFSET[][] = { {  0.5 + TILT_RATE / 2f,0 },
-	{ 1 - TILT_RATE / 2f, 0.5 }, {  TILT_RATE / 2f,0.5 }, { 0.5 - TILT_RATE / 2f, 1 }, };
+	{ 1 - TILT_RATE / 2f, 0.5 }, {  TILT_RATE / 2f,0.5 }, { 0.5 - TILT_RATE / 2f, 1 }, { 0.5, 0 }, { 0.5, 1 },};
 	public Parallelogram(RectangleEntity rectangle) {
 		this(rectangle.getX(), rectangle.getY(), rectangle.getWidth(), rectangle.getHeight());
 	}

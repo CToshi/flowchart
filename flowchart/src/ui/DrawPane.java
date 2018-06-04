@@ -162,7 +162,7 @@ public class DrawPane extends Pane {
 	public void informSelected(MoveController frame, boolean isControlDown) {
 		if (selectedCount == 0 || isControlDown) {
 			selectedCount++;
-		} else if (selectedCount == 1 && !isControlDown) {
+		} else if (!isControlDown) {
 			closeOthers(frame);
 		}
 	}
@@ -292,6 +292,7 @@ public class DrawPane extends Pane {
 		}
 		reDoS.push(ids, oldStates);
 		whenMapChanged();
+		ConnectionController.getInstance().linkedStart();
 	}
 
 	public void reDo() {
